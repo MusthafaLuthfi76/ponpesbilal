@@ -8,7 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // PERBAIKAN: Menggunakan id_pendidik sebagai Primary Key
         Schema::create('pendidik', function (Blueprint $table) {
             $table->unsignedBigInteger('id_pendidik')->primary(); // PK
             
@@ -20,7 +19,6 @@ return new class extends Migration
             
             $table->timestamps();
 
-            // Definisi Foreign Key
             $table->foreign('id_user')->references('id_user')->on('user')->onDelete('cascade');
         });
     }

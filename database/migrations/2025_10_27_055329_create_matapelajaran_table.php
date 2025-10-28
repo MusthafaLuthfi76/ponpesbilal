@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('matapelajaran', function (Blueprint $table) {
             
             // Primary Key (PK) dan Identitas
-            // Menggunakan unsignedBigInteger agar konsisten dengan FK yang dibuat Laravel default
             $table->unsignedBigInteger('id_matapelajaran')->primary(); 
             $table->string('nama_matapelajaran', 100);
             
@@ -28,13 +27,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pendidik'); // FK ke Pendidik
             $table->unsignedBigInteger('id_tahunAjaran'); // FK ke TahunAjaran
 
-            $table->timestamps(); // Menambahkan created_at dan updated_at
+            $table->timestamps(); 
 
-            // Definisi Foreign Keys
-            // Relasi ke Pendidik: restrict (tidak boleh hapus Pendidik jika masih mengajar)
             $table->foreign('id_pendidik')->references('id_pendidik')->on('pendidik')->onDelete('restrict');
             
-            // Relasi ke TahunAjaran: restrict
             $table->foreign('id_tahunAjaran')->references('id_tahunAjaran')->on('tahunajaran')->onDelete('restrict');
         });
     }
