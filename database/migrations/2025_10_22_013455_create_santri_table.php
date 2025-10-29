@@ -8,14 +8,17 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('santri', function (Blueprint $table) {
-            $table->id('id_santri');
-            $table->string('nama');
+            
+   
+            $table->string('nis', 20)->primary(); 
+            $table->string('nama', 100);
             $table->string('angkatan')->nullable();
             $table->string('status')->default('aktif');
             $table->unsignedBigInteger('id_tahunAjaran')->nullable();
-            $table->timestamps();
 
+            // Definisi Foreign Keys:
             $table->foreign('id_tahunAjaran')->references('id_tahunAjaran')->on('tahunajaran')->onDelete('set null');
+        
         });
 
     }
