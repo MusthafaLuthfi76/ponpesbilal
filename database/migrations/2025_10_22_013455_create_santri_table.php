@@ -9,14 +9,15 @@ return new class extends Migration {
     {
         Schema::create('santri', function (Blueprint $table) {
             
-   
             $table->string('nis', 20)->primary(); 
             $table->string('nama', 100);
-            $table->string('angkatan')->nullable();
-            $table->string('status')->default('aktif');
+            $table->string('angkatan', 10)->nullable();            
+            $table->enum('status', ['MA', 'MTS', 'Alumni', 'Keluar'])->default('MTS'); 
             $table->unsignedBigInteger('id_tahunAjaran')->nullable();
+                        
+            $table->timestamps();
 
-            // Definisi Foreign Keys:
+            // Definisi Foreign Keys 
             $table->foreign('id_tahunAjaran')->references('id_tahunAjaran')->on('tahunajaran')->onDelete('set null');
         
         });
