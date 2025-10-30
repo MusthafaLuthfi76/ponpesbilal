@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\SantriController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -30,3 +31,9 @@ Route::post('tahunajaran', [TahunAjaranController::class, 'store'])->name('tahun
 Route::put('tahunajaran/{id}', [TahunAjaranController::class, 'update'])->name('tahunajaran.update');
 Route::delete('tahunajaran/{id}', [TahunAjaranController::class, 'destroy'])->name('tahunajaran.destroy');
 
+// Subjects CRUD
+// Mata Pelajaran
+Route::get('/matapelajaran', [MataPelajaranController::class, 'index'])->name('matapelajaran.index');
+Route::post('/matapelajaran', [MataPelajaranController::class, 'store'])->name('matapelajaran.store');
+Route::put('/matapelajaran/{id}', [MataPelajaranController::class, 'update'])->name('matapelajaran.update');
+Route::delete('/matapelajaran/{id}', [MataPelajaranController::class, 'destroy'])->name('matapelajaran.destroy');

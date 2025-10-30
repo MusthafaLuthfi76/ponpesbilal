@@ -197,7 +197,7 @@
             <nav class="menu">
                 <a href="/dashboard">Dashboard</a>
                 <a href="/santri" class="active">Data Santri</a>
-                <a href="#">Mata Pelajaran</a>
+                <a href="/matapelajaran">Mata Pelajaran</a>
                 <a href="tahunajaran">Tahun Ajaran</a>
                 <a href="#">Kelas</a>
                 <a href="#">Kelompok Halaqah</a>
