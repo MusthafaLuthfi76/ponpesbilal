@@ -176,9 +176,9 @@
             </div>
             <nav class="menu">
                 <a href="/dashboard">Dashboard</a>
-                <a href="/santri">Data Santri</a>
+                <a href="/santri" class="active">Data Santri</a>
                 <a href="#">Mata Pelajaran</a>
-                <a href="tahunajaran" class="active">Tahun Ajaran</a>
+                <a href="tahunajaran">Tahun Ajaran</a>
                 <a href="#">Kelas</a>
                 <a href="#">Kelompok Halaqah</a>
                 <a href="#">Data Pendidik</a>
@@ -189,17 +189,14 @@
             </nav>
         </aside>
 
-        <!-- Main -->
+        <!-- Content -->
         <main class="content">
-            <div class="content-header">
-                <h2>Data Tahun Ajaran</h2>
-                <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahTahunAjaran">
-                    + Tambah Tahun Ajaran
-                </button>
+            <div class="content-header d-flex justify-content-between align-items-center mb-3">
+                <h4>Data Tahun Ajaran</h4>
+                <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahTahunAjaran">+ Tambah Tahun</button>
             </div>
 
-            <!-- Notifikasi sukses -->
-            @if (session('success'))
+            @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
@@ -209,122 +206,115 @@
                         <th>No</th>
                         <th>Tahun</th>
                         <th>Semester</th>
-                        <th>Action</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($tahunajaran as $index => $t)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $t->tahun }}</td>
-                        <td>{{ $t->semester }}</td>
-                        <td>
-                            <div class="action-btns">
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $t->id_tahunAjaran }}">
-                                    ✏️
-                                </button>
-                                <form action="{{ route('tahunajaran.destroy', $t->id_tahunAjaran) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
+                    @forelse($tahunajaran as $index => $t)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $t->tahun }}</td>
+                            <td>{{ $t->semester }}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $t->id_tahunAjaran }}">✏️</button>
+                                <form action="{{ route('tahunajaran.destroy', $t->id_tahunAjaran) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger">🗑️</button>
+                                    <button class="btn btn-danger btn-sm">🗑️</button>
                                 </form>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     @empty
-                    <tr><td colspan="4" style="text-align:center;">Belum ada data tahun ajaran</td></tr>
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Belum ada data tahun ajaran</td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
-
-            <!-- Modal Edit Tahun Ajaran -->
-            @foreach ($tahunajaran as $t)
-            <div class="modal fade" id="editModal{{ $t->id_tahunAjaran }}" tabindex="-1" aria-labelledby="editModalLabel{{ $t->id_tahunAjaran }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                    <form action="{{ route('tahunajaran.update', $t->id_tahunAjaran) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editModalLabel{{ $t->id_tahunAjaran }}">Edit Tahun Ajaran</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label">Tahun</label>
-                                <select name="tahun" class="form-select" required>
-                                    @for($i = 2022; $i <= 2032; $i++)
-                                        <option value="{{ $i }}/{{ $i + 1 }}" {{ $t->tahun == "$i/".($i+1) ? 'selected' : '' }}>
-                                            {{ $i }}/{{ $i + 1 }}
-                                        </option>
-                                    @endfor
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Semester</label>
-                                <select name="semester" class="form-select" required>
-                                    <option value="GANJIL" {{ $t->semester == 'GANJIL' ? 'selected' : '' }}>GANJIL</option>
-                                    <option value="GENAP" {{ $t->semester == 'GENAP' ? 'selected' : '' }}>GENAP</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
-                            <button type="submit" class="btn btn-success">Simpan</button>
-                        </div>
-                    </form>
-                    </div>
-                </div>
-            </div>
-            @endforeach
         </main>
+    </div>
 
-        </div>
-
-        <!-- Modal Tambah Tahun Ajaran -->
-        <div class="modal fade" id="modalTambahTahunAjaran" tabindex="-1" aria-labelledby="modalTambahTahunAjaranLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                <form action="{{ route('tahunajaran.store') }}" method="POST">
+    <!-- Modal Tambah -->
+    <div class="modal fade" id="modalTambahTahunAjaran" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('tahunajaran.store') }}" method="POST" onsubmit="return validateTahunAjaran(this)">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTambahTahunAjaranLabel">Tambah Tahun Ajaran</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title">Tambah Tahun Ajaran</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Tahun</label>
-                            <select name="tahun" class="form-select" required>
-                                @for($i = 2022; $i <= 2032; $i++)
-                                    <option value="{{ $i }}/{{ $i + 1 }}">{{ $i }}/{{ $i + 1 }}</option>
-                                @endfor
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Semester</label>
-                            <select name="semester" class="form-select" required>
-                                <option value="GANJIL">GANJIL</option>
-                                <option value="GENAP">GENAP</option>
-                            </select>
-                        </div>
+                        <label class="form-label">Tahun Ajaran</label>
+                        <input type="text" name="tahun" class="form-control" placeholder="2024/2025" required pattern="^[0-9]{4}/[0-9]{4}$" title="Gunakan format 2024/2025">
+                        <label class="form-label mt-3">Semester</label>
+                        <select name="semester" class="form-select" required>
+                            <option value="GANJIL">GANJIL</option>
+                            <option value="GENAP">GENAP</option>
+                        </select>
                     </div>
-
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success">Simpan</button>
                     </div>
                 </form>
-                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modal Edit -->
+    @foreach($tahunajaran as $t)
+    <div class="modal fade" id="editModal{{ $t->id_tahunAjaran }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('tahunajaran.update', $t->id_tahunAjaran) }}" method="POST" onsubmit="return validateTahunAjaran(this)">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Tahun Ajaran</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="form-label">Tahun Ajaran</label>
+                        <input type="text" name="tahun" value="{{ $t->tahun }}" class="form-control" required pattern="^[0-9]{4}/[0-9]{4}$" title="Gunakan format 2024/2025">
+                        <label class="form-label mt-3">Semester</label>
+                        <select name="semester" class="form-select" required>
+                            <option value="GANJIL" {{ $t->semester=='GANJIL'?'selected':'' }}>GANJIL</option>
+                            <option value="GENAP" {{ $t->semester=='GENAP'?'selected':'' }}>GENAP</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
+
+    <script>
+    function validateTahunAjaran(form) {
+        const input = form.querySelector('[name="tahun"]');
+        const value = input.value.trim();
+        const pattern = /^(\d{4})\/(\d{4})$/;
+        const match = value.match(pattern);
+
+        if (!match) {
+            alert('Format tahun ajaran harus seperti 2024/2025');
+            return false;
+        }
+
+        const startYear = parseInt(match[1]);
+        const endYear = parseInt(match[2]);
+        if (endYear - startYear !== 1) {
+            alert('Tahun ajaran tidak valid! Selisih tahun harus 1, contoh: 2024/2025');
+            return false;
+        }
+        return true;
+    }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

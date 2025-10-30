@@ -7,14 +7,14 @@ use Illuminate\Http\Request;
 
 class TahunAjaranController extends Controller
 {
-    // Menampilkan semua data tahun ajaran
+    // Tampilkan semua data
     public function index()
     {
-        $tahunajaran = TahunAjaran::all();
+        $tahunajaran = TahunAjaran::orderBy('id_tahunAjaran', 'desc')->get();
         return view('tahunajaran.indexthnajar', compact('tahunajaran'));
     }
 
-    // Simpan data tahun ajaran baru
+    // Simpan data baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -24,32 +24,32 @@ class TahunAjaranController extends Controller
 
         TahunAjaran::create($validated);
 
-        return redirect()->route('tahunajaran.index')->with('success', 'Tahun ajaran berhasil ditambahkan!');
+        return redirect()->route('tahunajaran.index')
+            ->with('success', 'Tahun ajaran berhasil ditambahkan!');
     }
 
-    // Tampilkan form edit data tahun ajaran (opsional, kalau pakai modal bisa dihapus)
-    public function edit(TahunAjaran $tahunajaran)
-    {
-        return view('tahunajaran.editthnajar', compact('tahunajaran'));
-    }
-
-    // Update data tahun ajaran
-    public function update(Request $request, TahunAjaran $tahunajaran)
+    // Update data
+    public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'tahun' => 'required|string|max:20',
             'semester' => 'required|string|max:50',
         ]);
 
+        $tahunajaran = TahunAjaran::findOrFail($id);
         $tahunajaran->update($validated);
 
-        return redirect()->route('tahunajaran.index')->with('success', 'Tahun ajaran berhasil diperbarui!');
+        return redirect()->route('tahunajaran.index')
+            ->with('success', 'Tahun ajaran berhasil diperbarui!');
     }
 
-    // Hapus data tahun ajaran
-    public function destroy(TahunAjaran $tahunajaran)
+    // Hapus data
+    public function destroy($id)
     {
+        $tahunajaran = TahunAjaran::findOrFail($id);
         $tahunajaran->delete();
-        return redirect()->route('tahunajaran.index')->with('success', 'Tahun ajaran berhasil dihapus!');
+
+        return redirect()->route('tahunajaran.index')
+            ->with('success', 'Tahun ajaran berhasil dihapus!');
     }
 }

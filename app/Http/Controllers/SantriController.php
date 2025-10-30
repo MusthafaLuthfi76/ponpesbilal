@@ -10,50 +10,46 @@ class SantriController extends Controller
 {
     public function index()
     {
-        $santri = Santri::all();
-        $tahunajaran = TahunAjaran::all(); // <- ambil data tahun ajaran
+        $santri = Santri::with('tahunAjaran')->get();
+        $tahunajaran = TahunAjaran::all();
         return view('santri.homeSantri', compact('santri', 'tahunajaran'));
     }
-
-    public function create()
-    {
-        $tahunajaran = TahunAjaran::all();
-        return view('santri.index', compact('tahunajaran'));
-    }
-
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'angkatan' => 'nullable|string|max:100',
-            'status' => 'required|string',
+            'nis' => 'required|string|max:20|unique:santri,nis',
+            'nama' => 'required|string|max:100',
+            'angkatan' => 'nullable|string|max:10',
+            'status' => 'required|in:MA,MTS,Alumni,Keluar',
+            'id_tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
         ]);
 
         Santri::create($validated);
         return redirect()->route('santri.index')->with('success', 'Data santri berhasil ditambahkan!');
     }
 
-    public function edit(Santri $santri)
+    public function update(Request $request, $nis)
     {
-        return view('santri.editSantri', compact('santri'));
-    }
+        $santri = Santri::findOrFail($nis);
 
-    public function update(Request $request, Santri $santri)
-    {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'angkatan' => 'nullable|string|max:100',
-            'status' => 'required|string',
+            'nis' => 'required|string|max:20|unique:santri,nis,' . $nis . ',nis',
+            'nama' => 'required|string|max:100',
+            'angkatan' => 'nullable|string|max:10',
+            'status' => 'required|in:MA,MTS,Alumni,Keluar',
+            'id_tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
         ]);
 
         $santri->update($validated);
         return redirect()->route('santri.index')->with('success', 'Data santri berhasil diperbarui!');
     }
 
-    public function destroy(Santri $santri)
+    public function destroy($nis)
     {
+        $santri = Santri::findOrFail($nis);
         $santri->delete();
+
         return redirect()->route('santri.index')->with('success', 'Data santri berhasil dihapus!');
     }
 }

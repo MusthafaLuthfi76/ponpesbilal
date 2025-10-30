@@ -25,6 +25,8 @@ Route::put('/santri/{santri}', [SantriController::class, 'update'])->name('santr
 Route::delete('/santri/{santri}', [SantriController::class, 'destroy'])->name('santri.destroy');
 
 // Tahun Ajaran
-Route::middleware('auth')->group(function () {
-    Route::resource('tahunajaran', TahunAjaranController::class)->except(['create', 'edit', 'show']);
-});
+Route::get('tahunajaran', [TahunAjaranController::class, 'index'])->name('tahunajaran.index');
+Route::post('tahunajaran', [TahunAjaranController::class, 'store'])->name('tahunajaran.store');
+Route::put('tahunajaran/{id}', [TahunAjaranController::class, 'update'])->name('tahunajaran.update');
+Route::delete('tahunajaran/{id}', [TahunAjaranController::class, 'destroy'])->name('tahunajaran.destroy');
+
