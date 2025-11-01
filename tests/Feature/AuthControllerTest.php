@@ -44,7 +44,7 @@ class AuthControllerTest extends TestCase
         ]);
 
         $response = $this->post('/login', [
-            'nama' => 'test@mail.com', // fallback
+            'nama' => 'test@mail.com',
             'password' => 'password123',
         ]);
 
@@ -58,6 +58,30 @@ class AuthControllerTest extends TestCase
         $response = $this->post('/login', [
             'nama' => 'salahnama',
             'password' => 'passwordsalah',
+        ]);
+
+        $response->assertSessionHasErrors('nama');
+        $this->assertGuest();
+    }
+
+    /** @test */
+    public function login_fails_when_fields_are_empty()
+    {
+        $response = $this->post('/login', [
+            'nama' => '',
+            'password' => '',
+        ]);
+
+        $response->assertSessionHasErrors(['nama', 'password']);
+        $this->assertGuest();
+    }
+
+    /** @test */
+    public function login_fails_with_invalid_email_format()
+    {
+        $response = $this->post('/login', [
+            'nama' => 'invalidemailformat',
+            'password' => 'password123',
         ]);
 
         $response->assertSessionHasErrors('nama');
