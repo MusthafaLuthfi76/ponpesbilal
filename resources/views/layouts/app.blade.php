@@ -78,17 +78,16 @@
         <aside class="sidebar">
             <div class="menu">
                 <div class="title">Menu</div>
-                <a href="{{ url('/dashboard') }}" class="item {{ request()->is('dashboard') ? 'active' : '' }}">Data Santri</a>
-                <a href="{{ route('matapelajaran.index') }}" class="item {{ request()->routeIs('matapelajaran.*') ? 'active' : '' }}">Mata Pelajaran</a>
-                <a href="#" class="item">Tahun Ajar</a>
-                <a href="#" class="item">Kelas</a>
-                <a href="#" class="item">Kelompok Halaqah</a>
-                <a href="#" class="item">Data Pendidik</a>
-                <a href="#" class="item">Nilai Akademik</a>
-                <a href="#" class="item">Nilai Tahfidz</a>
-                <a href="#" class="item">Nilai Kesantrian</a>
-                <a href="#" class="item">Laporan & Rapor</a>
-                <a href="#" class="item">Pengaturan</a>
+                    <a href="{{ route('dashboard') }}" class="item {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('santri.index') }}" class="item {{ request()->routeIs('santri.*') ? 'active' : '' }}">Data Santri</a>
+                    <a href="{{ route('matapelajaran.index') }}" class="item {{ request()->routeIs('matapelajaran.*') ? 'active' : '' }}">Mata Pelajaran</a>
+                    <a href="{{ route('tahunajaran.index') }}" class="item {{ request()->routeIs('tahunajaran.*') ? 'active' : '' }}">Tahun Ajar</a>
+                    <a href="#" class="item">Kelompok Halaqah</a>
+                    <a href="#" class="item">Data Pendidik</a>
+                    <a href="#" class="item">Nilai Akademik</a>
+                    <a href="#" class="item">Nilai Tahfidz</a>
+                    <a href="#" class="item">Nilai Kesantrian</a>
+                    <a href="#" class="item">Laporan & Rapor</a>
             </div>
             <div class="footer">
                 <form method="POST" action="{{ route('logout') }}">
