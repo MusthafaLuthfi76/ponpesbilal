@@ -17,7 +17,7 @@ class SantriFactory extends Factory
             'nama' => $this->faker->name(),
             'angkatan' => $this->faker->year(),
             'status' => $this->faker->randomElement(['MA', 'MTS', 'Alumni', 'Keluar']),
-            'id_tahunAjaran' => null, // opsional, boleh null sesuai DB
+            'id_tahunAjaran' => null,
             'id_halaqah' => KelompokHalaqah::factory(), // ⬅️ WAJIB!
         ];
     }
