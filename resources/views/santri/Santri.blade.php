@@ -41,19 +41,28 @@
 
     /* Search dan Filter */
     .search-filter {
-        display: flex;
+        display: block; 
+        gap: 10px; 
+        margin-bottom: 15px; 
+    }
+    
+    .filter-and-add-group {
+        display: flex; 
         align-items: center;
         gap: 10px;
+        margin-top: 10px; 
     }
 
     input[type="search"] {
+        width: 100%;
+        max-width: none; 
         border: 1px solid #ccc;
         border-radius: 8px;
         padding: 8px 12px;
-        width: 200px;
     }
 
     select.filter {
+        max-width: none; 
         border: 1px solid #ccc;
         border-radius: 8px;
         padding: 8px 12px;
@@ -61,15 +70,17 @@
 
     /* Tombol Tambah Data */
     .btn-add {
+        padding: 8px 10px; 
+        flex-shrink: 0; 
         background: var(--btn-green);
         color: white;
         border: none;
-        padding: 10px 18px;
         border-radius: 8px;
         font-size: 14px;
         cursor: pointer;
         transition: 0.3s;
     }
+
     .btn-add:hover {
         background: var(--btn-green-hover);
     }
@@ -154,7 +165,6 @@
         input[type="search"],
         select.filter,
         .btn-add {
-            width: 100%; /* Agar elemen kontrol memenuhi lebar penuh */
             box-sizing: border-box; /* Agar padding/border tidak menambah lebar total */
         }
 
@@ -234,22 +244,20 @@
 </style>
 
 <main class="content">
-    <div class="content-header mb-3">
-        <h2 class="fw-bold text-success">Data Santri</h2>
+    <div class="search-filter">
+    {{-- BARIS 1: Search (Full Width) --}}
+    <input type="search" id="searchInput" placeholder="Search...">
 
-        <div class="search-filter">
-            <input type="search" id="searchInput" placeholder="Search...">
-
-            <select id="filterAngkatan" class="filter">
-                <option value="">Semua Angkatan</option>
-                @foreach($santri->pluck('angkatan')->unique()->filter() as $angkatan)
-                    <option value="{{ $angkatan }}">{{ $angkatan }}</option>
-                @endforeach
-            </select>
-
-
-            <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahSantri">+ Tambah</button>
-        </div>
+    {{-- BARIS 2: Filter & Button (Berdampingan) --}}
+    <div class="filter-and-add-group"> 
+        <select id="filterAngkatan" class="filter">
+            <option value="">Semua Angkatan</option>
+            @foreach($santri->pluck('angkatan')->unique()->filter() as $angkatan)
+                <option value="{{ $angkatan }}">{{ $angkatan }}</option>
+            @endforeach
+        </select>
+        <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahSantri">+ Tambah</button>
+    </div>
     </div>
 
     @if (session('success'))
