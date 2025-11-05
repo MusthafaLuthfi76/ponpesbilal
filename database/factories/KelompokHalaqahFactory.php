@@ -19,7 +19,7 @@ class KelompokHalaqahFactory extends Factory
     {
         return [
             'nama_kelompok' => $this->faker->words(3, true),
-            'id_pendidik' => Pendidik::factory(), // ⬅️ membuat 
+            'id_pendidik' => Pendidik::factory(),
         ];
     }
 }
