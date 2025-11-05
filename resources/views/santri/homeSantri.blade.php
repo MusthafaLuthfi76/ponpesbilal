@@ -144,13 +144,14 @@
             <!-- Search -->
             <input type="search" id="searchInput" placeholder="Search...">
 
-            <!-- Filter Tahun Ajaran -->
-            <select id="filterTahunAjaran" class="filter">
-                <option value="">Tahun Ajaran</option>
-                @foreach($tahunajaran as $t)
-                    <option value="{{ $t->id_tahunAjaran }}">{{ $t->tahun }} - {{ $t->semester }}</option>
+            <!-- Filter Angkatan -->
+            <select id="filterAngkatan" class="filter">
+                <option value="">Semua Angkatan</option>
+                @foreach($santri->pluck('angkatan')->unique()->filter() as $angkatan)
+                    <option value="{{ $angkatan }}">{{ $angkatan }}</option>
                 @endforeach
             </select>
+
 
             <!-- Tombol Tambah -->
             <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahSantri">+ Tambah</button>
@@ -312,4 +313,35 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const filterAngkatan = document.getElementById("filterAngkatan");
+    const rows = document.querySelectorAll("tbody tr");
+
+    function filterTable() {
+        const searchValue = searchInput.value.toLowerCase();
+        const selectedAngkatan = filterAngkatan.value;
+
+        rows.forEach(row => {
+            const nis = row.children[1].textContent.toLowerCase();
+            const nama = row.children[2].textContent.toLowerCase();
+            const angkatan = row.children[3].textContent.trim();
+
+            const matchSearch = nis.includes(searchValue) || nama.includes(searchValue);
+            const matchAngkatan = selectedAngkatan === "" || angkatan === selectedAngkatan;
+
+            if (matchSearch && matchAngkatan) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    searchInput.addEventListener("input", filterTable);
+    filterAngkatan.addEventListener("change", filterTable);
+});
+</script>
+
 @endsection

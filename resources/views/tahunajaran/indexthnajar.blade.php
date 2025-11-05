@@ -1,11 +1,9 @@
 @extends('layouts.app')
 
-@section('page_title','Data Tahun Ajaran')
+@section('page_title', 'Data Tahun Ajaran')
 
 @section('content')
-
 <style>
-/* 🌿 WARNA UTAMA */
 :root {
     --green: #1f4a34;
     --green-dark: #173e2b;
@@ -17,85 +15,62 @@
     --btn-yellow: #f59e0b;
 }
 
-/* 🧩 AREA UTAMA */
-main.content {
-    background: var(--panel);
-    border-radius: 20px 0 0 0;
-    padding: 30px;
-    min-height: 100vh;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+/* 🧭 Layout utama */
+section.tahun-ajaran {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-/* 🏷️ HEADER */
-.content-header {
+/* 🏷️ Header */
+.header-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: .75rem;
 }
-.content-header h2 {
-    font-size: 22px;
+.header-section h2 {
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--green);
-    margin: 0;
 }
 
-/* 🔍 SEARCH DAN FILTER */
-.search-filter {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-input[type="search"], select.filter {
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
-    transition: 0.2s;
-}
-input[type="search"]:focus, select.filter:focus {
-    border-color: var(--green);
-    outline: none;
-    box-shadow: 0 0 4px rgba(31, 74, 52, 0.3);
-}
-
-/* ➕ TOMBOL TAMBAH DATA */
+/* ➕ Tombol Tambah */
 .btn-add {
     background: var(--btn-green);
     color: #fff;
     border: none;
-    padding: 9px 16px;
+    padding: 8px 14px;
     border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
-    font-weight: 600;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 .btn-add:hover {
     background: var(--btn-green-hover);
-    transform: translateY(-1px);
 }
 
-/* 📋 TABEL DATA */
+/* 📋 Table styling */
+.table-responsive {
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #fff;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
 table {
     width: 100%;
     border-collapse: collapse;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #fff;
 }
 th, td {
-    padding: 12px 15px;
-    text-align: left;
+    padding: 12px 14px;
     border-bottom: 1px solid #e5e7eb;
     font-size: 14px;
 }
 th {
     background: #f1f5f3;
     font-weight: 600;
-    color: var(--green);
+    color: var(--green-dark);
     text-transform: uppercase;
     font-size: 13px;
 }
@@ -103,118 +78,131 @@ tr:hover {
     background: #f9fdfb;
 }
 
-/* ⚙️ AKSI EDIT/HAPUS */
+/* ⚙️ Aksi */
 .action-btns {
     display: flex;
     gap: 6px;
+    flex-wrap: wrap;
 }
-.btn {
-    border: none;
-    border-radius: 6px;
+.btn-sm {
     padding: 6px 10px;
-    cursor: pointer;
+    border-radius: 6px;
     font-size: 13px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    transition: 0.2s;
+    border: none;
+    color: #fff;
 }
 .btn-warning { background: var(--btn-yellow); }
-.btn-danger { background: var(--btn-red); }
 .btn-warning:hover { background: #b45309; }
+.btn-danger { background: var(--btn-red); }
 .btn-danger:hover { background: #7f1d1d; }
 
-/* ✅ NOTIFIKASI SUKSES */
-.alert {
+/* ✅ Notifikasi */
+.alert-success {
     background: #d1fae5;
     color: #065f46;
+    border-left: 4px solid var(--btn-green);
     padding: 10px 14px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    border-left: 5px solid var(--btn-green);
+    border-radius: 8px;
     font-size: 14px;
 }
 
-/* 📱 RESPONSIF */
+/* RESPONSIVE: ubah tabel jadi card view di layar kecil */
 @media (max-width: 768px) {
-    .content-header {
-        flex-direction: column;
-        align-items: flex-start;
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; }
+    tbody tr {
+        background:#fff;
+        margin-bottom:1rem;
+        border-radius:10px;
+        box-shadow:0 1px 6px rgba(0,0,0,0.05);
+        padding:.75rem;
     }
-    .search-filter {
-        width: 100%;
-        flex-wrap: wrap;
+    td {
+        border:none;
+        display:flex;
+        justify-content:space-between;
+        padding:.5rem 0;
+        font-size:14px;
     }
-    input[type="search"], select.filter {
-        width: 100%;
-    }
-    table {
-        font-size: 13px;
+    td::before {
+        content: attr(data-label);
+        font-weight:600;
+        color:var(--green-dark);
     }
 }
 
 </style>
 
+<section class="tahun-ajaran">
+    <header class="header-section">
+        <h2><i class="bi bi-calendar3"></i> Data Tahun Ajaran</h2>
+        <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahTahunAjaran">
+            <i class="bi bi-plus-circle"></i> Tambah Tahun
+        </button>
+    </header>
 
-    <!-- Content -->
-    <main class="content">
-        <div class="content-header d-flex justify-content-between align-items-center mb-3">
-            <h4>Data Tahun Ajaran</h4>
-            <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahTahunAjaran">+ Tambah Tahun</button>
-        </div>
+    @if(session('success'))
+        <div class="alert-success">{{ session('success') }}</div>
+    @endif
 
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
+    <div class="table-responsive">
         <table>
             <thead>
                 <tr>
                     <th>No</th>
                     <th>Tahun</th>
                     <th>Semester</th>
-                    <th>Aksi</th>
+                    <th class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($tahunajaran as $index => $t)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $t->tahun }}</td>
-                        <td>{{ $t->semester }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $t->id_tahunAjaran }}">✏️</button>
-                            <form action="{{ route('tahunajaran.destroy', $t->id_tahunAjaran) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger btn-sm">🗑️</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-center text-muted">Belum ada data tahun ajaran</td>
-                    </tr>
-                @endforelse
+            @forelse($tahunajaran as $index => $t)
+            <tr>
+                <td data-label="No">{{ $index + 1 }}</td>
+                <td data-label="Tahun">{{ $t->tahun }}</td>
+                <td data-label="Semester">{{ $t->semester }}</td>
+                <td data-label="Aksi" class="text-center">
+                    <div class="action-btns">
+                        <button class="btn btn-warning btn-sm" title="Edit"
+                            data-bs-toggle="modal" data-bs-target="#editModal{{ $t->id_tahunAjaran }}">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <form action="{{ route('tahunajaran.destroy', $t->id_tahunAjaran) }}" method="POST"
+                            onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm" title="Hapus">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="4" class="text-center text-muted py-3">Belum ada data tahun ajaran</td>
+            </tr>
+            @endforelse
             </tbody>
         </table>
-    </main>
-</div>
+    </div>
+</section>
 
 <!-- Modal Tambah -->
 <div class="modal fade" id="modalTambahTahunAjaran" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content border-0 shadow-sm">
             <form action="{{ route('tahunajaran.store') }}" method="POST" onsubmit="return validateTahunAjaran(this)">
                 @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Tahun Ajaran</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Tambah Tahun Ajaran</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <label class="form-label">Tahun Ajaran</label>
-                    <input type="text" name="tahun" class="form-control" placeholder="2024/2025" required pattern="^[0-9]{4}/[0-9]{4}$" title="Gunakan format 2024/2025">
+                    <input type="text" name="tahun" class="form-control" placeholder="2024/2025" required
+                           pattern="^[0-9]{4}/[0-9]{4}$" title="Gunakan format 2024/2025">
+
                     <label class="form-label mt-3">Semester</label>
                     <select name="semester" class="form-select" required>
                         <option value="GANJIL">GANJIL</option>
@@ -234,17 +222,20 @@ tr:hover {
 @foreach($tahunajaran as $t)
 <div class="modal fade" id="editModal{{ $t->id_tahunAjaran }}" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('tahunajaran.update', $t->id_tahunAjaran) }}" method="POST" onsubmit="return validateTahunAjaran(this)">
+        <div class="modal-content border-0 shadow-sm">
+            <form action="{{ route('tahunajaran.update', $t->id_tahunAjaran) }}" method="POST"
+                  onsubmit="return validateTahunAjaran(this)">
                 @csrf
                 @method('PUT')
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Tahun Ajaran</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Edit Tahun Ajaran</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <label class="form-label">Tahun Ajaran</label>
-                    <input type="text" name="tahun" value="{{ $t->tahun }}" class="form-control" required pattern="^[0-9]{4}/[0-9]{4}$" title="Gunakan format 2024/2025">
+                    <input type="text" name="tahun" value="{{ $t->tahun }}" class="form-control"
+                           required pattern="^[0-9]{4}/[0-9]{4}$" title="Gunakan format 2024/2025">
+
                     <label class="form-label mt-3">Semester</label>
                     <select name="semester" class="form-select" required>
                         <option value="GANJIL" {{ $t->semester=='GANJIL'?'selected':'' }}>GANJIL</option>
@@ -253,7 +244,7 @@ tr:hover {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success">Simpan</button>
+                    <button type="submit" class="btn btn-warning text-white">Perbarui</button>
                 </div>
             </form>
         </div>
@@ -282,6 +273,4 @@ function validateTahunAjaran(form) {
     return true;
 }
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 @endsection
