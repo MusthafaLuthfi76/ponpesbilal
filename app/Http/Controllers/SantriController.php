@@ -12,7 +12,7 @@ class SantriController extends Controller
     {
         $santri = Santri::with('tahunAjaran')->get();
         $tahunajaran = TahunAjaran::all();
-        return view('santri.homeSantri', compact('santri', 'tahunajaran'));
+        return view('santri.Santri', compact('santri', 'tahunajaran'));
     }
 
     public function store(Request $request)
