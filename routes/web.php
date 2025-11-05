@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MataPelajaranController;
+use App\Http\Controllers\PendidikController;
 use App\Http\Controllers\SantriController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -37,3 +38,10 @@ Route::get('/matapelajaran', [MataPelajaranController::class, 'index'])->name('m
 Route::post('/matapelajaran', [MataPelajaranController::class, 'store'])->name('matapelajaran.store');
 Route::put('/matapelajaran/{id}', [MataPelajaranController::class, 'update'])->name('matapelajaran.update');
 Route::delete('/matapelajaran/{id}', [MataPelajaranController::class, 'destroy'])->name('matapelajaran.destroy');
+
+// Pendidik CRUD
+Route::get('/pendidik', [PendidikController::class, 'index'])->name('pendidik.index');
+Route::get('/pendidik/{id}', [PendidikController::class, 'show'])->name('pendidik.show');
+Route::post('/pendidik', [PendidikController::class, 'store'])->name('pendidik.store');
+Route::put('/pendidik/{id}', [PendidikController::class, 'update'])->name('pendidik.update');
+Route::delete('/pendidik/{id}', [PendidikController::class, 'destroy'])->name('pendidik.destroy');

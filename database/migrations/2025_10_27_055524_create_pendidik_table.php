@@ -9,13 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pendidik', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_pendidik')->primary(); // PK
+            $table->id('id_pendidik'); // Auto increment primary key
             
             $table->string('nama', 100);
             $table->string('jabatan', 50);
             
             // FK untuk Otentikasi (ke tabel User)
-            $table->unsignedBigInteger('id_user')->unique(); 
+            $table->unsignedBigInteger('id_user'); 
             
             $table->timestamps();
 
