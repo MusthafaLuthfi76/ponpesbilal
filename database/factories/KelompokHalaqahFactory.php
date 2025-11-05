@@ -18,7 +18,7 @@ class KelompokHalaqahFactory extends Factory
     public function definition(): array
     {
         return [
-            'nama_kelompok' => $this->faker->words(3, true), // contoh: "Halaqah Al-Furqan"
+            'nama_kelompok' => $this->faker->words(3, true),
             'id_pendidik' => Pendidik::factory(), // ⬅️ membuat Pendidik terkait otomatis
         ];
     }
