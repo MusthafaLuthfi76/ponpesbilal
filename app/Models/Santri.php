@@ -20,6 +20,7 @@ class Santri extends Model
         'angkatan',
         'status',
         'id_tahunAjaran',
+        'id_halaqah',
     ];
 
     // Tambahkan relasi ini 👇

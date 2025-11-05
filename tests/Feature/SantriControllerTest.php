@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\KelompokHalaqah;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Santri;
@@ -33,12 +34,12 @@ class SantriControllerTest extends TestCase
         $response = $this->actingAs($this->user)->get(route('santri.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('santri.homeSantri');
+        $response->assertViewIs('santri.Santri');
         $response->assertViewHasAll(['santri', 'tahunajaran']);
     }
 
     // --- TES CREATE VIEW ---
-    
+
     /** @test */
     public function user_can_view_create_santri_page()
     {
@@ -47,7 +48,7 @@ class SantriControllerTest extends TestCase
 
         // Menggunakan $this->user dari setUp()
         $response = $this->actingAs($this->user)->get(route('santri.createSantri'));
-        
+
         $response->assertStatus(200);
         // Hapus: $response->assertViewIs('santri.homeSantri'); 
         // -> assertion ini tidak diperlukan jika hanya menguji variabel yang dilewatkan
@@ -61,13 +62,15 @@ class SantriControllerTest extends TestCase
     public function user_can_store_new_santri()
     {
         $tahunAjaran = TahunAjaran::factory()->create();
+        $halaqah = KelompokHalaqah::factory()->create();
 
         $data = [
-            'nis' => '1234567890', 
+            'nis' => '1234567890',
             'nama' => 'Ahmad Bilal',
             'angkatan' => '2024',
-            'status' => 'MA', 
-            'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran, 
+            'status' => 'MA',
+            'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran,
+            'id_halaqah' => $halaqah->id_halaqah,
         ];
 
         // Menggunakan $this->user dari setUp()
@@ -89,7 +92,7 @@ class SantriControllerTest extends TestCase
         $response = $this->actingAs($this->user)->get(route('santri.editSantri', $santri->nis));
 
         $response->assertStatus(200);
-        $response->assertViewIs('santri.editSantri'); 
+        $response->assertViewIs('santri.editSantri');
         $response->assertViewHas('santri', $santri);
     }
 
@@ -99,6 +102,7 @@ class SantriControllerTest extends TestCase
     public function user_can_update_existing_santri()
     {
         $santri = Santri::factory()->create(['nis' => '998877']);
+        $halaqah = KelompokHalaqah::factory()->create();
         $tahunAjaranBaru = TahunAjaran::factory()->create();
 
         $updatedData = [
@@ -106,7 +110,8 @@ class SantriControllerTest extends TestCase
             'nama' => 'Bilal Updated',
             'angkatan' => '2025',
             'status' => 'Alumni',
-            'id_tahunAjaran' => $tahunAjaranBaru->id_tahunAjaran, 
+            'id_tahunAjaran' => $tahunAjaranBaru->id_tahunAjaran,
+            'id_halaqah' => $halaqah->id_halaqah,
         ];
 
         // Menggunakan $santri->nis sebagai parameter route dan $this->user untuk otentikasi

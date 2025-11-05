@@ -22,9 +22,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 Route::get('/santri', [SantriController::class, 'index'])->middleware('auth')->name('santri.index');
 Route::get('/santri/create', [SantriController::class, 'create'])->middleware('auth')->name('santri.createSantri');
 Route::post('/santri', [SantriController::class, 'store'])->middleware('auth')->name('santri.store');
-Route::get('/santri/{santri}/edit', [SantriController::class, 'edit'])->name('santri.editSantri');
-Route::put('/santri/{santri}', [SantriController::class, 'update'])->name('santri.update');
-Route::delete('/santri/{santri}', [SantriController::class, 'destroy'])->name('santri.destroy');
+Route::get('/santri/{id}/edit', [SantriController::class, 'edit'])->name('santri.editSantri');
+Route::put('/santri/{id}', [SantriController::class, 'update'])->name('santri.update');
+Route::delete('/santri/{id}', [SantriController::class, 'destroy'])->name('santri.destroy');
 
 // Tahun Ajaran
 Route::get('tahunajaran', [TahunAjaranController::class, 'index'])->name('tahunajaran.index');
