@@ -148,6 +148,64 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
 
+        /* Styling form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--secondary-text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            background: #fff;
+            color: var(--primary-text);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--green);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+            color: var(--secondary-text);
+        }
+
         @media (max-width: 840px) {
             .layout {
                 grid-template-columns: 1fr;
@@ -185,8 +243,8 @@
                 <span>PPTQ Bilal bin Rabah Sukoharjo</span>
             </div>
             <nav class="menu">
-                <a href="/dashboard" class="active">Dashboard</a>
-                <a href="/santri">Santri</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/santri" class="active">Santri</a>
                 <a href="#">Mata Pelajaran</a>
                 <a href="#">Tahun Ajaran</a>
                 <a href="#">Kelas</a>
@@ -200,30 +258,48 @@
         </aside>
         <main class="content">
             <div class="container">
-                <h2>Edit Data Santri</h2>
-                <form action="{{ route('santri.update', $santri->nis) }}" method="POST">
+                <h2>Tambah Data Santri</h2>
+                <form action="{{ route('santri.store') }}" method="POST">
                     @csrf
-                    @method('PUT')
-                    <div class="mb-3">
-                        <label>Nama</label>
-                        <input type="text" name="nama" class="form-control" value="{{ $santri->nama }}" required>
+                    <div class="form-group">
+                        <label for="nis">NIS</label>
+                        <input type="text" id="nis" name="nis" class="form-control" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label>Angkatan</label>
-                        <input type="text" name="angkatan" class="form-control" value="{{ $santri->angkatan }}">
+                    <div class="form-group">
+                        <label for="nama">Nama</label>
+                        <input type="text" id="nama" name="nama" class="form-control" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label>Status</label>
-                        <select name="status" class="form-control">
-                            <option value="aktif" {{ $santri->status == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                            <option value="nonaktif" {{ $santri->status == 'nonaktif' ? 'selected' : '' }}>Nonaktif
-                            </option>
+                    <div class="form-group">
+                        <label for="angkatan">Angkatan</label>
+                        <input type="text" id="angkatan" name="angkatan" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status" class="form-control" required>
+                            <option value="">-- Pilih Status --</option>
+                            <option value="MA">Madrasah Aliyah (MA)</option>
+                            <option value="MTS">Madrasah Tsanawiyah (MTS)</option>
+                            <option value="Alumni">Alumni</option>
+                            <option value="Keluar">Keluar</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-success">Update</button>
+                    <div class="form-group">
+                        <label for="id_tahunAjaran">Tahun Ajaran</label>
+                        <select id="id_tahunAjaran" name="id_tahunAjaran" class="form-control" required>
+                            <option value="">-- Pilih Tahun Ajaran --</option>
+                            @foreach($tahunajaran as $ta)
+                                <option value="{{ $ta->id_tahunAjaran }}">
+                                    {{ $ta->tahun }} - {{ $ta->semester }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Simpan</button>
                     <a href="{{ route('santri.index') }}" class="btn btn-secondary">Kembali</a>
                 </form>
             </div>

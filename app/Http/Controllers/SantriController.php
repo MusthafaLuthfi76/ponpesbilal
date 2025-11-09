@@ -23,12 +23,27 @@ class SantriController extends Controller
             'angkatan' => 'nullable|string|max:10',
             'status' => 'required|in:MA,MTS,Alumni,Keluar',
             'id_tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
+            'id_halaqah' => 'nullable',
         ]);
 
         Santri::create($validated);
         return redirect()->route('santri.index')->with('success', 'Data santri berhasil ditambahkan!');
     }
+    public function create()
+    {
+        $tahunajaran = TahunAjaran::all();
+        return view('santri.createSantri', compact('tahunajaran'));
+    }
 
+    /**
+     * Show the form for editing the specified santri.
+     */
+    public function edit(string $nis)
+    {
+        $santri = Santri::where('nis', $nis)->firstOrFail();
+        $tahunajaran = TahunAjaran::all();
+        return view('santri.editSantri', compact('santri', 'tahunajaran'));
+    }
     public function update(Request $request, $nis)
     {
         $santri = Santri::findOrFail($nis);
@@ -39,6 +54,7 @@ class SantriController extends Controller
             'angkatan' => 'nullable|string|max:10',
             'status' => 'required|in:MA,MTS,Alumni,Keluar',
             'id_tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
+            'id_halaqah' => 'nullable',
         ]);
 
         $santri->update($validated);
