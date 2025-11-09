@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('jabatan', 50);
             
             // FK untuk Otentikasi (ke tabel User)
-            $table->unsignedBigInteger('id_user'); 
+            $table->unsignedBigInteger('id_user')->unique(); // PERUBAHAN
             
             $table->timestamps();
 

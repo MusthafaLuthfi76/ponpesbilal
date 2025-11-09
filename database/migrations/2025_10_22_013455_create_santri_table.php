@@ -14,15 +14,14 @@ return new class extends Migration {
             $table->string('angkatan', 10)->nullable();            
             $table->enum('status', ['MA', 'MTS', 'Alumni', 'Keluar'])->default('MTS'); 
             $table->unsignedBigInteger('id_tahunAjaran')->nullable();
-            $table->unsignedBigInteger('id_halaqah');
+            $table->unsignedBigInteger('id_halaqah')->nullable();
                         
             $table->timestamps();
 
             // Definisi Foreign Keys 
             $table->foreign('id_tahunAjaran')->references('id_tahunAjaran')->on('tahunajaran')->onDelete('set null');
 
-            $table->foreign('id_halaqah')->references('id_halaqah')->on('kelompok_halaqah')->onDelete('restrict');
-        
+            $table->foreign('id_halaqah')->references('id_halaqah')->on('kelompok_halaqah')->onDelete('restrict');        
         });
 
     }
