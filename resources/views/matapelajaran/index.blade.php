@@ -19,7 +19,7 @@
             <option value="">Tahun Ajaran</option>
             @foreach($tahunAjaran as $t)
                 <option value="{{ $t->id_tahunAjaran }}" {{ (string)$tahunId === (string)$t->id_tahunAjaran ? 'selected' : '' }}>
-                    {{ $t->nama_tahunAjaran ?? $t->id_tahunAjaran }}
+                    {{ $t->tahun }} - Semester {{ ucfirst($t->semester) }}
                 </option>
             @endforeach
         </select>
@@ -46,6 +46,7 @@
                 <th>ID Mata Pelajaran</th>
                 <th>Nama Mata Pelajaran</th>
                 <th>Tahun Ajaran</th>
+                <th>Pendidik</th>
                 <th>KKM</th>
                 <th>Bobot UTS</th>
                 <th>Bobot UAS</th>
@@ -61,22 +62,26 @@
                 <td>
                     {{ $mp->tahunAjaran?->tahun ?? '-' }} - Semester {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}
                 </td>
+                <td>{{ $mp->pendidik?->nama_pendidik ?? '-' }}</td>
                 <td>{{ $mp->kkm }}</td>
                 <td>{{ $mp->bobot_UTS }}%</td>
                 <td>{{ $mp->bobot_UAS }}%</td>
                 <td>{{ $mp->bobot_praktik }}%</td>
                 <td class="text-center">
                     <div class="actions">
+                        <!-- View Button -->
                         <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewModal"
                             data-id="{{ $mp->id_matapelajaran }}"
                             data-nama="{{ $mp->nama_matapelajaran }}"
-                            data-tahun="{{ $mp->tahunAjaran?->nama_tahunAjaran ?? '-' }}"
+                            data-tahun="{{ $mp->tahunAjaran?->tahun ?? '-' }} - Semester {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}"
                             data-kkm="{{ $mp->kkm }}"
                             data-uts="{{ $mp->bobot_UTS }}"
                             data-uas="{{ $mp->bobot_UAS }}"
                             data-praktik="{{ $mp->bobot_praktik }}"
+                            data-pendidik="{{ $mp->pendidik?->nama_pendidik ?? '-' }}"
                         ><i class="bi bi-eye"></i></button>
 
+                        <!-- Edit Button -->
                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal"
                             data-id="{{ $mp->id_matapelajaran }}"
                             data-nama="{{ $mp->nama_matapelajaran }}"
@@ -85,6 +90,7 @@
                             data-uts="{{ $mp->bobot_UTS }}"
                             data-uas="{{ $mp->bobot_UAS }}"
                             data-praktik="{{ $mp->bobot_praktik }}"
+                            data-pendidik="{{ $mp->id_pendidik }}"
                         ><i class="bi bi-pencil-square"></i></button>
 
                         <form action="{{ route('matapelajaran.destroy', $mp->id_matapelajaran) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus {{ $mp->nama_matapelajaran }}?')">
@@ -97,7 +103,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="8" class="text-center">Belum ada data</td>
+                <td colspan="9" class="text-center">Belum ada data</td>
             </tr>
         @endforelse
         </tbody>
@@ -140,8 +146,17 @@
                         {{ $t->tahun }} - Semester {{ ucfirst($t->semester) }}
                     </option>
                 @endforeach
-            </select>
+              </select>
             </div>
+            <div class="form-group mt-3">
+            <label>Pendidik</label>
+            <select name="id_pendidik" class="form-select" required>
+              <option value="">-- Pilih Pendidik --</option>
+              @foreach($pendidik as $p)
+                <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option>
+              @endforeach
+            </select>
+          </div>
             <div class="col-md-2">
               <label class="form-label">KKM</label>
               <input type="number" name="kkm" class="form-control" min="0" max="100" required>
@@ -194,7 +209,15 @@
                         {{ $t->tahun }} - Semester {{ ucfirst($t->semester) }}
                     </option>
                 @endforeach
-            </select>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Pendidik / Guru</label>
+              <select name="id_pendidik" id="edit_pendidik" class="form-select" required>
+                @foreach($pendidik as $p)
+                  <option value="{{ $p->id_pendidik }}">{{ $p->nama_pendidik }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="col-md-2">
               <label class="form-label">KKM</label>
@@ -236,6 +259,7 @@
           <dt class="col-sm-4">ID</dt><dd class="col-sm-8" id="v_id"></dd>
           <dt class="col-sm-4">Nama</dt><dd class="col-sm-8" id="v_nama"></dd>
           <dt class="col-sm-4">Tahun Ajaran</dt><dd class="col-sm-8" id="v_tahun"></dd>
+          <dt class="col-sm-4">Pendidik</dt><dd class="col-sm-8" id="v_pendidik"></dd>
           <dt class="col-sm-4">KKM</dt><dd class="col-sm-8" id="v_kkm"></dd>
           <dt class="col-sm-4">Bobot UTS</dt><dd class="col-sm-8" id="v_uts"></dd>
           <dt class="col-sm-4">Bobot UAS</dt><dd class="col-sm-8" id="v_uas"></dd>
@@ -261,6 +285,7 @@ editModal.addEventListener('show.bs.modal', event => {
   document.getElementById('edit_uts').value = btn.getAttribute('data-uts');
   document.getElementById('edit_uas').value = btn.getAttribute('data-uas');
   document.getElementById('edit_praktik').value = btn.getAttribute('data-praktik');
+  document.getElementById('edit_pendidik').value = btn.getAttribute('data-pendidik');
   document.getElementById('editForm').action = `/matapelajaran/${id}`;
 });
 
@@ -270,6 +295,7 @@ viewModal.addEventListener('show.bs.modal', event => {
   document.getElementById('v_id').textContent = b.getAttribute('data-id');
   document.getElementById('v_nama').textContent = b.getAttribute('data-nama');
   document.getElementById('v_tahun').textContent = b.getAttribute('data-tahun');
+  document.getElementById('v_pendidik').textContent = b.getAttribute('data-pendidik');
   document.getElementById('v_kkm').textContent = b.getAttribute('data-kkm');
   document.getElementById('v_uts').textContent = b.getAttribute('data-uts') + '%';
   document.getElementById('v_uas').textContent = b.getAttribute('data-uas') + '%';

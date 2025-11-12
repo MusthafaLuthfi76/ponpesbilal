@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MataPelajaranController;
+use App\Http\Controllers\NilaiAkademikController;
 use App\Http\Controllers\PendidikController;
 use App\Http\Controllers\SantriController;
 use Illuminate\Support\Facades\Route;
@@ -45,3 +46,20 @@ Route::get('/pendidik/{id}', [PendidikController::class, 'show'])->name('pendidi
 Route::post('/pendidik', [PendidikController::class, 'store'])->name('pendidik.store');
 Route::put('/pendidik/{id}', [PendidikController::class, 'update'])->name('pendidik.update');
 Route::delete('/pendidik/{id}', [PendidikController::class, 'destroy'])->name('pendidik.destroy');
+
+// Nilai Akademik CRUD
+Route::get('/nilaiakademik', [NilaiAkademikController::class, 'index'])
+    ->middleware('auth')
+    ->name('nilaiakademik.index');
+
+Route::post('/nilaiakademik', [NilaiAkademikController::class, 'store'])
+    ->middleware('auth')
+    ->name('nilaiakademik.store');
+
+Route::put('/nilaiakademik/{id}', [NilaiAkademikController::class, 'update'])
+    ->middleware('auth')
+    ->name('nilaiakademik.update');
+
+Route::delete('/nilaiakademik/{id}', [NilaiAkademikController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('nilaiakademik.destroy');

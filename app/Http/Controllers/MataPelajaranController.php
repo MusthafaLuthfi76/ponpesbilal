@@ -10,26 +10,33 @@ use Illuminate\Http\Request;
 class MataPelajaranController extends Controller
 {
     public function index(Request $request)
-    {
-        $q = $request->input('q');
-        $tahunId = $request->input('tahun');
+{
+    $q = $request->input('q');
+    $tahunId = $request->input('tahun');
 
-        $query = MataPelajaran::with('tahunAjaran');
-        if ($q) {
-            $query->where(function($w) use ($q){
-                $w->where('id_matapelajaran','like',"%$q%")
-                ->orWhere('nama_matapelajaran','like',"%$q%");
-            });
-        }
-        if ($tahunId) {
-            $query->where('id_tahunAjaran', $tahunId);
-        }
-
-        $mataPelajaran = $query->orderBy('id_matapelajaran')->paginate(10)->appends($request->query());
-        $tahunAjaran = TahunAjaran::orderBy('tahun')->get();
-
-        return view('matapelajaran.index', compact('mataPelajaran', 'tahunAjaran', 'tahunId', 'q'));
+    $query = MataPelajaran::with('tahunAjaran');
+    if ($q) {
+        $query->where(function($w) use ($q){
+            $w->where('id_matapelajaran','like',"%$q%")
+              ->orWhere('nama_matapelajaran','like',"%$q%");
+        });
     }
+    if ($tahunId) {
+        $query->where('id_tahunAjaran', $tahunId);
+    }
+
+    $mataPelajaran = $query->orderBy('id_matapelajaran')
+                           ->paginate(10)
+                           ->appends($request->query());
+
+    $tahunAjaran = TahunAjaran::orderBy('tahun')->get();
+
+    // Tambahkan ini:
+    $pendidik = Pendidik::all();
+
+    return view('matapelajaran.index', compact('mataPelajaran', 'tahunAjaran', 'tahunId', 'q', 'pendidik'));
+}
+
 
     public function store(Request $request)
     {
