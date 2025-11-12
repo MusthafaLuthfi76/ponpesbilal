@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('nis', 20); // FK ke Santri (PK Santri adalah NIS)
             $table->unsignedBigInteger('id_matapelajaran'); // FK ke MataPelajaran
             // FK ke Tahun Ajaran (Untuk filter 2022/2025 Ganjil di UI)
-            $table->unsignedBigInteger('id_tahunAjaran'); 
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable();
 
             // ATRIBUT NILAI KESANTRIAN 
             $table->string('nilai_akhlak', 10)->nullable();

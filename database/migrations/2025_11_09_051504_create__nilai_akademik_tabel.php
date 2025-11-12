@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('nis', 20); // FK ke Santri (PK Santri adalah NIS)
             $table->unsignedBigInteger('id_matapelajaran'); 
             // Tambahkan FK id_tahunAjaran agar nilai terikat periode (Wajib, meskipun di RAT sebelumnya tidak ada)
-            $table->unsignedBigInteger('id_tahunAjaran');
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable();
             
             // KOLOM NILAI UTAMA 
             $table->decimal('nilai_UTS', 5, 2)->nullable();

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('nis', 20); 
             $table->unsignedBigInteger('id_matapelajaran'); 
             $table->unsignedBigInteger('id_pendidik'); // Penguji
-            $table->unsignedBigInteger('id_tahunAjaran'); // Filter Semester
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable(); // Filter Semester
 
             // Metadata Ujian
             $table->enum('jenis_ujian', ['UTS', 'UAS']); 
