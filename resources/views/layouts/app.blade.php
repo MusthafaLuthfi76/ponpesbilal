@@ -212,7 +212,10 @@
                 <a href="{{ route('santri.index') }}" class="item {{ request()->routeIs('santri.*') ? 'active' : '' }}">Data Santri</a>
                 <a href="{{ route('matapelajaran.index') }}" class="item {{ request()->routeIs('matapelajaran.*') ? 'active' : '' }}">Mata Pelajaran</a>
                 <a href="{{ route('tahunajaran.index') }}" class="item {{ request()->routeIs('tahunajaran.*') ? 'active' : '' }}">Tahun Ajar</a>
-                <a href="#" class="item">Kelompok Halaqah</a>
+                <a href="{{ route('halaqah.index') }}" 
+                class="item {{ request()->routeIs('halaqah.*') ? 'active' : '' }}">
+                Kelompok Halaqah
+                </a>
                 <a href="{{ route('pendidik.index') }}" class="item {{ request()->routeIs('pendidik.*') ? 'active' : '' }}">Data Pendidik</a>
                 <a href="{{ route('nilaiakademik.index') }}" class="item {{ request()->routeIs('nilaiakademik.*') ? 'active' : '' }}">Nilai Akademik</a>
                 <a href="#" class="item">Nilai Tahfidz</a>

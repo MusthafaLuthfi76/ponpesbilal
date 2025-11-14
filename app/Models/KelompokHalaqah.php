@@ -8,10 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class KelompokHalaqah extends Model
 {
     use HasFactory;
-<<<<<<< HEAD
-    protected $table = 'kelompok_halaqah';
-    protected $primaryKey = 'id_halaqah';
-=======
 
     protected $table = 'kelompok_halaqah';
     protected $primaryKey = 'id_halaqah';
@@ -26,5 +22,4 @@ class KelompokHalaqah extends Model
     {
         return $this->belongsTo(Pendidik::class, 'id_pendidik', 'id_pendidik');
     }
->>>>>>> master
 }
