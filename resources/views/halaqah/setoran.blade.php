@@ -362,8 +362,8 @@
                             <th>NO</th>
                             <th>TANGGAL</th>
                             <th>JUZ</th>
-                            <th>SURAH</th>
                             <th>AYAT</th>
+                            <th>HALAMAN</th>
                             <th>STATUS</th>
                             <th>CATATAN</th>
                             <th>ACTION</th>
@@ -375,8 +375,8 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $s->tanggal_setoran->format('d/m/Y') }}</td>
                                 <td>{{ $s->juz ?? '-' }}</td>
-                                <td>{{ $s->surah }}</td>
                                 <td>{{ $s->ayat }}</td>
+                                <td>{{ $s->halaman }}</td>
                                 <td>
                                     <span
                                         class="status-badge 
@@ -393,8 +393,8 @@
                                         data-bs-target="#editSetoranModal" data-id="{{ $s->id_setoran }}"
                                         data-nis="{{ $santri->nis }}"
                                         data-tanggal="{{ $s->tanggal_setoran->format('Y-m-d') }}"
-                                        data-juz="{{ $s->juz }}" data-surah="{{ $s->surah }}"
-                                        data-ayat="{{ $s->ayat }}" data-status="{{ $s->status }}"
+                                        data-juz="{{ $s->juz }}" data-ayat="{{ $s->ayat }}"
+                                        data-halaman="{{ $s->halaman }}" data-status="{{ $s->status }}"
                                         data-catatan="{{ $s->catatan }}">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                         viewBox="0 0 24 24" fill="white">
@@ -458,15 +458,15 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="surah" class="form-label">Surah</label>
-                                <input type="text" class="form-control" id="surah" name="surah"
-                                    placeholder="Contoh: Al-Fatihah" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
+                           <div class="col-md-6 mb-3">
                                 <label for="ayat" class="form-label">Ayat</label>
                                 <input type="text" class="form-control" id="ayat" name="ayat"
-                                    placeholder="Contoh: 1-7" required>
+                                    placeholder="Contoh: 1–7" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="halaman" class="form-label">Halaman</label>
+                                <input type="text" class="form-control" id="halaman" name="halaman"
+                                    placeholder="Contoh: 12" required>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -517,13 +517,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_surah" class="form-label">Surah</label>
-                                <input type="text" class="form-control" id="edit_surah" name="surah" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
+                           <div class="col-md-6 mb-3">
                                 <label for="edit_ayat" class="form-label">Ayat</label>
                                 <input type="text" class="form-control" id="edit_ayat" name="ayat" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit_halaman" class="form-label">Halaman</label>
+                                <input type="text" class="form-control" id="edit_halaman" name="halaman" required>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -588,8 +588,8 @@
 
             document.getElementById('edit_tanggal_setoran').value = button.dataset.tanggal;
             document.getElementById('edit_juz').value = button.dataset.juz ?? '';
-            document.getElementById('edit_surah').value = button.dataset.surah;
             document.getElementById('edit_ayat').value = button.dataset.ayat;
+            document.getElementById('edit_halaman').value = button.dataset.halaman;
             document.getElementById('edit_status').value = button.dataset.status;
             document.getElementById('edit_catatan').value = button.dataset.catatan ?? '';
         });
