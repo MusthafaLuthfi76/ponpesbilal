@@ -130,6 +130,68 @@ tr:hover {
         color:var(--green-dark);
     }
 }
+/* 🌟 PREMIUM MODAL STYLE */
+.modal.fade .modal-dialog {
+    transform: translateY(-20px);
+    transition: all .3s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0);
+}
+
+.modal-content {
+    border-radius: 14px !important;
+    overflow: hidden;
+    border: none !important;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: none;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 65vh;
+    overflow-y: auto;
+    background: #f9fafb;
+}
+
+.modal-footer {
+    border-top: none;
+    padding: 16px 20px;
+    background: #f9fafb;
+}
+
+.modal-lg {
+    max-width: 550px !important;
+}
+
+/* Input Style */
+.modal .form-control, .modal .form-select {
+    border-radius: 8px;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    transition: .2s;
+}
+
+.modal .form-control:focus,
+.modal .form-select:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 2px rgba(22,163,74,0.2);
+}
+
+/* Notifikasi error di modal */
+.alert-danger {
+    background: #fee2e2;
+    border-left: 4px solid #dc2626;
+    color: #7f1d1d;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+}
 
 </style>
 
@@ -186,71 +248,108 @@ tr:hover {
             </tbody>
         </table>
     </div>
+
+    <div class="mt-3 d-flex justify-content-between align-items-center">
+    <div class="small text-muted">
+        Menampilkan {{ $tahunajaran->firstItem() }}–{{ $tahunajaran->lastItem() }}
+        dari {{ $tahunajaran->total() }} data
+    </div>
+
+    {{ $tahunajaran->onEachSide(1)->links('pagination::bootstrap-5') }}
+</div>
+
 </section>
 
 <!-- Modal Tambah -->
 <div class="modal fade" id="modalTambahTahunAjaran" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content border-0 shadow-sm">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
             <form action="{{ route('tahunajaran.store') }}" method="POST" onsubmit="return validateTahunAjaran(this)">
                 @csrf
+
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Tambah Tahun Ajaran</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <label class="form-label">Tahun Ajaran</label>
-                    <input type="text" name="tahun" class="form-control" placeholder="2024/2025" required
-                           pattern="^[0-9]{4}/[0-9]{4}$" title="Gunakan format 2024/2025">
+                    <input type="text" name="tahun" class="form-control"
+                        placeholder="2024/2025" required
+                        pattern="^[0-9]{4}/[0-9]{4}$"
+                        title="Gunakan format 2024/2025">
 
                     <label class="form-label mt-3">Semester</label>
                     <select name="semester" class="form-select" required>
                         <option value="GANJIL">GANJIL</option>
                         <option value="GENAP">GENAP</option>
                     </select>
+
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
 
+
 <!-- Modal Edit -->
 @foreach($tahunajaran as $t)
 <div class="modal fade" id="editModal{{ $t->id_tahunAjaran }}" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content border-0 shadow-sm">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
             <form action="{{ route('tahunajaran.update', $t->id_tahunAjaran) }}" method="POST"
                   onsubmit="return validateTahunAjaran(this)">
                 @csrf
                 @method('PUT')
+
                 <div class="modal-header bg-warning text-white">
                     <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Edit Tahun Ajaran</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
+
                     <label class="form-label">Tahun Ajaran</label>
                     <input type="text" name="tahun" value="{{ $t->tahun }}" class="form-control"
-                           required pattern="^[0-9]{4}/[0-9]{4}$" title="Gunakan format 2024/2025">
+                           required pattern="^[0-9]{4}/[0-9]{4}$"
+                           title="Gunakan format 2024/2025">
 
                     <label class="form-label mt-3">Semester</label>
                     <select name="semester" class="form-select" required>
                         <option value="GANJIL" {{ $t->semester=='GANJIL'?'selected':'' }}>GANJIL</option>
                         <option value="GENAP" {{ $t->semester=='GENAP'?'selected':'' }}>GENAP</option>
                     </select>
+
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-warning text-white">Perbarui</button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
 @endforeach
+
 
 <script>
 function validateTahunAjaran(form) {
@@ -273,4 +372,14 @@ function validateTahunAjaran(form) {
     return true;
 }
 </script>
+
+@if ($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = new bootstrap.Modal(document.getElementById('modalTambahTahunAjaran'));
+        modal.show();
+    });
+</script>
+@endif
+
 @endsection

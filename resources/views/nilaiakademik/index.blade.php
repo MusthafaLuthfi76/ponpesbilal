@@ -162,7 +162,7 @@
                         <select name="id_matapelajaran" class="form-select" required>
                             <option value="" selected disabled>Pilih Mata Pelajaran</option>
                             @foreach($matapelajaran as $m)
-                                <option value="{{ $m->id_matapelajaran }}">{{ $m->nama }}</option>
+                                <option value="{{ $m->id_matapelajaran }}">{{ $m->nama_matapelajaran }}</option>
                             @endforeach
                         </select>
                     </div>
