@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TahunAjaranController;
+use App\Http\Controllers\NilaiTahfidzController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -118,5 +119,11 @@ Route::middleware('auth')->group(function () {
 
     // Delete setoran
     Route::delete('/setoran/{nis}/{id_setoran}', [SetoranController::class, 'destroy'])->name('setoran.destroy');
+
+    Route::get('/nilaiTahfidz', [NilaiTahfidzController::class, 'index'])->name('nilaiTahfidz.index');
+    Route::get('/nilaiTahfidz/{id}/detail', [NilaiTahfidzController::class, 'show'])->name('nilaiTahfidz.show');
+    Route::post('/nilaiTahfidz', [NilaiTahfidzController::class, 'store'])->name('nilaiTahfidz.store');
+    Route::put('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
+    Route::delete('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
 
 });

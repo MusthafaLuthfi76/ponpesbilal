@@ -6,70 +6,93 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
-{
-    // MATA PELAJARAN
-    Schema::table('matapelajaran', function (Blueprint $table) {
-        // Drop FK lama
-        $table->dropForeign(['id_tahunAjaran']);
+    {
+        // ===========================
+        // MATA PELAJARAN
+        // ===========================
+        Schema::table('matapelajaran', function (Blueprint $table) {
 
-        // Tambah FK baru
-        $table->foreign('id_tahunAjaran')
-              ->references('id_tahunAjaran')
-              ->on('tahunajaran')
-              ->nullOnDelete(); // SET NULL
-    });
+            // HAPUS foreign key lama
+            $table->dropForeign(['id_tahunAjaran']);
 
-    // SANTRI
-    Schema::table('santri', function (Blueprint $table) {
-        $table->dropForeign(['id_tahunAjaran']);
+            // Jadikan nullable agar bisa SET NULL
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable()->change();
 
-        $table->foreign('id_tahunAjaran')
-              ->references('id_tahunAjaran')
-              ->on('tahunajaran')
-              ->nullOnDelete();
-    });
+            // Tambahkan FK SET NULL
+            $table->foreign('id_tahunAjaran')
+                  ->references('id_tahunAjaran')
+                  ->on('tahunajaran')
+                  ->nullOnDelete();
+        });
 
-    // NILAI AKADEMIK
-    Schema::table('nilaiakademik', function (Blueprint $table) {
-        $table->dropForeign(['id_tahunAjaran']);
+        // ===========================
+        // SANTRI
+        // ===========================
+        Schema::table('santri', function (Blueprint $table) {
 
-        $table->foreign('id_tahunAjaran')
-              ->references('id_tahunAjaran')
-              ->on('tahunajaran')
-              ->nullOnDelete();
-    });
-}
+            $table->dropForeign(['id_tahunAjaran']);
 
-public function down()
-{
-    // Kembalikan ke RESTRICT kalau rollback
-    Schema::table('matapelajaran', function (Blueprint $table) {
-        $table->dropForeign(['id_tahunAjaran']);
-        $table->foreign('id_tahunAjaran')
-              ->references('id_tahunAjaran')
-              ->on('tahunajaran')
-              ->restrictOnDelete();
-    });
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable()->change();
 
-    Schema::table('santri', function (Blueprint $table) {
-        $table->dropForeign(['id_tahunAjaran']);
-        $table->foreign('id_tahunAjaran')
-              ->references('id_tahunAjaran')
-              ->on('tahunajaran')
-              ->restrictOnDelete();
-    });
+            $table->foreign('id_tahunAjaran')
+                  ->references('id_tahunAjaran')
+                  ->on('tahunajaran')
+                  ->nullOnDelete();
+        });
 
-    Schema::table('nilaiakademik', function (Blueprint $table) {
-        $table->dropForeign(['id_tahunAjaran']);
-        $table->foreign('id_tahunAjaran')
-              ->references('id_tahunAjaran')
-              ->on('tahunajaran')
-              ->restrictOnDelete();
-    });
-}
+        // ===========================
+        // NILAI AKADEMIK
+        // ===========================
+        Schema::table('nilaiakademik', function (Blueprint $table) {
 
+            $table->dropForeign(['id_tahunAjaran']);
+
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable()->change();
+
+            $table->foreign('id_tahunAjaran')
+                  ->references('id_tahunAjaran')
+                  ->on('tahunajaran')
+                  ->nullOnDelete();
+        });
+    }
+
+    public function down()
+    {
+        // ===========================
+        // MATA PELAJARAN
+        // ===========================
+        Schema::table('matapelajaran', function (Blueprint $table) {
+            $table->dropForeign(['id_tahunAjaran']);
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable(false)->change();
+            $table->foreign('id_tahunAjaran')
+                  ->references('id_tahunAjaran')
+                  ->on('tahunajaran')
+                  ->restrictOnDelete();
+        });
+
+        // ===========================
+        // SANTRI
+        // ===========================
+        Schema::table('santri', function (Blueprint $table) {
+            $table->dropForeign(['id_tahunAjaran']);
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable(false)->change();
+            $table->foreign('id_tahunAjaran')
+                  ->references('id_tahunAjaran')
+                  ->on('tahunajaran')
+                  ->restrictOnDelete();
+        });
+
+        // ===========================
+        // NILAI AKADEMIK
+        // ===========================
+        Schema::table('nilaiakademik', function (Blueprint $table) {
+            $table->dropForeign(['id_tahunAjaran']);
+            $table->unsignedBigInteger('id_tahunAjaran')->nullable(false)->change();
+            $table->foreign('id_tahunAjaran')
+                  ->references('id_tahunAjaran')
+                  ->on('tahunajaran')
+                  ->restrictOnDelete();
+        });
+    }
 };

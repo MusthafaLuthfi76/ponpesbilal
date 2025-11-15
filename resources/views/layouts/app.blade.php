@@ -218,7 +218,10 @@
                 </a>
                 <a href="{{ route('pendidik.index') }}" class="item {{ request()->routeIs('pendidik.*') ? 'active' : '' }}">Data Pendidik</a>
                 <a href="{{ route('nilaiakademik.index') }}" class="item {{ request()->routeIs('nilaiakademik.*') ? 'active' : '' }}">Nilai Akademik</a>
-                <a href="#" class="item">Nilai Tahfidz</a>
+                <a href="{{ route('nilaiTahfidz.index') }}"
+                class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}">
+                Nilai Tahfidz
+                </a>
                 <a href="#" class="item">Nilai Kesantrian</a>
                 <a href="#" class="item">Laporan & Rapor</a>
             </div>
