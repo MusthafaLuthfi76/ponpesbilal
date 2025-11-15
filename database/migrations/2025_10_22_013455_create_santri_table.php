@@ -21,7 +21,9 @@ return new class extends Migration {
             // Definisi Foreign Keys 
             $table->foreign('id_tahunAjaran')->references('id_tahunAjaran')->on('tahunajaran')->onDelete('set null');
 
-            $table->foreign('id_halaqah')->references('id_halaqah')->on('kelompok_halaqah')->onDelete('restrict');        
+            $table->foreign('id_halaqah') ->references('id_halaqah')->on('kelompok_halaqah')->onDelete('set null');
+                                                   
+        
         });
 
     }
