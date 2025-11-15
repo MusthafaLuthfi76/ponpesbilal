@@ -4,259 +4,270 @@
 
 @section('content')
 <style>
-    :root {
-        --green:#1f4a34;
-        --green-dark:#173e2b;
-        --light-green:#cfe9d7;
-        --panel:#f8fdf9;
-        --btn-green:#234f3a;
-        --btn-green-hover:#1a3a2b;
-        --btn-yellow:#d97706;
-        --btn-red:#b91c1c;
-    }
+:root {
+    --green: #1f4a34;
+    --green-dark: #173e2b;
+    --light-green: #e8f5e9;
+    --panel: #ffffff;
+    --btn-green: #16a34a;
+    --btn-green-hover: #15803d;
+    --btn-red: #dc2626;
+    --btn-yellow: #f59e0b;
+}
 
-    main.content {
-        background: var(--panel);
-        border-radius: 20px 0 0 0;
-        padding: 30px;
-    }
+/* Layout */
+section.pendidik-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
-    .content-header {
-        display: flex;
-        align-items: center;
+/* Header */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem;
+}
+.header-section h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--green);
+}
+
+/* Tombol tambah */
+.btn-add {
+    background: var(--btn-green);
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .2s;
+}
+.btn-add:hover { background: var(--btn-green-hover); }
+
+/* Table */
+.table-responsive {
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #fff;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+th {
+    background: #f1f5f3;
+    color: var(--green-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+tr:hover { background:#f9fdfb; }
+
+/* Buttons */
+.action-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.btn-sm {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    color: white;
+    font-size: 13px;
+}
+.btn-warning { background: var(--btn-yellow); }
+.btn-warning:hover { background: #b45309; }
+.btn-danger { background: var(--btn-red); }
+.btn-danger:hover { background: #7f1d1d; }
+
+/* Notifikasi */
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border-left: 4px solid var(--btn-green);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* MOBILE CARD VIEW */
+@media(max-width: 768px) {
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display:none; }
+    tbody tr {
+        background:#fff;
+        margin-bottom:1rem;
+        padding:.75rem;
+        border-radius:10px;
+        box-shadow:0 1px 6px rgba(0,0,0,0.06);
+    }
+    td {
+        display:flex;
         justify-content: space-between;
-        margin-bottom: 20px;
+        padding: .4rem 0;
+        border:none;
     }
-
-    .content-header h2 {
-        color: var(--green);
-        font-weight: 700;
-        font-size: 22px;
+    td::before {
+        content: attr(data-label);
+        font-weight:700;
+        color:var(--green-dark);
     }
-
-    .search-bar {
-        display: flex;
-        gap: 10px;
-    }
-
-    input[type="search"] {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 8px 12px;
-        width: 200px;
-    }
-
-    .btn-add {
-        background: var(--btn-green);
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 14px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    .btn-add:hover { background: var(--btn-green-hover); }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #fff;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    th, td {
-        padding: 12px 14px;
-        text-align: left;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    th {
-        background: #f1f5f3;
-        color: var(--green);
-        font-weight: 600;
-    }
-
-    tr:hover { background: #f9fdfb; }
-
-    .action-btns {
-        display: flex;
-        gap: 6px;
-    }
-
-    .btn {
-        border: none;
-        border-radius: 6px;
-        padding: 6px 10px;
-        color: white;
-        cursor: pointer;
-        transition: 0.3s;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .btn-warning { background: var(--btn-yellow); }
-    .btn-warning:hover { background: #b45309; }
-    .btn-danger { background: var(--btn-red); }
-    .btn-danger:hover { background: #7f1d1d; }
-
-    .alert {
-        background: #d1fae5;
-        color: #065f46;
-        padding: 10px 14px;
-        border-radius: 6px;
-        margin-bottom: 10px;
-    }
-
+}
 </style>
 
-<main class="content">
-    <div class="content-header">
-        <h2>Data Pendidik</h2>
+<section class="pendidik-page">
 
-        <div class="search-bar">
-            <input type="search" id="searchInput" placeholder="Search...">
-            <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahPendidik">+ Tambah</button>
-        </div>
-    </div>
+    <!-- Header -->
+    <header class="header-section">
+        <h2><i class="bi bi-people-fill"></i> Data Pendidik</h2>
+        <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahPendidik">
+            <i class="bi bi-plus-circle"></i> Tambah Pendidik
+        </button>
+    </header>
 
+    <!-- Notifikasi -->
     @if(session('success'))
-        <div class="alert">{{ session('success') }}</div>
+        <div class="alert-success">{{ session('success') }}</div>
     @endif
 
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>ID_PENDIDIK</th>
-                <th>Nama Lengkap</th>
-                <th>Jabatan</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Table -->
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>ID</th>
+                    <th>Nama Lengkap</th>
+                    <th>Jabatan</th>
+                    <th class="text-center">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
             @forelse($pendidik as $index => $p)
-            <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $p->id_pendidik }}</td>
-                <td>{{ $p->nama }}</td>
-                <td>{{ $p->jabatan }}</td>
-                <td>
-                    <div class="action-btns">
-                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $p->id_pendidik }}">✏️</button>
-                        <form action="{{ route('pendidik.destroy', $p->id_pendidik) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger">🗑️</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <td data-label="No">{{ $index + 1 }}</td>
+                    <td data-label="ID">{{ $p->id_pendidik }}</td>
+                    <td data-label="Nama">{{ $p->nama }}</td>
+                    <td data-label="Jabatan">{{ $p->jabatan }}</td>
+                    <td data-label="Aksi" class="text-center">
+                        <div class="action-btns">
+                            <button class="btn btn-warning btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editModal{{ $p->id_pendidik }}">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
 
-            <!-- Modal Edit -->
-            <div class="modal fade" id="editModal{{ $p->id_pendidik }}" tabindex="-1" aria-labelledby="editModalLabel{{ $p->id_pendidik }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form action="{{ route('pendidik.update', $p->id_pendidik) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label">User</label>
-                                    <select name="id_user" class="form-control" required>
+                            <form action="{{ route('pendidik.destroy', $p->id_pendidik) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Yakin ingin menghapus?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Modal Edit -->
+                <div class="modal fade" id="editModal{{ $p->id_pendidik }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content border-0 shadow-sm">
+                            <form action="{{ route('pendidik.update', $p->id_pendidik) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-header bg-warning text-white">
+                                    <h5 class="modal-title">
+                                        <i class="bi bi-pencil-square"></i> Edit Pendidik
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <label class="form-label">Nama Lengkap</label>
+                                    <input type="text" name="nama" class="form-control" value="{{ $p->nama }}" required>
+
+                                    <label class="form-label mt-3">Jabatan</label>
+                                    <input type="text" name="jabatan" class="form-control" value="{{ $p->jabatan }}" required>
+
+                                    <label class="form-label mt-3">User</label>
+                                    <select name="id_user" class="form-select" required>
                                         <option value="">-- Pilih User --</option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id_user }}" 
+                                            <option value="{{ $user->id_user }}"
                                                 {{ $p->id_user == $user->id_user ? 'selected' : '' }}>
                                                 {{ $user->id_user }} - {{ $user->nama }}
                                             </option>
-
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Nama Lengkap</label>
-                                    <input type="text" name="nama" class="form-control" value="{{ $p->nama }}" required>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button class="btn btn-warning text-white">Perbarui</button>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Jabatan</label>
-                                    <input type="text" name="jabatan" class="form-control" value="{{ $p->jabatan }}" required>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
-                                <button type="submit" class="btn btn-success">Simpan</button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+
             @empty
-            <tr><td colspan="5" style="text-align:center;">Belum ada data pendidik</td></tr>
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-3">
+                        Belum ada data pendidik
+                    </td>
+                </tr>
             @endforelse
-        </tbody>
-    </table>
-</main>
+            </tbody>
+        </table>
+    </div>
+</section>
 
 <!-- Modal Tambah -->
-<div class="modal fade" id="modalTambahPendidik" tabindex="-1" aria-labelledby="modalTambahPendidikLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="{{ route('pendidik.store') }}" method="POST">
-        @csrf
-        <div class="modal-header">
-          <h5 class="modal-title">Tambah Data Pendidik</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="modalTambahPendidik" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow-sm">
+            <form action="{{ route('pendidik.store') }}" method="POST">
+                @csrf
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Tambah Pendidik</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="nama" class="form-control" required>
+
+                    <label class="form-label mt-3">Jabatan</label>
+                    <input type="text" name="jabatan" class="form-control" required>
+
+                    <label class="form-label mt-3">User</label>
+                    <select name="id_user" class="form-select" required>
+                        <option value="">-- Pilih User --</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id_user }}">
+                                {{ $user->id_user }} - {{ $user->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button class="btn btn-success">Simpan</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-body">
-            <div class="mb-3">
-                <label class="form-label">Nama Lengkap</label>
-                <input type="text" name="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Jabatan</label>
-                <input type="text" name="jabatan" class="form-control" placeholder="Masukkan jabatan" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">User</label>
-                <select name="id_user" class="form-control" required>
-                    <option value="">-- Pilih User --</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id_user }}">
-                            {{ $user->id_user }} - {{ $user->nama }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
-          <button type="submit" class="btn btn-success">Simpan</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const searchInput = document.getElementById("searchInput");
-    const rows = document.querySelectorAll("tbody tr");
-
-    searchInput.addEventListener("input", function() {
-        const query = this.value.toLowerCase();
-        rows.forEach(row => {
-            const nama = row.children[2].textContent.toLowerCase();
-            const jabatan = row.children[3].textContent.toLowerCase();
-            if (nama.includes(query) || jabatan.includes(query)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    });
-});
-</script>
 @endsection
