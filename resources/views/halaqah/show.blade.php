@@ -317,7 +317,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <form id="deleteSantriForm" method="POST" action="">
                 @csrf
-                @method('PATCH')
+                @method('DELETE')
                 <div class="modal-content">
                     <div class="modal-header justify-content-center border-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
