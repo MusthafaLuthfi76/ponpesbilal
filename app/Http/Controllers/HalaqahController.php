@@ -59,7 +59,7 @@ class HalaqahController extends Controller
     public function removeSantri($id_halaqah, $nis)
     {
         try {
-            // Cari santri berdasarkan NIS
+            // Cari santri berdasarkan NI S
             $santri = \App\Models\Santri::where('nis', $nis)->firstOrFail();
 
             // Set id_halaqah menjadi null

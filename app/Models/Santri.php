@@ -28,10 +28,11 @@ class Santri extends Model
     {
         return $this->belongsTo(TahunAjaran::class, 'id_tahunAjaran', 'id_tahunAjaran');
     }
-    public function kelompokHalaqah()
+    public function halaqah()
     {
     return $this->belongsTo(KelompokHalaqah::class, 'id_halaqah', 'id_halaqah');
     }
+
 
 
 }

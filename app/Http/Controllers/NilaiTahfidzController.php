@@ -11,7 +11,8 @@ class NilaiTahfidzController extends Controller
     public function index(Request $request)
     {
         // Query dasar dengan eager loading relasi
-        $query = Santri::with(['kelompokHalaqah', 'tahunAjaran']);
+       $query = Santri::with(['halaqah', 'tahunAjaran']);
+
 
 
 
@@ -50,32 +51,34 @@ class NilaiTahfidzController extends Controller
     }
 
         public function show($id)
-    {
-        // Ambil data santri dengan relasi
-       $santri = Santri::with(['kelompokHalaqah.pendidik', 'tahunAjaran'])
+{
+    // Ambil data santri dengan relasi halaqah & tahunAjaran
+    $santri = Santri::with(['halaqah.pendidik', 'tahunAjaran'])
+        ->findOrFail($id);
 
+    // Ambil semua ujian tahfidz santri ini
+    $ujianList = UjianTahfidz::where('nis', $id)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-            ->findOrFail($id);
+    // Hitung total kesalahan
+    $totalTajwid = $ujianList->sum('tajwid');
+    $totalItqan = $ujianList->sum('itqan');
+    $totalKeseluruhan = $ujianList->sum('total_kesalahan');
 
-        // Ambil data ujian tahfidz santri ini
-        // Sesuaikan dengan struktur database Anda
-        $ujianList = UjianTahfidz::where('nis', $id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+    // 🔥 Tambahkan list tahun ajaran untuk dropdown
+    $tahunAjaranList = \App\Models\TahunAjaran::orderBy('tahun', 'desc')->get();
 
-        // Hitung total kesalahan
-        $totalTajwid = $ujianList->sum('tajwid');
-        $totalItqan = $ujianList->sum('itqan');
-        $totalKeseluruhan = $ujianList->sum('total_kesalahan');
+    return view('nilaiTahfidz.detail', compact(
+        'santri',
+        'ujianList',
+        'totalTajwid',
+        'totalItqan',
+        'totalKeseluruhan',
+        'tahunAjaranList'
+    ));
+}
 
-        return view('nilaiTahfidz.detail', compact(
-            'santri',
-            'ujianList',
-            'totalTajwid',
-            'totalItqan',
-            'totalKeseluruhan'
-        ));
-    }
 
         public function store(Request $request)
     {

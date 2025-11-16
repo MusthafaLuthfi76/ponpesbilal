@@ -28,6 +28,7 @@ Route::get('/santri/create', [SantriController::class, 'create'])->middleware('a
 Route::post('/santri', [SantriController::class, 'store'])->middleware('auth')->name('santri.store');
 Route::get('/santri/{id}/edit', [SantriController::class, 'edit'])->name('santri.editSantri');
 Route::put('/santri/{id}', [SantriController::class, 'update'])->name('santri.update');
+Route::put('/santri/{nis}/update-tahunajaran', [SantriController::class, 'updateTahunAjaran'])->name('santri.updateTahunAjaran');
 Route::delete('/santri/{id}', [SantriController::class, 'destroy'])->name('santri.destroy');
 
 // Tahun Ajaran
