@@ -11,11 +11,7 @@ class NilaiTahfidzController extends Controller
     public function index(Request $request)
     {
         // Query dasar dengan eager loading relasi
-       $query = Santri::with(['halaqah', 'tahunAjaran']);
-
-
-
-
+       $query = Santri::with(['halaqah', 'ujianTahfidz.tahunAjaran']);
 
         // Filter berdasarkan search (nama santri)
         if ($request->filled('search')) {
@@ -29,25 +25,30 @@ class NilaiTahfidzController extends Controller
         
         // Filter berdasarkan semester melalui relasi
         if ($request->filled('semester')) {
-            $query->whereHas('tahunAjaran', function ($q) use ($request) {
+            $query->whereHas('tahunAjaran', function($q) use ($request) {
                 $q->where('semester', $request->semester);
+            
             });
         }
-
 
 
         // Filter berdasarkan tahun ajaran melalui relasi
+        // ✔ Filter tahun ajaran dari relasi TahunAjaran
         if ($request->filled('tahun')) {
-            $query->whereHas('tahunAjaran', function ($q) use ($request) {
-                $q->where('tahun', $request->tahun);
+            $query->whereHas('tahunAjaran', function($q) use ($request) {
+                $q->where('id_tahunAjaran', $request->tahun);
+            
             });
         }
-
+        
+        $tahunList = \App\Models\TahunAjaran::orderBy('tahun', 'desc')->get();
+        
         // Ambil data dengan pagination
         $santri = $query->orderBy('nama', 'asc')->paginate(4);
 
         // Return view dengan data
-        return view('nilaiTahfidz.index', compact('santri'));
+        return view('nilaiTahfidz.index', compact('santri', 'tahunList'));
+
     }
 
         public function show($id)
@@ -57,9 +58,11 @@ class NilaiTahfidzController extends Controller
         ->findOrFail($id);
 
     // Ambil semua ujian tahfidz santri ini
-    $ujianList = UjianTahfidz::where('nis', $id)
-        ->orderBy('created_at', 'desc')
-        ->get();
+    $ujianList = UjianTahfidz::where('nis', $santri->nis)
+    ->with('tahunAjaran')
+    ->orderBy('created_at', 'desc')
+    ->get();
+
 
     // Hitung total kesalahan
     $totalTajwid = $ujianList->sum('tajwid');
@@ -88,7 +91,7 @@ class NilaiTahfidzController extends Controller
             'juz' => 'required|integer|min:1|max:30',
             'tajwid' => 'required|integer|min:0',
             'itqan' => 'required|integer|min:0',
-            'tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
+            'tahun_ajaran_id' => 'nullable|exists:tahunajaran,id_tahunAjaran',
             'sekali_duduk' => 'nullable|in:ya,tidak',
 
         ]);
@@ -113,7 +116,7 @@ class NilaiTahfidzController extends Controller
             'juz' => 'required|integer|min:1|max:30',
             'tajwid' => 'required|integer|min:0',
             'itqan' => 'required|integer|min:0',
-            'tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
+            'tahun_ajaran_id' => 'nullable|exists:tahunajaran,id_tahunAjaran',
             'sekali_duduk' => 'nullable|in:ya,tidak',
         ]);
 

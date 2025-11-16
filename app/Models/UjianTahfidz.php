@@ -27,17 +27,18 @@ class UjianTahfidz extends Model
      */
     public function santri()
     {
-        return $this->belongsTo(Santri::class, 'santri_id');
+        return $this->belongsTo(Santri::class, 'nis', 'nis');
     }
 
     /**
      * Relasi ke Tahun Ajaran (jika diperlukan)
      */
-    public function tahunAjaran()
+   public function tahunAjaran()
     {
-        return $this->belongsTo(TahunAjaran::class, 'tahunAjaran', 'id_tahunAjaran');
-
+    return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id', 'id_tahunAjaran');
     }
+
+
 
     /**
      * Boot method untuk auto calculate total_kesalahan

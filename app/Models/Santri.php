@@ -32,6 +32,11 @@ class Santri extends Model
     {
     return $this->belongsTo(KelompokHalaqah::class, 'id_halaqah', 'id_halaqah');
     }
+    public function ujianTahfidz()
+    {
+    return $this->hasMany(\App\Models\UjianTahfidz::class, 'nis', 'nis');
+    }
+
 
 
 
