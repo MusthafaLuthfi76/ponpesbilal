@@ -22,4 +22,10 @@ class KelompokHalaqah extends Model
     {
         return $this->belongsTo(Pendidik::class, 'id_pendidik', 'id_pendidik');
     }
+
+    public function santri()
+    {
+    return $this->hasMany(Santri::class, 'id_halaqah', 'id_halaqah');
+    }
+
 }

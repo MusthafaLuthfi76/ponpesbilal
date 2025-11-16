@@ -80,14 +80,14 @@
                                     <div class="col-auto">
                                         <small class="text-muted">
                                             <small class="fw-bold">Penguji: Ust. </small>
-                                            {{ $s->kelompokHalaqah->pendidik->nama ?? 'Belum ditentukan' }}
+                                            {{ $s->halaqah->pendidik->nama ?? 'Belum ditentukan' }}
                                         </small>
                                     </div>
 
                                     <div class="col-auto">
                                         <small class="text-muted">
                                             <small class="fw-bold">Kelompok Halaqah:</small>
-                                            {{ $s->kelompokHalaqah->nama_kelompok ?? 'Belum ditentukan' }}
+                                            {{ $s->halaqah->nama_kelompok ?? 'Belum ditentukan' }}
                                         </small>
                                     </div>
 
