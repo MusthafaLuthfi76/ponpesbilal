@@ -203,7 +203,7 @@
         {{-- Card Info Halaqoh --}}
 <div class="card shadow-sm border-0 p-3 mb-3">
     <h5 class="fw-bold text-success mb-3 text-center">
-        Halaqoh {{ $kelompok->nama_kelompok }}
+        {{ $kelompok->nama_kelompok }}
     </h5>
 
     <div class="d-flex flex-wrap justify-content-between text-start">
