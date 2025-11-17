@@ -10,14 +10,15 @@ class Setoran extends Model
     protected $primaryKey = 'id_setoran';
     
     protected $fillable = [
-        'nis',
-        'tanggal_setoran',
-        'juz',
-        'surah',
-        'ayat',
-        'status',
-        'catatan'
-    ];
+    'nis',
+    'tanggal_setoran',
+    'juz',
+    'ayat',
+    'halaman',   // ✅ TAMBAHKAN INI
+    'status',
+    'catatan'
+];
+
 
     protected $casts = [
         'tanggal_setoran' => 'date'

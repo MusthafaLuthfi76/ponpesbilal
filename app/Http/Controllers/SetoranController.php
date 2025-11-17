@@ -15,8 +15,10 @@ class SetoranController extends Controller
         $setoran = Setoran::where('nis', $nis)
             ->orderBy('tanggal_setoran', 'desc')
             ->get();
+        
+         $id_halaqah = $santri->id_halaqah;    
 
-        return view('halaqah.setoran', compact('santri', 'setoran'));
+        return view('halaqah.setoran', compact('santri', 'setoran', 'id_halaqah'));
     }
 
     // Menyimpan setoran baru
@@ -25,7 +27,7 @@ class SetoranController extends Controller
         $request->validate([
             'tanggal_setoran' => 'required|date',
             'juz' => 'nullable|string|max:10',
-            'surah' => 'required|string|max:100',
+            'halaman' => 'nullable|string|max:50',
             'ayat' => 'required|string|max:50',
             'status' => 'required|in:Lancar,Kurang Lancar,Tidak Lancar',
             'catatan' => 'nullable|string'
@@ -36,7 +38,7 @@ class SetoranController extends Controller
                 'nis' => $nis,
                 'tanggal_setoran' => $request->tanggal_setoran,
                 'juz' => $request->juz,
-                'surah' => $request->surah,
+                'halaman' => $request->halaman,
                 'ayat' => $request->ayat,
                 'status' => $request->status,
                 'catatan' => $request->catatan
@@ -58,7 +60,7 @@ class SetoranController extends Controller
         $request->validate([
             'tanggal_setoran' => 'required|date',
             'juz' => 'nullable|string|max:10',
-            'surah' => 'required|string|max:100',
+            'halaman' => 'nullable|string|max:50',
             'ayat' => 'required|string|max:50',
             'status' => 'required|in:Lancar,Kurang Lancar,Tidak Lancar',
             'catatan' => 'nullable|string'
@@ -72,7 +74,7 @@ class SetoranController extends Controller
             $setoran->update([
                 'tanggal_setoran' => $request->tanggal_setoran,
                 'juz' => $request->juz,
-                'surah' => $request->surah,
+                'halaman' => $request->halaman,
                 'ayat' => $request->ayat,
                 'status' => $request->status,
                 'catatan' => $request->catatan
