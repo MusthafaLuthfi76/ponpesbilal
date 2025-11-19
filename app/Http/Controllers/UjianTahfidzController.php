@@ -6,7 +6,7 @@ use App\Models\Santri;
 use App\Models\UjianTahfidz;
 use Illuminate\Http\Request;
 
-class NilaiTahfidzController extends Controller
+class UjianTahfidzController extends Controller
 {
     public function index(Request $request)
     {

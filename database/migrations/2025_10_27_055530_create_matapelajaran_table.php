@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('matapelajaran', function (Blueprint $table) {
             
             // Primary Key (PK) dan Identitas
-            $table->unsignedBigInteger('id_matapelajaran')->primary(); 
+            $table->id('id_matapelajaran');
             $table->string('nama_matapelajaran', 100);
             
             // Kolom Nilai Bobot dan KKM
