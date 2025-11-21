@@ -3,6 +3,8 @@
 use App\Http\Controllers\HalaqahController;
 use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\NilaiAkademikController;
+use App\Http\Controllers\NilaiKesantrianController;
+use App\Http\Controllers\NilaiMapelController;
 use App\Http\Controllers\PendidikController;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\SetoranController;
@@ -32,41 +34,25 @@ Route::put('/santri/{nis}/update-tahunajaran', [SantriController::class, 'update
 Route::delete('/santri/{id}', [SantriController::class, 'destroy'])->name('santri.destroy');
 
 // Tahun Ajaran
-Route::get('tahunajaran', [TahunAjaranController::class, 'index'])->name('tahunajaran.index');
-Route::post('tahunajaran', [TahunAjaranController::class, 'store'])->name('tahunajaran.store');
-Route::put('tahunajaran/{id}', [TahunAjaranController::class, 'update'])->name('tahunajaran.update');
-Route::delete('tahunajaran/{id}', [TahunAjaranController::class, 'destroy'])->name('tahunajaran.destroy');
+Route::get('tahunajaran', [TahunAjaranController::class, 'index'])->middleware('auth')->name('tahunajaran.index');
+Route::post('tahunajaran', [TahunAjaranController::class, 'store'])->middleware('auth')->name('tahunajaran.store');
+Route::put('tahunajaran/{id}', [TahunAjaranController::class, 'update'])->middleware('auth')->name('tahunajaran.update');
+Route::delete('tahunajaran/{id}', [TahunAjaranController::class, 'destroy'])->middleware('auth')->name('tahunajaran.destroy');
 
 // Subjects CRUD
 // Mata Pelajaran
-Route::get('/matapelajaran', [MataPelajaranController::class, 'index'])->name('matapelajaran.index');
-Route::post('/matapelajaran', [MataPelajaranController::class, 'store'])->name('matapelajaran.store');
-Route::put('/matapelajaran/{id}', [MataPelajaranController::class, 'update'])->name('matapelajaran.update');
-Route::delete('/matapelajaran/{id}', [MataPelajaranController::class, 'destroy'])->name('matapelajaran.destroy');
+Route::get('/matapelajaran', [MataPelajaranController::class, 'index'])->middleware('auth')->name('matapelajaran.index');
+Route::post('/matapelajaran', [MataPelajaranController::class, 'store'])->middleware('auth')->name('matapelajaran.store');
+Route::put('/matapelajaran/{id}', [MataPelajaranController::class, 'update'])->middleware('auth')->name('matapelajaran.update');
+Route::delete('/matapelajaran/{id}', [MataPelajaranController::class, 'destroy'])->middleware('auth')->name('matapelajaran.destroy');
 
 // Pendidik CRUD
-Route::get('/pendidik', [PendidikController::class, 'index'])->name('pendidik.index');
-Route::get('/pendidik/{id}', [PendidikController::class, 'show'])->name('pendidik.show');
-Route::post('/pendidik', [PendidikController::class, 'store'])->name('pendidik.store');
-Route::put('/pendidik/{id}', [PendidikController::class, 'update'])->name('pendidik.update');
-Route::delete('/pendidik/{id}', [PendidikController::class, 'destroy'])->name('pendidik.destroy');
+Route::get('/pendidik', [PendidikController::class, 'index'])->middleware('auth')->name('pendidik.index');
+Route::get('/pendidik/{id}', [PendidikController::class, 'show'])->middleware('auth')->name('pendidik.show');
+Route::post('/pendidik', [PendidikController::class, 'store'])->middleware('auth')->name('pendidik.store');
+Route::put('/pendidik/{id}', [PendidikController::class, 'update'])->middleware('auth')->name('pendidik.update');
+Route::delete('/pendidik/{id}', [PendidikController::class, 'destroy'])->middleware('auth')->name('pendidik.destroy');
 
-// Nilai Akademik CRUD
-Route::get('/nilaiakademik', [NilaiAkademikController::class, 'index'])
-    ->middleware('auth')
-    ->name('nilaiakademik.index');
-
-Route::post('/nilaiakademik', [NilaiAkademikController::class, 'store'])
-    ->middleware('auth')
-    ->name('nilaiakademik.store');
-
-Route::put('/nilaiakademik/{id}', [NilaiAkademikController::class, 'update'])
-    ->middleware('auth')
-    ->name('nilaiakademik.update');
-
-Route::delete('/nilaiakademik/{id}', [NilaiAkademikController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('nilaiakademik.destroy');
 
 /*
 |--------------------------------------------------------------------------
@@ -75,7 +61,32 @@ Route::delete('/nilaiakademik/{id}', [NilaiAkademikController::class, 'destroy']
 */
 Route::middleware('auth')->group(function () {
 
-    // Halaqah list
+     // Daftar mapel
+    Route::get('/nilaiakademik/mapel', [NilaiMapelController::class, 'index'])
+        ->name('nilaiakademik.mapel.index');
+
+    // Detail nilai satu mapel
+    Route::get('/nilaiakademik/mapel/{id_mapel}', [NilaiMapelController::class, 'show'])
+        ->name('nilaiakademik.mapel.show');
+
+    // Halaman assign santri ke mapel
+    Route::get('/nilaiakademik/mapel/{id_mapel}/assign', [NilaiMapelController::class, 'assignForm'])
+        ->name('nilaiakademik.mapel.assign.form');
+
+    // Proses assign santri
+    Route::post('/nilaiakademik/mapel/{id_mapel}/assign', [NilaiMapelController::class, 'assignStore'])
+        ->name('nilaiakademik.mapel.assign.store');
+
+    Route::put('/nilaiakademik/mapel/{id}/update-all', [NilaiMapelController::class, 'updateAll'])->name('nilaiakademik.mapel.updateAll');
+
+    // Update nilai
+    Route::put('/nilaiakademik/nilai/{id_nilai}', [NilaiMapelController::class, 'update'])
+        ->name('nilaiakademik.mapel.update');
+
+    // Hapus nilai
+    Route::delete('/nilaiakademik/nilai/{id_nilai}', [NilaiMapelController::class, 'destroy'])
+        ->name('nilaiakademik.mapel.destroy');
+ 
     Route::get('/halaqah', [HalaqahController::class, 'index'])->name('halaqah.index');
 
     // Create
@@ -127,4 +138,26 @@ Route::middleware('auth')->group(function () {
     Route::put('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
     Route::delete('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Nilai Kesantrian
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/nilaikesantrian', [NilaiKesantrianController::class, 'index'])
+        ->name('nilaikesantrian.index');
+
+    Route::get('/nilaikesantrian/filter', [NilaiKesantrianController::class, 'index'])
+        ->name('nilaikesantrian.filter');
+    Route::get('/nilaikesantrian/create', [NilaiKesantrianController::class, 'create'])->name('nilaikesantrian.create');
+
+    Route::post('/nilaikesantrian', [NilaiKesantrianController::class, 'store'])
+        ->name('nilaikesantrian.store');
+
+    Route::put('/nilaikesantrian/{id}', [NilaiKesantrianController::class, 'update'])
+        ->name('nilaikesantrian.update');
+
+    Route::delete('/nilaikesantrian/{id}', [NilaiKesantrianController::class, 'destroy'])
+        ->name('nilaikesantrian.destroy');
+
 });
+
