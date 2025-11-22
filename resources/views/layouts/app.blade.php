@@ -217,16 +217,28 @@
                 Kelompok Halaqah
                 </a>
                 <a href="{{ route('pendidik.index') }}" class="item {{ request()->routeIs('pendidik.*') ? 'active' : '' }}">Data Pendidik</a>
-                <a href="{{ route('nilaiakademik.index') }}" class="item {{ request()->routeIs('nilaiakademik.*') ? 'active' : '' }}">Nilai Akademik</a>
+                <a href="{{ route('nilaiakademik.mapel.index') }}" 
+                class="item {{ request()->routeIs('nilaiakademik.mapel.*') ? 'active' : '' }}">
+                Nilai Akademik
+                </a>
+
                 <a href="{{ route('nilaiTahfidz.index') }}"
                 class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}">
                 Nilai Tahfidz
                 </a>
+<<<<<<< HEAD
                 <a href="#" class="item">Nilai Kesantrian</a>
                 <a href="{{ route('rapor.index') }}" 
                     class="item {{ request()->routeIs('rapor.*') ? 'active' : '' }}">
                     Laporan & Rapor
                 </a>
+=======
+                <a href="{{ route('nilaikesantrian.index') }}" 
+                class="item {{ request()->routeIs('nilaikesantrian.*') ? 'active' : '' }}">
+                Nilai Kesantrian
+                </a>
+                <a href="#" class="item">Laporan & Rapor</a>
+>>>>>>> f146a44068606d4f1cc977471ade1e72b9e6c3c3
             </div>
             <div class="footer">
                 <form method="POST" action="{{ route('logout') }}">
