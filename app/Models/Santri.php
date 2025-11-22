@@ -36,6 +36,11 @@ class Santri extends Model
     {
     return $this->hasMany(\App\Models\UjianTahfidz::class, 'nis', 'nis');
     }
+    public function nilaiAkademik()
+    {
+    return $this->hasMany(NilaiAkademik::class, 'nis', 'nis');
+    }
+
 
 
 

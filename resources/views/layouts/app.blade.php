@@ -223,7 +223,10 @@
                 Nilai Tahfidz
                 </a>
                 <a href="#" class="item">Nilai Kesantrian</a>
-                <a href="#" class="item">Laporan & Rapor</a>
+                <a href="{{ route('rapor.index') }}" 
+                    class="item {{ request()->routeIs('rapor.*') ? 'active' : '' }}">
+                    Laporan & Rapor
+                </a>
             </div>
             <div class="footer">
                 <form method="POST" action="{{ route('logout') }}">

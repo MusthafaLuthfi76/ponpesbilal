@@ -346,12 +346,13 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="createPendidik" class="form-label">Nama Ustadz</label>
-                            <select name="id_pendidik" id="createPendidik" class="form-select" required>
+                           <select name="id_pendidik" id="createPendidik" class="form-select" required>
                                 <option value="">Pilih Ustadz</option>
-                                {{-- @foreach ($pendidik as $p) --}}
-                                    {{-- <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option> --}}
-                                {{-- @endforeach --}}
+                                @foreach ($pendidik as $p)
+                                    <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option>
+                                @endforeach
                             </select>
+
                         </div>
                         <div class="mb-3">
                             <label for="createNamaKelompok" class="form-label">Nama Kelompok</label>
@@ -383,9 +384,9 @@
                             <label for="editPendidik" class="form-label">Nama Ustadz</label>
                             <select name="id_pendidik" id="editPendidik" class="form-select" required>
                                 <option value="">Pilih Ustadz</option>
-                                {{-- @foreach ($pendidik as $p) --}}
-                                    {{-- <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option> --}}
-                                {{-- @endforeach --}}
+                                @foreach ($pendidik as $p)
+                                    <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
