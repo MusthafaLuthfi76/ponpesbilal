@@ -139,22 +139,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/nilaiTahfidz', [NilaiTahfidzController::class, 'store'])->name('nilaiTahfidz.store');
     Route::put('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
     Route::delete('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
+});
 
-<<<<<<< HEAD
-});    
-   // ============================
 // RAPOR SANTRI
 // ============================
 Route::middleware('auth')->prefix('rapor')->group(function () {
     Route::get('/', [RaporController::class, 'index'])->name('rapor.index');
     Route::get('/cetak/{nis}', [RaporController::class, 'cetak'])->name('rapor.cetak');
 
-
-
-
-});
-=======
-    /*
+     /*
     |--------------------------------------------------------------------------
     | Nilai Kesantrian
     |--------------------------------------------------------------------------
@@ -175,6 +168,6 @@ Route::middleware('auth')->prefix('rapor')->group(function () {
     Route::delete('/nilaikesantrian/{id}', [NilaiKesantrianController::class, 'destroy'])
         ->name('nilaikesantrian.destroy');
 
-});
 
->>>>>>> f146a44068606d4f1cc977471ade1e72b9e6c3c3
+});
+   
