@@ -480,7 +480,7 @@
                             <th>HALAMAN</th>
                             <th>STATUS</th>
                             <th>CATATAN</th>
-                            <th>ACTION</th>
+                            <th>AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -502,8 +502,8 @@
                                     </span>
                                 </td>
                                 <td data-label="CATATAN">{{ $s->catatan ?? '-' }}</td>
-                                <td data-label="ACTION">
-                                    <div class="d-flex justify-content-center">
+                                <td data-label="AKSI" class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
                                         <button class="action-btn edit" data-bs-toggle="modal"
                                             data-bs-target="#editSetoranModal" data-id="{{ $s->id_setoran }}"
                                             data-nis="{{ $santri->nis }}"

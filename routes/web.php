@@ -13,6 +13,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\NilaiTahfidzController;
+use App\Http\Controllers\RaporController;  
+
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -137,8 +139,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/nilaiTahfidz', [NilaiTahfidzController::class, 'store'])->name('nilaiTahfidz.store');
     Route::put('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
     Route::delete('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
+});
 
-    /*
+// RAPOR SANTRI
+// ============================
+Route::middleware('auth')->prefix('rapor')->group(function () {
+    Route::get('/', [RaporController::class, 'index'])->name('rapor.index');
+    Route::get('/cetak/{nis}', [RaporController::class, 'cetak'])->name('rapor.cetak');
+
+     /*
     |--------------------------------------------------------------------------
     | Nilai Kesantrian
     |--------------------------------------------------------------------------
@@ -161,3 +170,5 @@ Route::post('/nilai-kesantrian/assign/{id_matapelajaran}/{id_tahunAjaran}', [Nil
 Route::delete('/nilai-kesantrian/unassign/{id}', [NilaiKesantrianController::class, 'unassign'])->name('nilaikesantrian.unassign');
 });
 
+
+   

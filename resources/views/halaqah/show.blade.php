@@ -365,19 +365,9 @@
 
     <div class="container-wrapper" role="main">
 
-        {{-- 💡 PENGGANTIAN STRUKTUR HEADER (Dari Gambar Sebelumnya) --}}
-        <div class="add-santri-header-box">
-            {{-- Tombol Kembali di Kiri --}}
-            <a href="{{ route('halaqah.index') }}" class="btn-kembali" aria-label="Kembali ke Daftar Halaqoh">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Kembali
-            </a>
-            
-            {{-- Teks "Tambah Santri Baru" di Kanan --}}
-            <div class="title">
-                <i class="fas fa-user-plus" aria-hidden="true"></i>
-                Tambah Santri Baru
-            </div>
-        </div>
+        <a href="{{ route('halaqah.index') }}" class="btn btn-outline-success mb-3">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
 
         {{-- Judul halaman Detail Halaqoh asli --}}
         <a href="{{ route('halaqah.index') }}" class="back-btn" aria-label="Kembali ke Daftar Halaqoh" style="display:none;">
@@ -531,27 +521,7 @@
         </div>
     </div>
     
-    {{-- KODE KHUSUS UNTUK MENIRU LAYOUT BUTTON GAMBAR (untuk testing) --}}
-    <div class="container-wrapper mt-5">
-        
-        {{-- Area Santri Dipilih (1 santri dipilih) --}}
-        <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-top-lg border-bottom">
-             <span class="text-success fw-bold">1 santri dipilih</span>
-        </div>
-        
-        {{-- Button Fix Area --}}
-        <div class="form-bottom-actions d-flex bg-white rounded-bottom" style="box-shadow: 0 -2px 4px rgba(0,0,0,0.1);">
-            {{-- Tombol Batal/Batal Pilih Semua --}}
-            <button class="btn btn-outline-secondary" type="button">
-                <i class="fas fa-times me-1"></i> Batal
-            </button>
-            
-            {{-- Tombol Simpan --}}
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-save me-1"></i> Simpan
-            </button>
-        </div>
-    </div>
+    
     
     {{-- Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -221,7 +221,6 @@
                 class="item {{ request()->routeIs('nilaiakademik.mapel.*') ? 'active' : '' }}">
                 Nilai Akademik
                 </a>
-
                 <a href="{{ route('nilaiTahfidz.index') }}"
                 class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}">
                 Nilai Tahfidz
@@ -229,8 +228,11 @@
                 <a href="{{ route('nilaikesantrian.index') }}" class="item {{ request()->routeIs('nilaikesantrian.*') ? 'active' : '' }}">
                     Nilai Kesantrian
                 </a>
-                <a href="#" class="item">Laporan & Rapor</a>
-            </div>
+                <a href="{{ route('rapor.index') }}" 
+                class="item {{ request()->routeIs('rapor.*') ? 'active' : '' }}">
+                Laporan & Rapor
+                </a>
+                </div>
             <div class="footer">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
