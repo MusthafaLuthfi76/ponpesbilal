@@ -37,7 +37,8 @@ class NilaiTahfidzController extends Controller
         // ✔ Filter tahun ajaran dari relasi TahunAjaran
         if ($request->filled('tahun')) {
             $query->whereHas('tahunAjaran', function($q) use ($request) {
-                $q->where('id_tahunAjaran', $request->tahun);
+                $q->where('id', $request->tahun);
+
             
             });
         }
@@ -122,7 +123,7 @@ class NilaiTahfidzController extends Controller
 
         UjianTahfidz::create([
             'nis' => $request->nis,
-            'id_tahunAjaran' => $request->tahunAjaran,
+            'tahun_ajaran_id' => $request->tahunAjaran,
             'jenis_ujian' => $request->jenis_ujian,
             'juz' => $request->juz,
             'tajwid' => $request->tajwid,
