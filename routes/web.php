@@ -152,26 +152,25 @@ Route::middleware('auth')->prefix('rapor')->group(function () {
     | Nilai Kesantrian
     |--------------------------------------------------------------------------
     */
-    Route::get('/nilaikesantrian', [NilaiKesantrianController::class, 'index'])
-        ->name('nilaikesantrian.index');
+// Route untuk menampilkan daftar (yang sudah Anda miliki)
+Route::get('/nilai-kesantrian', [NilaiKesantrianController::class, 'index'])->name('nilaikesantrian.index');
 
-    Route::get('/nilaikesantrian/filter', [NilaiKesantrianController::class, 'index'])
-        ->name('nilaikesantrian.filter');
-    Route::get('/nilaikesantrian/create', [NilaiKesantrianController::class, 'create'])->name('nilaikesantrian.create');
-
-    Route::get('/nilaikesantrian/{id}/edit', [NilaiKesantrianController::class, 'edit'])
-    ->name('nilaikesantrian.edit');
+// Route untuk menyimpan data baru (CREATE/STORE) dari modal
+Route::post('/nilai-kesantrian', [NilaiKesantrianController::class, 'store'])->name('nilaikesantrian.store');
 
 
-    Route::post('/nilaikesantrian', [NilaiKesantrianController::class, 'store'])
-        ->name('nilaikesantrian.store');
-
-    Route::put('/nilaikesantrian/{id}', [NilaiKesantrianController::class, 'update'])
-        ->name('nilaikesantrian.update');
-
-    Route::delete('/nilaikesantrian/{id}', [NilaiKesantrianController::class, 'destroy'])
-        ->name('nilaikesantrian.destroy');
+// Route untuk detail/show (yang sudah Anda miliki)
+Route::get('/nilai-kesantrian/{id_matapelajaran}/{id_tahunAjaran}', [NilaiKesantrianController::class, 'show'])->name('nilaikesantrian.show');
 
 
+// Route untuk massal update (jika sudah didefinisikan di controller)
+Route::post('/nilai-kesantrian/update-massal', [NilaiKesantrianController::class, 'updateNilaiMassal'])->name('nilaikesantrian.update.massal');
+
+// Route untuk assign santri (jika sudah didefinisikan di controller)
+Route::post('/nilai-kesantrian/assign/{id_matapelajaran}/{id_tahunAjaran}', [NilaiKesantrianController::class, 'assignStore'])->name('nilaikesantrian.assign.store');
+
+Route::delete('/nilai-kesantrian/unassign/{id}', [NilaiKesantrianController::class, 'unassign'])->name('nilaikesantrian.unassign');
 });
+
+
    

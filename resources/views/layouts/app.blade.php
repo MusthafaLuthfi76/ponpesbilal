@@ -225,9 +225,8 @@
                 class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}">
                 Nilai Tahfidz
                 </a>
-                <a href="{{ route('nilaikesantrian.index') }}"
-                class="item {{ request()->routeIs('nilaikesantrian.*') ? 'active' : '' }}">
-                Nilai Kesantrian
+                <a href="{{ route('nilaikesantrian.index') }}" class="item {{ request()->routeIs('nilaikesantrian.*') ? 'active' : '' }}">
+                    Nilai Kesantrian
                 </a>
                 <a href="{{ route('rapor.index') }}" 
                 class="item {{ request()->routeIs('rapor.*') ? 'active' : '' }}">
