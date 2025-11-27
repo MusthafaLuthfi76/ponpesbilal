@@ -348,8 +348,8 @@
                 <td style="padding-left: 30px;">
                     {{ $index == 0 ? 'a. Tahfizh' : 'b. Tahsin' }}
                 </td>
-                <td class="text-center">{{ $t->total_kesalahan ?? '-' }}</td>
-                <td class="text-center">
+                <td class="text-center">{{ $t->nilai_angka }}</td>
+                <td class="text-center">{{ $t->nilai_huruf }}</td>
                     @php
                         $kesalahan = $t->total_kesalahan ?? 999;
                         if($kesalahan <= 5) echo 'A';

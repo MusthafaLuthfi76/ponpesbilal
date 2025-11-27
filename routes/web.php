@@ -159,6 +159,10 @@ Route::middleware('auth')->prefix('rapor')->group(function () {
         ->name('nilaikesantrian.filter');
     Route::get('/nilaikesantrian/create', [NilaiKesantrianController::class, 'create'])->name('nilaikesantrian.create');
 
+    Route::get('/nilaikesantrian/{id}/edit', [NilaiKesantrianController::class, 'edit'])
+    ->name('nilaikesantrian.edit');
+
+
     Route::post('/nilaikesantrian', [NilaiKesantrianController::class, 'store'])
         ->name('nilaikesantrian.store');
 

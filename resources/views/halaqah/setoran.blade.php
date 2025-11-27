@@ -145,7 +145,8 @@
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
+        overflow: hidde
+        n;
     }
 
     .setoran-header {
@@ -302,6 +303,22 @@
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
     }
+
+    /* --- FIX WIDTH & ALIGNMENT UNTUK KOLOM AKSI (DESKTOP + MOBILE) --- */
+    th:last-child,
+    td:last-child {
+    width: 120px !important; /* ukuran kolom */
+    text-align: center !important;
+}
+
+/* Wrapper tombol supaya rapi */
+    .action-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
     
     /* ===================================================
     ⭐ MOBILE SCROLLABLE TABLE IMPLEMENTATION (< 768px)

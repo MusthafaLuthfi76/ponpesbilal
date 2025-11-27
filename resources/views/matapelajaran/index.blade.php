@@ -215,7 +215,7 @@
               <label class="form-label">Pendidik / Guru</label>
               <select name="id_pendidik" id="edit_pendidik" class="form-select" required>
                 @foreach($pendidik as $p)
-                  <option value="{{ $p->id_pendidik }}">{{ $p->nama_pendidik }}</option>
+                  <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option>
                 @endforeach
               </select>
             </div>

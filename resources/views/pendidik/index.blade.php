@@ -19,7 +19,8 @@
 section.pendidik-page {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
+    padding: 1rem;
 }
 
 /* Header */
@@ -28,12 +29,14 @@ section.pendidik-page {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: .75rem;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 .header-section h2 {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--green);
+    margin: 0;
 }
 
 /* Tombol tambah */
@@ -41,11 +44,14 @@ section.pendidik-page {
     background: var(--btn-green);
     color: #fff;
     border: none;
-    padding: 8px 14px;
+    padding: 10px 18px;
     border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
     transition: .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 .btn-add:hover { background: var(--btn-green-hover); }
 
@@ -54,38 +60,59 @@ section.pendidik-page {
     border-radius: 10px;
     overflow-x: auto;
     background: #fff;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 table {
     width: 100%;
     border-collapse: collapse;
 }
 th, td {
-    padding: 12px 14px;
+    padding: 14px 20px;
     border-bottom: 1px solid #e5e7eb;
     font-size: 14px;
+    text-align: left;
 }
 th {
     background: #f1f5f3;
     color: var(--green-dark);
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 13px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
 }
-tr:hover { background:#f9fdfb; }
+
+/* Atur lebar kolom yang proporsional */
+th:nth-child(1), td:nth-child(1) { width: 80px; }  /* No */
+th:nth-child(2), td:nth-child(2) { width: 100px; }  /* ID */
+th:nth-child(3), td:nth-child(3) { width: 30%; } /* Nama */
+th:nth-child(4), td:nth-child(4) { width: 30%; } /* Jabatan */
+th:nth-child(5), td:nth-child(5) { width: 150px; text-align: center !important; } /* Aksi */
+
+tbody tr {
+    transition: background 0.2s;
+}
+tbody tr:hover { 
+    background: #f9fdfb; 
+}
+tbody tr:last-child td {
+    border-bottom: none;
+}
 
 /* Buttons */
 .action-btns {
     display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 .btn-sm {
-    padding: 6px 10px;
+    padding: 7px 12px;
     border-radius: 6px;
     border: none;
     color: white;
     font-size: 13px;
+    cursor: pointer;
+    transition: .2s;
 }
 .btn-warning { background: var(--btn-yellow); }
 .btn-warning:hover { background: #b45309; }
@@ -97,9 +124,10 @@ tr:hover { background:#f9fdfb; }
     background: #d1fae5;
     color: #065f46;
     border-left: 4px solid var(--btn-green);
-    padding: 10px 14px;
+    padding: 14px 18px;
     border-radius: 8px;
     font-size: 14px;
+    margin-bottom: 0.5rem;
 }
 
 /* MOBILE CARD VIEW */
@@ -118,6 +146,7 @@ tr:hover { background:#f9fdfb; }
         justify-content: space-between;
         padding: .4rem 0;
         border:none;
+        width: 100% !important;
     }
     td::before {
         content: attr(data-label);
@@ -151,7 +180,7 @@ tr:hover { background:#f9fdfb; }
                     <th>ID</th>
                     <th>Nama Lengkap</th>
                     <th>Jabatan</th>
-                    <th class="text-center">Aksi</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -161,7 +190,7 @@ tr:hover { background:#f9fdfb; }
                     <td data-label="ID">{{ $p->id_pendidik }}</td>
                     <td data-label="Nama">{{ $p->nama }}</td>
                     <td data-label="Jabatan">{{ $p->jabatan }}</td>
-                    <td data-label="Aksi" class="text-center">
+                    <td data-label="Aksi">
                         <div class="action-btns">
                             <button class="btn btn-warning btn-sm"
                                 data-bs-toggle="modal"
@@ -171,7 +200,8 @@ tr:hover { background:#f9fdfb; }
 
                             <form action="{{ route('pendidik.destroy', $p->id_pendidik) }}"
                                   method="POST"
-                                  onsubmit="return confirm('Yakin ingin menghapus?')">
+                                  onsubmit="return confirm('Yakin ingin menghapus?')"
+                                  style="margin: 0;">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-danger btn-sm">
@@ -214,8 +244,8 @@ tr:hover { background:#f9fdfb; }
                                     </select>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <button class="btn btn-warning text-white">Perbarui</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-warning text-white">Perbarui</button>
                                 </div>
                             </form>
                         </div>
@@ -262,8 +292,8 @@ tr:hover { background:#f9fdfb; }
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button class="btn btn-success">Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
             </form>
         </div>
