@@ -27,17 +27,24 @@ class RaporController extends Controller
         return view('rapor.index', compact('santri'));
     }
 
-    public function cetak($nis)
+   public function cetak($nis)
 {
-    // Pakai eager loading untuk ambil seluruh relasi
-    $santri = Santri::with(['nilaiAkademik', 'ujianTahfidz'])
-                    ->where('nis', $nis)
-                    ->firstOrFail();
+    $santri = Santri::with([
+        'nilaiAkademik.mataPelajaran', 
+        'ujianTahfidz'
+    ])
+    ->where('nis', $nis)
+    ->firstOrFail();
 
-    $nilaiKesantrian = collect(); // masih kosong
+    // Ambil nilai akademik secara rapi
+    $nilaiAkademik = $santri->nilaiAkademik;
+
+    // Jika ada section nilai kesantrian (opsional)
+    $nilaiKesantrian = collect();
 
     $pdf = Pdf::loadView('rapor.pdf', compact(
         'santri',
+        'nilaiAkademik',
         'nilaiKesantrian'
     ));
 
