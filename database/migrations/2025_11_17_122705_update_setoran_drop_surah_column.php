@@ -6,21 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up()
-{
-    Schema::table('setoran', function (Blueprint $table) {
-        $table->dropColumn('surah');
-    });
-}
+    public function up(): void
+    {
+        Schema::table('setoran', function (Blueprint $table) {
+            if (Schema::hasColumn('setoran', 'surah')) {
+                $table->dropColumn('surah');
+            }
+        });
+    }
 
-public function down()
-{
-    Schema::table('setoran', function (Blueprint $table) {
-        $table->string('surah')->nullable();
-    });
-}
-
+    public function down(): void
+    {
+        Schema::table('setoran', function (Blueprint $table) {
+            if (!Schema::hasColumn('setoran', 'surah')) {
+                $table->string('surah')->nullable();
+            }
+        });
+    }
 };

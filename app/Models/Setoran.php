@@ -8,17 +8,17 @@ class Setoran extends Model
 {
     protected $table = 'setoran';
     protected $primaryKey = 'id_setoran';
-    
-    protected $fillable = [
-    'nis',
-    'tanggal_setoran',
-    'juz',
-    'ayat',
-    'halaman',   // ✅ TAMBAHKAN INI
-    'status',
-    'catatan'
-];
 
+    protected $fillable = [
+        'nis',
+        'tanggal_setoran',
+        'juz',
+        'ayat',
+        'halaman_awal',
+        'halaman_akhir',
+        'status',
+        'catatan'
+    ];
 
     protected $casts = [
         'tanggal_setoran' => 'date'

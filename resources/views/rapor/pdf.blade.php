@@ -349,7 +349,7 @@
                     {{ $index == 0 ? 'a. Tahfizh' : 'b. Tahsin' }}
                 </td>
                 <td class="text-center">{{ $t->nilai_angka }}</td>
-                <td class="text-center">{{ $t->nilai_huruf }}</td>
+                <td class="text-center">
                     @php
                         $kesalahan = $t->total_kesalahan ?? 999;
                         if($kesalahan <= 5) echo 'A';
@@ -357,17 +357,36 @@
                         else echo 'C';
                     @endphp
                 </td>
+
                 <td>
                     <div class="detail-text">
-                        @if($index == 0)
-                            Jumlah Hafalan:<br>
-                            2 Juz - Halaman<br>
-                            (Juz 29, 30)
-                            <div class="detail-header">Jumlah Hafalan yang diujikan:</div>
-                            1 Juz<br>
-                            (Juz 30)
+                       @if($index == 0)
+
+   
+                            {{-- Tanggal Setoran --}}
+                            <div class="detail-header">Tanggal Setoran:</div>
+                            <ul style="margin: 3px 0 3px 15px; padding:0;">
+                                @foreach($santri->setoran as $s)
+                                    <li>{{ \Carbon\Carbon::parse($s->tanggal_setoran)->format('d F Y') }}</li>
+                                @endforeach
+                            </ul>
+                            {{-- Jumlah Hafalan --}}
+                            <div class="detail-header">Jumlah Hafalan:</div>
+                            <b>{{ $totalHalaman }} Halaman</b><br>
+                            ({{ $daftarHalaman }})<br>
+
+                            {{-- Juz yang Disetorkan --}}
+                            <div class="detail-header">Juz yang disetorkan:</div>
+                            <b>{{ $daftarJuz }}</b><br>
+
+                            {{-- Juz yang Diujikan --}}
+                            <div class="detail-header">Jumalah Hafalan yang diujikan:</div>
+                            <b>Juz {{ $t->juz }}</b><br>
+
+                            {{-- Sekali Duduk --}}
                             <div class="detail-header" style="margin-top: 8px;">Sekali Duduk</div>
-                            <b>{{ ucfirst($t->sekali_duduk ?? 'Jayyid') }}</b>
+                            <b>{{ ucfirst($t->sekali_duduk ?? '-') }}</b>
+
                         @else
                             Materi yang dipelajari:
                             <ul style="margin-top: 3px;">
@@ -390,10 +409,11 @@
                         2 Juz - Halaman<br>
                         (Juz 29, 30)
                         <div class="detail-header">Jumlah Hafalan yang diujikan:</div>
-                        1 Juz<br>
-                        (Juz 30)
-                        <div class="detail-header" style="margin-top: 8px;">Sekali Duduk</div>
-                        <b>Jayyid</b>
+                        <b>{{ $t->juz ? '1 Juz (Juz '.$t->juz.')' : '-' }}</b><br><br>
+
+                        <div class="detail-header">Sekali Duduk:</div>
+                        <b>{{ ucfirst($t->sekali_duduk ?? '-') }}</b>
+
                     </div>
                 </td>
             </tr>

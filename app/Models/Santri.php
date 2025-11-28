@@ -44,5 +44,10 @@ class Santri extends Model
     {
     return $this->hasMany(NilaiAkademik::class, 'nis', 'nis');
     }
+    public function setoran()
+    {
+    return $this->hasMany(\App\Models\Setoran::class, 'nis', 'nis');
+    }
+
 
 }

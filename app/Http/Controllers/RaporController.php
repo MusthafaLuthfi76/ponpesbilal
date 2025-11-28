@@ -30,26 +30,70 @@ class RaporController extends Controller
    public function cetak($nis)
 {
     $santri = Santri::with([
-        'nilaiAkademik.mataPelajaran', 
-        'ujianTahfidz'
+        'nilaiAkademik.mataPelajaran',
+        'ujianTahfidz',
+        'setoran'
     ])
     ->where('nis', $nis)
     ->firstOrFail();
 
-    // Ambil nilai akademik secara rapi
+    // ================
+    // NILAI AKADEMIK
+    // ================
     $nilaiAkademik = $santri->nilaiAkademik;
 
-    // Jika ada section nilai kesantrian (opsional)
+    // ================
+    // NILAI KESANTRIAN (optional)
+    // ================
     $nilaiKesantrian = collect();
 
-    $pdf = Pdf::loadView('rapor.pdf', compact(
-        'santri',
-        'nilaiAkademik',
-        'nilaiKesantrian'
-    ));
+    // ================
+    // BAGIAN SETORAN
+    // ================
+    $setoran = $santri->setoran;
+
+    // Total halaman (contoh: 12–15 → 4 halaman)
+    $totalHalaman = $setoran->sum(function($s){
+        if ($s->halaman_awal && $s->halaman_akhir) {
+            return ($s->halaman_akhir - $s->halaman_awal + 1);
+        }
+        return 0;
+    });
+
+    // List halaman untuk ditampilkan (contoh: 12–15, 20–25)
+    $daftarHalaman = $setoran->map(function($s){
+        if ($s->halaman_awal && $s->halaman_akhir) {
+            return $s->halaman_awal . '–' . $s->halaman_akhir;
+        }
+        return null;
+    })
+    ->filter()
+    ->implode(', ');
+
+    // Daftar Juz unik: "29, 30"
+    $daftarJuz = $setoran->pluck('juz')
+        ->unique()
+        ->filter()
+        ->implode(', ');
+
+    if ($daftarJuz == '') {
+        $daftarJuz = '-';
+    }
+
+    // ================
+    // LOAD PDF
+    // ================
+    $pdf = Pdf::loadView('rapor.pdf', [
+        'santri'          => $santri,
+        'nilaiAkademik'   => $nilaiAkademik,
+        'nilaiKesantrian' => $nilaiKesantrian,
+
+        // Variabel tambahan untuk Bagian Tahfizh
+        'totalHalaman'    => $totalHalaman,
+        'daftarHalaman'   => $daftarHalaman,
+        'daftarJuz'       => $daftarJuz,
+    ]);
 
     return $pdf->stream('Rapor_' . $santri->nama . '.pdf');
 }
-
-    
 }

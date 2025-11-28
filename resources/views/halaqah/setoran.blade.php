@@ -508,7 +508,7 @@
                                 <td data-label="TANGGAL">{{ $s->tanggal_setoran->format('d/m/Y') }}</td>
                                 <td data-label="JUZ">{{ $s->juz ?? '-' }}</td>
                                 <td data-label="AYAT">{{ $s->ayat }}</td>
-                                <td data-label="HALAMAN">{{ $s->halaman }}</td>
+                                <td data-label="HALAMAN">{{ $s->halaman_awal }} - {{ $s->halaman_akhir }}</td>
                                 <td data-label="STATUS">
                                     <span
                                         class="status-badge 
@@ -522,16 +522,27 @@
                                 <td data-label="AKSI" class="text-center">
                                     <div class="d-flex justify-content-center align-items-center gap-2">
                                         <button class="action-btn edit" data-bs-toggle="modal"
-                                            data-bs-target="#editSetoranModal" data-id="{{ $s->id_setoran }}"
+                                            data-bs-target="#editSetoranModal" 
+                                            data-id="{{ $s->id_setoran }}"
                                             data-nis="{{ $santri->nis }}"
                                             data-tanggal="{{ $s->tanggal_setoran->format('Y-m-d') }}"
-                                            data-juz="{{ $s->juz }}" data-ayat="{{ $s->ayat }}"
-                                            data-halaman="{{ $s->halaman }}" data-status="{{ $s->status }}"
-                                            data-catatan="{{ $s->catatan }}" title="Edit">
-                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                                viewBox="0 0 24 24" fill="white">
-                                                <path
-                                                    d="M21 12a1 1 0 0 0-1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6a1 1 0 0 0 0-2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-6a1 1 0 0 0-1-1m-15 .76V17a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .71-.29l6.92-6.93L21.71 8a1 1 0 0 0 0-1.42l-4.24-4.29a1 1 0 0 0-1.42 0l-2.82 2.83l-6.94 6.93a1 1 0 0 0-.29.71m10.76-8.35l2.83 2.83l-1.42 1.42l-2.83-2.83ZM8 13.17l5.93-5.93l2.83 2.83L10.83 16H8Z" />
+                                            data-juz="{{ $s->juz }}"
+                                            data-ayat="{{ $s->ayat }}"
+                                            data-halaman_awal="{{ $s->halaman_awal }}"
+                                            data-halaman_akhir="{{ $s->halaman_akhir }}"
+                                            data-status="{{ $s->status }}"
+                                            data-catatan="{{ $s->catatan }}"
+                                            title="Edit">
+
+                                            
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                viewBox="0 0 24 24" fill="none" stroke="white"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                                <path d="M4 7h16"></path>
+                                                <path d="M10 11v6"></path>
+                                                <path d="M14 11v6"></path>
+                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12"></path>
+                                                <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path>
                                             </svg>
                                         </button>
 
@@ -595,10 +606,14 @@
                                     placeholder="Contoh: 1–7" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="halaman" class="form-label">Halaman</label>
-                                <input type="text" class="form-control" id="halaman" name="halaman"
-                                    placeholder="Contoh: 12" required>
+                                <label class="form-label">Halaman Awal</label>
+                                <input type="number" class="form-control" name="halaman_awal" placeholder="Misal: 12" required>
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Halaman Akhir</label>
+                                <input type="number" class="form-control" name="halaman_akhir" placeholder="Misal: 15" required>
+                            </div>
+
                         </div>
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>
@@ -653,9 +668,14 @@
                                 <input type="text" class="form-control" id="edit_ayat" name="ayat" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="edit_halaman" class="form-label">Halaman</label>
-                                <input type="text" class="form-control" id="edit_halaman" name="halaman" required>
+                                <label class="form-label">Halaman Awal</label>
+                                <input type="number" class="form-control" id="edit_halaman_awal" name="halaman_awal" required>
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Halaman Akhir</label>
+                                <input type="number" class="form-control" id="edit_halaman_akhir" name="halaman_akhir" required>
+                            </div>
+
                         </div>
                         <div class="mb-3">
                             <label for="edit_status" class="form-label">Status</label>
@@ -721,7 +741,8 @@
             document.getElementById('edit_tanggal_setoran').value = button.dataset.tanggal;
             document.getElementById('edit_juz').value = button.dataset.juz ?? '';
             document.getElementById('edit_ayat').value = button.dataset.ayat;
-            document.getElementById('edit_halaman').value = button.dataset.halaman;
+            document.getElementById('edit_halaman_awal').value = button.dataset.halaman_awal;
+            document.getElementById('edit_halaman_akhir').value = button.dataset.halaman_akhir;
             document.getElementById('edit_status').value = button.dataset.status;
             document.getElementById('edit_catatan').value = button.dataset.catatan ?? '';
         });
