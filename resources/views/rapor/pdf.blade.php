@@ -348,8 +348,8 @@
                 <td style="padding-left: 30px;">
                     {{ $index == 0 ? 'a. Tahfizh' : 'b. Tahsin' }}
                 </td>
-                <td class="text-center">{{ $t->total_kesalahan ?? '-' }}</td>
-                <td class="text-center">
+                <td class="text-center">{{ $t->nilai_angka }}</td>
+                <td class="text-center">{{ $t->nilai_huruf }}</td>
                     @php
                         $kesalahan = $t->total_kesalahan ?? 999;
                         if($kesalahan <= 5) echo 'A';
@@ -426,7 +426,7 @@
                 <td style="padding-left: 30px;">
                     {{ chr(97 + $index) }}. {{ $a->mataPelajaran->nama_matapelajaran ?? '-' }}
                 </td>
-                <td class="text-center">{{ $a->rata_rata ?? '-' }}</td>
+                <td class="text-center">{{ $a->nilai_rata_rata ?? '-' }}</td>
                 <td class="text-center">{{ $a->predikat ?? '-' }}</td>
                 <td>
                     <div class="detail-text">
@@ -484,7 +484,7 @@
                 <td style="width: 20%;">1. Sakit</td>
                 <td style="width: 5%; text-align: center;">:</td>
                 <td style="width: 15%; text-align: center; font-weight: bold;">
-                    {{ $santri->nilaiAkademik->sum('sakit') }}
+                    {{ $santri->nilaiAkademik->sum('jumlah_sakit') }}
                 </td>
                 <td style="width: 60%;">Hari</td>
             </tr>
@@ -492,7 +492,7 @@
                 <td>2. Izin</td>
                 <td style="text-align: center;">:</td>
                 <td style="text-align: center; font-weight: bold;">
-                    {{ $santri->nilaiAkademik->sum('izin') }}
+                    {{ $santri->nilaiAkademik->sum('jumlah_izin') }}
                 </td>
                 <td>Hari</td>
             </tr>
@@ -500,7 +500,7 @@
                 <td>3. Ghaib</td>
                 <td style="text-align: center;">:</td>
                 <td style="text-align: center; font-weight: bold;">
-                    {{ $santri->nilaiAkademik->sum('ghaib') }}
+                    {{ $santri->nilaiAkademik->sum('jumlah_ghaib') }}
                 </td>
                 <td>Hari</td>
             </tr>

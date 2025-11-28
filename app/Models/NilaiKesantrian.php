@@ -11,8 +11,6 @@ class NilaiKesantrian extends Model
 
     protected $table = 'nilaikesantrian';
     protected $primaryKey = 'id_nilai_kesantrian';
-
-    // Jika PK bukan auto increment integer, bisa tambahkan:
     public $incrementing = true;
     protected $keyType = 'int';
 
@@ -24,27 +22,30 @@ class NilaiKesantrian extends Model
         'nilai_ibadah',
         'nilai_kerapian',
         'nilai_kedisiplinan',
+        'nilai_kebersihan',
         'nilai_ekstrakulikuler',
         'nilai_buku_pegangan',
     ];
 
     /**
-     * RELASI MODEL
+     * RELASI KE SANTRI
      */
-
-    // Relasi ke tabel Santri (FK: nis → PK: nis)
     public function santri()
     {
         return $this->belongsTo(Santri::class, 'nis', 'nis');
     }
 
-    // Relasi ke Mata Pelajaran
+    /**
+     * RELASI KE MATA PELAJARAN
+     */
     public function mataPelajaran()
     {
         return $this->belongsTo(MataPelajaran::class, 'id_matapelajaran', 'id_matapelajaran');
     }
 
-    // Relasi ke Tahun Ajaran
+    /**
+     * RELASI KE TAHUN AJARAN
+     */
     public function tahunAjaran()
     {
         return $this->belongsTo(TahunAjaran::class, 'id_tahunAjaran', 'id_tahunAjaran');

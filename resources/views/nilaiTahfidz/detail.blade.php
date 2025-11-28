@@ -372,6 +372,10 @@
                 <form id="formEditUjian" method="POST">
                     @csrf
                     @method('PUT')
+
+                    <input type="hidden" name="nis" value="{{ $santri->nis }}">
+                    <input type="hidden" name="tahun_ajaran_id" value="{{ $santri->id_tahunAjaran }}">
+
                     <div class="modal-body">
 
                         <!-- Jenis Ujian -->
