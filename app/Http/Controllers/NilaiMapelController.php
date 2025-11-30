@@ -14,12 +14,33 @@ class NilaiMapelController extends Controller
     /** 
      * Halaman awal -> daftar mata pelajaran + tahun ajaran
      */
-    public function index()
-    {
-        $mapel = MataPelajaran::with('tahunAjaran')->get();
+    public function index(Request $request)
+{
+    // Ambil filter dari query string (GET)
+    $selectedTA = $request->id_tahun_ajaran ?? '';
 
-        return view('nilaiakademik.index', compact('mapel'));
+    // Ambil semua Tahun Ajaran untuk dropdown
+    $tahunAjaranList = TahunAjaran::orderBy('tahun')
+                        ->orderBy('semester')
+                        ->get();
+
+    // Query Mapel
+    $query = MataPelajaran::with('tahunAjaran');
+
+    // Jika filter tahun ajaran dipilih → terapkan filter
+    if ($selectedTA !== '') {
+        $query->where('id_tahun_ajaran', $selectedTA);
     }
+
+    $mapel = $query->get();
+
+    return view('nilaiakademik.index', [
+        'mapel' => $mapel,
+        'tahunAjaranList' => $tahunAjaranList,
+        'selectedTA' => $selectedTA
+    ]);
+}
+
 
     /**
      * Detail nilai per mata pelajaran
