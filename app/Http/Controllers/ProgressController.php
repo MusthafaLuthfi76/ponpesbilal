@@ -37,7 +37,7 @@ class ProgressController extends Controller
     $bulanCount = 6; // tampilkan 6 bulan terakhir
 
     $monthlyData = Setoran::where('nis', $santri->nis)
-        ->selectRaw("SUM(halaman) as total_halaman, DATE_FORMAT(tanggal_setoran, '%Y-%m') as bulan")
+        ->selectRaw("SUM(halaman_akhir - halaman_awal + 1) as total_halaman,DATE_FORMAT(tanggal_setoran, '%Y-%m') as bulan")
         ->where('tanggal_setoran', '>=', now()->subMonths($bulanCount - 1)->startOfMonth())
         ->groupBy('bulan')
         ->orderBy('bulan', 'asc')
