@@ -9,18 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+public function up(): void
 {
     Schema::table('setoran', function (Blueprint $table) {
-        $table->integer('halaman_awal')->nullable()->after('juz');
-        $table->integer('halaman_akhir')->nullable()->after('halaman_awal');
+        $table->string('ayat')->nullable()->change();
     });
 }
 
 public function down(): void
 {
     Schema::table('setoran', function (Blueprint $table) {
-        $table->dropColumn(['halaman_awal', 'halaman_akhir']);
+        $table->string('ayat')->nullable()->change(); // TETAP NULLABLE
     });
 }
 };

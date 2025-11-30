@@ -147,6 +147,14 @@ Route::middleware('auth')->group(function () {
     */
     Route::get('/rapor', [RaporController::class, 'index'])->name('rapor.index');
     Route::get('/rapor/cetak/{nis}', [RaporController::class, 'cetak'])->name('rapor.cetak');
+    /*
+    |--------------------------------------------------------------------------
+    | Rapor
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/rapor', [RaporController::class, 'index'])->name('rapor.index');
+    Route::get('/rapor/cetak/{nis}', [RaporController::class, 'cetak'])->name('rapor.cetak');
+    Route::post('/rapor/cetak-bulk', [RaporController::class, 'cetakBulk'])->name('rapor.cetak.bulk');  // 👈 TAMBAHKAN INI
 
     /*
     |--------------------------------------------------------------------------

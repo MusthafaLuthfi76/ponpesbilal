@@ -493,7 +493,6 @@
                             <th>NO</th>
                             <th>TANGGAL</th>
                             <th>JUZ</th>
-                            <th>AYAT</th>
                             <th>HALAMAN</th>
                             <th>STATUS</th>
                             <th>CATATAN</th>
@@ -507,7 +506,6 @@
                                 <td data-label="NO">{{ $loop->iteration }}</td>
                                 <td data-label="TANGGAL">{{ $s->tanggal_setoran->format('d/m/Y') }}</td>
                                 <td data-label="JUZ">{{ $s->juz ?? '-' }}</td>
-                                <td data-label="AYAT">{{ $s->ayat }}</td>
                                 <td data-label="HALAMAN">{{ $s->halaman_awal }} - {{ $s->halaman_akhir }}</td>
                                 <td data-label="STATUS">
                                     <span
@@ -522,7 +520,7 @@
                                 <td data-label="AKSI" class="text-center">
                                     <div class="d-flex justify-content-center align-items-center gap-2">
                                         <button class="action-btn edit" data-bs-toggle="modal"
-                                            data-bs-target="#editSetoranModal" 
+                                            data-bs-target="#editSetoranModal"
                                             data-id="{{ $s->id_setoran }}"
                                             data-nis="{{ $santri->nis }}"
                                             data-tanggal="{{ $s->tanggal_setoran->format('Y-m-d') }}"
@@ -534,17 +532,16 @@
                                             data-catatan="{{ $s->catatan }}"
                                             title="Edit">
 
-                                            
                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                 viewBox="0 0 24 24" fill="none" stroke="white"
-                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                                <path d="M4 7h16"></path>
-                                                <path d="M10 11v6"></path>
-                                                <path d="M14 11v6"></path>
-                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12"></path>
-                                                <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path>
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2
+                                                    2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3
+                                                    3L12 15l-4 1 1-4 9.5-9.5z" />
                                             </svg>
                                         </button>
+
 
                                         <button class="action-btn delete" data-bs-toggle="modal"
                                             data-bs-target="#deleteSetoranModal" data-id="{{ $s->id_setoran }}"
@@ -600,19 +597,15 @@
                             </div>
                         </div>
                         <div class="row">
-                           <div class="col-md-6 mb-3">
-                                <label for="ayat" class="form-label">Ayat</label>
-                                <input type="text" class="form-control" id="ayat" name="ayat"
-                                    placeholder="Contoh: 1–7" required>
+                          <div class="col-md-6 mb-3">
+                            <label class="form-label">Halaman Awal</label>
+                            <input type="number" class="form-control" name="halaman_awal" placeholder="Misal: 12" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Halaman Awal</label>
-                                <input type="number" class="form-control" name="halaman_awal" placeholder="Misal: 12" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Halaman Akhir</label>
-                                <input type="number" class="form-control" name="halaman_akhir" placeholder="Misal: 15" required>
-                            </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Halaman Akhir</label>
+                            <input type="number" class="form-control" name="halaman_akhir" placeholder="Misal: 15" required>
+                        </div>
 
                         </div>
                         <div class="mb-3">
@@ -664,13 +657,10 @@
                         </div>
                         <div class="row">
                            <div class="col-md-6 mb-3">
-                                <label for="edit_ayat" class="form-label">Ayat</label>
-                                <input type="text" class="form-control" id="edit_ayat" name="ayat" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Halaman Awal</label>
                                 <input type="number" class="form-control" id="edit_halaman_awal" name="halaman_awal" required>
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Halaman Akhir</label>
                                 <input type="number" class="form-control" id="edit_halaman_akhir" name="halaman_akhir" required>
@@ -740,7 +730,6 @@
 
             document.getElementById('edit_tanggal_setoran').value = button.dataset.tanggal;
             document.getElementById('edit_juz').value = button.dataset.juz ?? '';
-            document.getElementById('edit_ayat').value = button.dataset.ayat;
             document.getElementById('edit_halaman_awal').value = button.dataset.halaman_awal;
             document.getElementById('edit_halaman_akhir').value = button.dataset.halaman_akhir;
             document.getElementById('edit_status').value = button.dataset.status;

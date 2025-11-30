@@ -9,14 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('nilaiakademik', function (Blueprint $table) {
-
-            // 1. Drop foreign key lama (kalau ada)
-            // MySQL akan mengabaikan kalau sudah tidak ada
+            // Drop FK kalau ada
             try {
-                $table->dropForeign('nilaikademik_id_matapelajaran_foreign');
-            } catch (\Exception $e) {}
+                $table->dropForeign(['id_matapelajaran']);
+            } catch (\Throwable $e) {}
 
-            // 2. Tambahkan foreign key baru dengan CASCADE
+            // Tambah FK baru
             $table->foreign('id_matapelajaran')
                   ->references('id_matapelajaran')
                   ->on('matapelajaran')
@@ -28,11 +26,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('nilaiakademik', function (Blueprint $table) {
-
-            // Kembalikan ke restrict jika rollback
             try {
-                $table->dropForeign('nilaikademik_id_matapelajaran_foreign');
-            } catch (\Exception $e) {}
+                $table->dropForeign(['id_matapelajaran']);
+            } catch (\Throwable $e) {}
 
             $table->foreign('id_matapelajaran')
                   ->references('id_matapelajaran')

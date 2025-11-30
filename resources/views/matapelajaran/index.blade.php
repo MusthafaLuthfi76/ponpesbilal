@@ -62,7 +62,7 @@
                 <td>
                     {{ $mp->tahunAjaran?->tahun ?? '-' }} - Semester {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}
                 </td>
-                <td>{{ $mp->pendidik?->nama_pendidik ?? '-' }}</td>
+                <td>{{ $mp->pendidik->nama ?? '-' }}</td>
                 <td>{{ $mp->kkm }}</td>
                 <td>{{ $mp->bobot_UTS }}%</td>
                 <td>{{ $mp->bobot_UAS }}%</td>
