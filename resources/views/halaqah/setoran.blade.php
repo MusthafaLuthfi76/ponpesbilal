@@ -145,8 +145,7 @@
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        overflow: hidde
-        n;
+        overflow: hidden;
     }
 
     .setoran-header {
@@ -189,7 +188,6 @@
 
     /* --- Tabel Desktop Styling --- */
     table {
-        min-width: 800px; /* Lebar minimum untuk memicu scroll di mobile */
         width: 100%;
         border-collapse: collapse;
     }
@@ -304,123 +302,197 @@
         box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
     }
 
-    /* --- FIX WIDTH & ALIGNMENT UNTUK KOLOM AKSI (DESKTOP + MOBILE) --- */
-    th:last-child,
-    td:last-child {
-    width: 120px !important; /* ukuran kolom */
-    text-align: center !important;
-}
-
-/* Wrapper tombol supaya rapi */
-    .action-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
+    /* SEMBUNYIKAN CARD VIEW DI DESKTOP */
+    .setoran-card-mobile {
+        display: none;
+    }
 
     
     /* ===================================================
-    ⭐ MOBILE SCROLLABLE TABLE IMPLEMENTATION (< 768px)
+    ⭐ MOBILE CARD VIEW IMPLEMENTATION (< 768px)
     =================================================== */
     @media (max-width: 768px) {
         
+        body {
+            background-color: #f5f5f5;
+        }
+
         .container-wrapper {
-            /* Pastikan padding horizontal di container-wrapper memadai */
-            padding: 0 15px 20px 15px; 
+            padding: 0 0 20px 0;
         }
         
-        /* 1. Header (Kembali & Judul) - Dibuat 100% lebar */
+        /* 1. Header */
         .page-header {
+            border-radius: 0;
             flex-direction: column;
             align-items: flex-start;
             padding: 15px;
+            margin-bottom: 15px;
         }
         .page-header-left {
             margin-bottom: 10px;
+            width: 100%;
+        }
+        .page-header h4 {
+            font-size: 18px;
         }
         .back-btn {
             width: 100%;
             justify-content: center;
         }
         
-        /* 2. Santri Info Card - Dibuat lebih ringkas */
+        /* 2. Santri Info Card */
         .santri-info-card {
-            padding: 20px;
+            border-radius: 0;
+            padding: 20px 15px;
+            margin-bottom: 15px;
+        }
+        .santri-info-header {
+            margin-bottom: 12px;
+        }
+        .santri-avatar {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+        .santri-details h5 {
+            font-size: 18px;
         }
         .santri-stats {
-            flex-direction: column; 
+            flex-wrap: wrap;
             gap: 15px;
         }
         .stat-item {
-            justify-content: space-between; 
-            width: 100%;
-        }
-        /* Sembunyikan ikon di statistik agar lebih ringkas */
-        .stat-item i {
-            display: none; 
-        }
-        .stat-label {
-             /* Ubah kembali nilai opacity yang dihapus oleh Card View CSS sebelumnya */
-            opacity: 0.8; 
-            font-size: 12px; 
-            font-weight: normal;
-        }
-        .stat-value {
-            font-size: 18px;
+            flex: 1;
+            min-width: calc(50% - 8px);
         }
 
-        /* 3. Setoran Header dan Tombol */
+        /* 3. Setoran Header */
+        .setoran-card {
+            border-radius: 0;
+        }
         .setoran-header {
             flex-direction: column;
             align-items: flex-start;
             padding: 15px;
-            gap: 10px;
+            gap: 12px;
+        }
+        .setoran-header h5 {
+            font-size: 16px;
         }
         .add-setoran-btn {
             width: 100%; 
             justify-content: center;
         }
 
-        /* 4. Implementasi Tabel Scrollable */
+        /* SEMBUNYIKAN TABEL DI MOBILE */
         .table-responsive {
-            overflow-x: auto; /* Memicu Scroll Horizontal */
-            /* Tambahkan padding di sini agar scroll tidak mentok ke sisi layar */
-            padding: 0 15px 0 15px; 
+            display: none !important;
         }
-        
-        /* Hapus semua properti Card View yang tidak diperlukan */
-        thead {
-            display: table-header-group; /* Tampilkan Header */
+
+        /* TAMPILKAN CARD VIEW DI MOBILE */
+        .setoran-card-mobile {
+            display: block;
+            padding: 0 15px 15px 15px;
         }
-        tr {
-            display: table-row;
-            margin-bottom: 0;
-            border: none;
-            padding: 0;
-            box-shadow: none;
-            background: none;
+
+        /* Styling Card Item */
+        .setoran-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
         }
-        td {
-            display: table-cell;
-            text-align: left;
-            padding: 10px 15px;
+
+        .setoran-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
             border-bottom: 1px solid #f0f0f0;
-            position: static; /* Hapus positioning relatif */
+        }
+
+        .setoran-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            font-weight: 600;
             font-size: 14px;
         }
-        td:last-child {
+
+        .setoran-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .setoran-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .setoran-catatan {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .setoran-catatan .info-label {
+            margin-bottom: 5px;
+        }
+
+        .setoran-catatan .info-value {
+            font-size: 13px;
+            font-weight: normal;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        /* Empty State Mobile */
+        .empty-state-mobile {
             text-align: center;
+            padding: 40px 20px;
+            color: #999;
         }
-        /* Hapus semua pseudoelemen (label kolom) */
-        tr td:before,
-        tr td:nth-last-child(1)::before {
-            content: none;
+
+        .empty-state-mobile i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
         }
-        
-        /* Perataan tombol aksi */
-        .action-btn {
-            margin: 0 3px;
+
+        .empty-state-mobile p {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-mobile small {
+            font-size: 13px;
         }
     }
 </style>
@@ -485,7 +557,7 @@
                 </button>
             </div>
 
-            {{-- **TABLE CONTAINER DENGAN OVERFLOW-X: AUTO DI MOBILE** --}}
+            {{-- DESKTOP: TABLE VIEW --}}
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -496,18 +568,17 @@
                             <th>HALAMAN</th>
                             <th>STATUS</th>
                             <th>CATATAN</th>
-                            <th>AKSI</th>
+                            <th style="text-align: center;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($setoran as $s)
                             <tr>
-                                {{-- data-label DIBIARKAN ADA, JIKA SUATU SAAT KEMBALI KE CARD VIEW --}}
-                                <td data-label="NO">{{ $loop->iteration }}</td>
-                                <td data-label="TANGGAL">{{ $s->tanggal_setoran->format('d/m/Y') }}</td>
-                                <td data-label="JUZ">{{ $s->juz ?? '-' }}</td>
-                                <td data-label="HALAMAN">{{ $s->halaman_awal }} - {{ $s->halaman_akhir }}</td>
-                                <td data-label="STATUS">
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $s->tanggal_setoran->format('d/m/Y') }}</td>
+                                <td>{{ $s->juz ?? '-' }}</td>
+                                <td>{{ $s->halaman_awal }} - {{ $s->halaman_akhir }}</td>
+                                <td>
                                     <span
                                         class="status-badge 
                                         @if ($s->status == 'Lancar') status-lancar
@@ -516,49 +587,45 @@
                                         {{ $s->status }}
                                     </span>
                                 </td>
-                                <td data-label="CATATAN">{{ $s->catatan ?? '-' }}</td>
-                                <td data-label="AKSI" class="text-center">
-                                    <div class="d-flex justify-content-center align-items-center gap-2">
-                                        <button class="action-btn edit" data-bs-toggle="modal"
-                                            data-bs-target="#editSetoranModal"
-                                            data-id="{{ $s->id_setoran }}"
-                                            data-nis="{{ $santri->nis }}"
-                                            data-tanggal="{{ $s->tanggal_setoran->format('Y-m-d') }}"
-                                            data-juz="{{ $s->juz }}"
-                                            data-ayat="{{ $s->ayat }}"
-                                            data-halaman_awal="{{ $s->halaman_awal }}"
-                                            data-halaman_akhir="{{ $s->halaman_akhir }}"
-                                            data-status="{{ $s->status }}"
-                                            data-catatan="{{ $s->catatan }}"
-                                            title="Edit">
+                                <td>{{ $s->catatan ?? '-' }}</td>
+                                <td style="text-align: center;">
+                                    <button class="action-btn edit" data-bs-toggle="modal"
+                                        data-bs-target="#editSetoranModal"
+                                        data-id="{{ $s->id_setoran }}"
+                                        data-nis="{{ $santri->nis }}"
+                                        data-tanggal="{{ $s->tanggal_setoran->format('Y-m-d') }}"
+                                        data-juz="{{ $s->juz }}"
+                                        data-ayat="{{ $s->ayat }}"
+                                        data-halaman_awal="{{ $s->halaman_awal }}"
+                                        data-halaman_akhir="{{ $s->halaman_akhir }}"
+                                        data-status="{{ $s->status }}"
+                                        data-catatan="{{ $s->catatan }}"
+                                        title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                            viewBox="0 0 24 24" fill="none" stroke="white"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2
+                                                2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3
+                                                3L12 15l-4 1 1-4 9.5-9.5z" />
+                                        </svg>
+                                    </button>
 
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                                viewBox="0 0 24 24" fill="none" stroke="white"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2
-                                                    2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3
-                                                    3L12 15l-4 1 1-4 9.5-9.5z" />
-                                            </svg>
-                                        </button>
-
-
-                                        <button class="action-btn delete" data-bs-toggle="modal"
-                                            data-bs-target="#deleteSetoranModal" data-id="{{ $s->id_setoran }}"
-                                            data-nis="{{ $santri->nis }}" data-surah="{{ $s->surah }}" title="Hapus">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                                viewBox="0 0 24 24" fill="none" stroke="white" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2">
-                                                <path
-                                                    d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
-                                            </svg>
-                                        </button>
-                                    </div>
+                                    <button class="action-btn delete" data-bs-toggle="modal"
+                                        data-bs-target="#deleteSetoranModal" data-id="{{ $s->id_setoran }}"
+                                        data-nis="{{ $santri->nis }}" data-surah="{{ $s->surah }}" title="Hapus">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                            viewBox="0 0 24 24" fill="none" stroke="white" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2">
+                                            <path
+                                                d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                                        </svg>
+                                    </button>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8">
+                                <td colspan="7">
                                     <div class="empty-state">
                                         <i class="fas fa-book-quran"></i>
                                         <p>Belum ada setoran</p>
@@ -570,10 +637,92 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- MOBILE: CARD VIEW --}}
+            <div class="setoran-card-mobile">
+                @forelse($setoran as $s)
+                    <div class="setoran-item">
+                        <div class="setoran-item-header">
+                            <div class="setoran-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                {{ $s->tanggal_setoran->format('d M Y') }}
+                            </div>
+                            <div class="setoran-actions">
+                                <button class="action-btn edit" data-bs-toggle="modal"
+                                    data-bs-target="#editSetoranModal"
+                                    data-id="{{ $s->id_setoran }}"
+                                    data-nis="{{ $santri->nis }}"
+                                    data-tanggal="{{ $s->tanggal_setoran->format('Y-m-d') }}"
+                                    data-juz="{{ $s->juz }}"
+                                    data-ayat="{{ $s->ayat }}"
+                                    data-halaman_awal="{{ $s->halaman_awal }}"
+                                    data-halaman_akhir="{{ $s->halaman_akhir }}"
+                                    data-status="{{ $s->status }}"
+                                    data-catatan="{{ $s->catatan }}"
+                                    title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 24 24" fill="none" stroke="white"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                </button>
+                                <button class="action-btn delete" data-bs-toggle="modal"
+                                    data-bs-target="#deleteSetoranModal" 
+                                    data-id="{{ $s->id_setoran }}"
+                                    data-nis="{{ $santri->nis }}" 
+                                    data-surah="{{ $s->surah }}" 
+                                    title="Hapus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 24 24" fill="none" stroke="white" stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="2">
+                                        <path d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="setoran-info">
+                            <div class="info-item">
+                                <span class="info-label">Juz</span>
+                                <span class="info-value">{{ $s->juz ?? '-' }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Halaman</span>
+                                <span class="info-value">{{ $s->halaman_awal }} - {{ $s->halaman_akhir }}</span>
+                            </div>
+                            <div class="info-item" style="grid-column: 1 / -1;">
+                                <span class="info-label">Status</span>
+                                <div>
+                                    <span class="status-badge 
+                                        @if ($s->status == 'Lancar') status-lancar
+                                        @elseif($s->status == 'Kurang Lancar') status-kurang
+                                        @else status-tidak @endif">
+                                        {{ $s->status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($s->catatan)
+                        <div class="setoran-catatan">
+                            <span class="info-label">Catatan</span>
+                            <div class="info-value">{{ $s->catatan }}</div>
+                        </div>
+                        @endif
+                    </div>
+                @empty
+                    <div class="empty-state-mobile">
+                        <i class="fas fa-book-quran"></i>
+                        <p>Belum ada setoran</p>
+                        <small>Klik tombol "Tambah Setoran" untuk menambah setoran baru</small>
+                    </div>
+                @endforelse
+            </div>
         </div>
     </div>
 
-    {{-- Modal Tambah Setoran (Kode tetap sama) --}}
+    {{-- Modal Tambah Setoran --}}
     <div class="modal fade" id="addSetoranModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -632,7 +781,7 @@
         </div>
     </div>
 
-    {{-- Modal Edit Setoran (Kode tetap sama) --}}
+    {{-- Modal Edit Setoran --}}
     <div class="modal fade" id="editSetoranModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -691,7 +840,7 @@
         </div>
     </div>
 
-    {{-- Modal Delete Setoran (Kode tetap sama) --}}
+    {{-- Modal Delete Setoran --}}
     <div class="modal fade" id="deleteSetoranModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
