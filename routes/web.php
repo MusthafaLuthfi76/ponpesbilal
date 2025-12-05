@@ -26,6 +26,7 @@ Route::get('/', function () {
 
 Route::get('/progress', [ProgressController::class, 'index'])->name('progress.index');
 Route::get('/progress/search', [ProgressController::class, 'search'])->name('progress.search');
+Route::get('/progress/{nis}', [ProgressController::class, 'show'])->name('progress.show');
 
 
 /*
@@ -139,6 +140,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/nilaiTahfidz', [NilaiTahfidzController::class, 'store'])->name('nilaiTahfidz.store');
     Route::put('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
     Route::delete('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
+    Route::get('/nilai-tahfidz/{nis}/create', [NilaiTahfidzController::class, 'create'])
+    ->name('nilaiTahfidz.create');
+
 
     /*
     |--------------------------------------------------------------------------

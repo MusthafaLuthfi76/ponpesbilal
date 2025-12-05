@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Santri;
+use App\Models\TahunAjaran;
 use App\Models\UjianTahfidz;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -196,4 +197,13 @@ class NilaiTahfidzController extends Controller
             ->route('nilaiTahfidz.show', $nis)
             ->with('success', 'Data nilai tahfidz berhasil dihapus');
     }
+
+    public function create($nis)
+{
+    $santri = Santri::with(['tahunAjaran','halaqah'])->findOrFail($nis);
+    $tahunAjaran = TahunAjaran::all();
+
+    return view('nilaiTahfidz.create', compact('santri', 'tahunAjaran'));
+}
+
 }
