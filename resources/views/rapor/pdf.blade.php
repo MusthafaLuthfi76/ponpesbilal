@@ -17,6 +17,7 @@
             font-size: 11px;
             margin: 20px;
             line-height: 1.3;
+            page-break-inside: avoid;
         }
 
         /* Header Section dengan Logo */
@@ -275,11 +276,26 @@
             max-width: 120px;
             margin-top: 20px;
         }
+
+        /* Page break untuk bulk print */
+        @media print {
+            .page-break {
+                page-break-after: always;
+                page-break-inside: avoid;
+            }
+            
+            body {
+                page-break-inside: avoid;
+            }
+        }
+
+        @page {
+            margin: 20px;
+        }
     </style>
 </head>
 
 <body>
-
     <!-- HEADER dengan Logo -->
     <div class="header-section">
         <div class="logo-container">
@@ -343,75 +359,90 @@
             </tr>
 
             @forelse ($santri->ujianTahfidz as $index => $t)
-            <tr class="sub-row">
-                <td class="text-center">{{ $index + 1 }}</td>
-                <td style="padding-left: 30px;">
-                    {{ $index == 0 ? 'a. Tahfizh' : 'b. Tahsin' }}
-                </td>
-                <td class="text-center">{{ $t->nilai_angka }}</td>
-                <td class="text-center">{{ $t->nilai_huruf }}</td>
-                    @php
-                        $kesalahan = $t->total_kesalahan ?? 999;
-                        if($kesalahan <= 5) echo 'A';
-                        elseif($kesalahan <= 10) echo 'B';
-                        else echo 'C';
-                    @endphp
-                </td>
-                <td>
-                    <div class="detail-text">
-                        @if($index == 0)
-                            Jumlah Hafalan:<br>
-                            2 Juz - Halaman<br>
-                            (Juz 29, 30)
-                            <div class="detail-header">Jumlah Hafalan yang diujikan:</div>
-                            1 Juz<br>
-                            (Juz 30)
-                            <div class="detail-header" style="margin-top: 8px;">Sekali Duduk</div>
-                            <b>{{ ucfirst($t->sekali_duduk ?? 'Jayyid') }}</b>
-                        @else
-                            Materi yang dipelajari:
-                            <ul style="margin-top: 3px;">
-                                <li>Pengenalan Ilmu Tajwid</li>
-                                <li>Makhorijul Huruf</li>
-                            </ul>
-                        @endif
-                    </div>
-                </td>
-            </tr>
+                <tr class="sub-row">
+                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td style="padding-left: 30px;">
+                        {{ $index == 0 ? 'a. Tahfizh' : 'b. Tahsin' }}
+                    </td>
+
+                    {{-- Nilai Angka --}}
+                    <td class="text-center">{{ $t->nilai_angka ?? '-' }}</td>
+
+                    {{-- Nilai Huruf --}}
+                    <td class="text-center">
+                        @php
+                            $kesalahan = $t->total_kesalahan ?? 999;
+                            if($kesalahan <= 5) echo 'A';
+                            elseif($kesalahan <= 10) echo 'B';
+                            else echo 'C';
+                        @endphp
+                    </td>
+
+                    {{-- Keterangan --}}
+                    <td>
+                        <div class="detail-text">
+                            {{-- === IF TAHFIZH === --}}
+                            @if($index == 0)
+                                {{-- Tanggal Setoran --}}
+                                <div class="detail-header">Setoran:</div>
+                                <ul style="margin: 3px 0 3px 15px; padding:0;">
+                                    @forelse($santri->setoran as $s)
+                                        <li>
+                                            {{ \Carbon\Carbon::parse($s->tanggal_setoran)->format('d F Y') }}
+                                            ({{ $s->halaman_awal }}–{{ $s->halaman_akhir }})
+                                        </li>
+                                    @empty
+                                        <li>-</li>
+                                    @endforelse
+                                </ul>
+
+                                {{-- Daftar Halaman --}}
+                                <div class="detail-header">Daftar Halaman:</div>
+                                <b>{{ $daftarHalaman ?: '-' }}</b><br>
+
+                                {{-- Total Halaman --}}
+                                <div class="detail-header">Total Halaman:</div>
+                                <b>{{ $totalHalaman }} Halaman</b><br>
+
+                                {{-- Juz yang Disetorkan --}}
+                                <div class="detail-header">Juz yang Disetorkan:</div>
+                                <b>{{ $daftarJuz ?: '-' }}</b><br>
+
+                                {{-- Juz yang Diujikan --}}
+                                <div class="detail-header">Jumlah Hafalan yang Diujikan:</div>
+                                <b>Juz {{ $t->juz ?? '-' }}</b><br>
+
+                                {{-- Sekali Duduk --}}
+                                <div class="detail-header" style="margin-top: 8px;">Sekali Duduk</div>
+                                <b>{{ ucfirst($t->sekali_duduk ?? '-') }}</b>
+                            @else
+                                {{-- === IF TAHSIN === --}}
+                                Materi yang dipelajari:
+                                <ul style="margin-top: 3px;">
+                                    <li>Pengenalan Ilmu Tajwid</li>
+                                    <li>Makhorijul Huruf</li>
+                                </ul>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
             @empty
-            <tr class="sub-row">
-                <td class="text-center">1</td>
-                <td style="padding-left: 30px;">a. Tahfizh</td>
-                <td class="text-center">81</td>
-                <td class="text-center">B</td>
-                <td>
-                    <div class="detail-text">
-                        Jumlah Hafalan:<br>
-                        2 Juz - Halaman<br>
-                        (Juz 29, 30)
-                        <div class="detail-header">Jumlah Hafalan yang diujikan:</div>
-                        1 Juz<br>
-                        (Juz 30)
-                        <div class="detail-header" style="margin-top: 8px;">Sekali Duduk</div>
-                        <b>Jayyid</b>
-                    </div>
-                </td>
-            </tr>
-            <tr class="sub-row">
-                <td class="text-center">2</td>
-                <td style="padding-left: 30px;">b. Tahsin</td>
-                <td class="text-center">70</td>
-                <td class="text-center">C</td>
-                <td>
-                    <div class="detail-text">
-                        Materi yang dipelajari:
-                        <ul style="margin-top: 3px;">
-                            <li>Pengenalan Ilmu Tajwid</li>
-                            <li>Makhorijul Huruf</li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
+                {{-- Jika belum ada ujian --}}
+                <tr class="sub-row">
+                    <td class="text-center">1</td>
+                    <td style="padding-left: 30px;">a. Tahfizh</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td><i>Belum ada data ujian tahfizh</i></td>
+                </tr>
+
+                <tr class="sub-row">
+                    <td class="text-center">2</td>
+                    <td style="padding-left: 30px;">b. Tahsin</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td><i>Belum ada data ujian tahsin</i></td>
+                </tr>
             @endforelse
 
             <!-- Dirasah Islamiyah Section -->
@@ -421,56 +452,56 @@
             </tr>
 
             @forelse ($santri->nilaiAkademik as $index => $a)
-            <tr class="sub-row">
-                <td class="text-center">{{ $index + 1 }}</td>
-                <td style="padding-left: 30px;">
-                    {{ chr(97 + $index) }}. {{ $a->mataPelajaran->nama_matapelajaran ?? '-' }}
-                </td>
-                <td class="text-center">{{ $a->nilai_rata_rata ?? '-' }}</td>
-                <td class="text-center">{{ $a->predikat ?? '-' }}</td>
-                <td>
-                    <div class="detail-text">
-                        @if($a->keterangan)
-                            {!! nl2br(e($a->keterangan)) !!}
-                        @else
-                            -
-                        @endif
-                    </div>
-                </td>
-            </tr>
+                <tr class="sub-row">
+                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td style="padding-left: 30px;">
+                        {{ chr(97 + $index) }}. {{ $a->mataPelajaran->nama_matapelajaran ?? '-' }}
+                    </td>
+                    <td class="text-center">{{ $a->nilai_rata_rata ?? '-' }}</td>
+                    <td class="text-center">{{ $a->predikat ?? '-' }}</td>
+                    <td>
+                        <div class="detail-text">
+                            @if($a->keterangan)
+                                {!! nl2br(e($a->keterangan)) !!}
+                            @else
+                                -
+                            @endif
+                        </div>
+                    </td>
+                </tr>
             @empty
-            <tr class="sub-row">
-                <td class="text-center">1</td>
-                <td style="padding-left: 30px;">a. Bahasa Arab<br>(Al-Arabiyyah Baina Yadaik)</td>
-                <td class="text-center">72</td>
-                <td class="text-center">C</td>
-                <td>
-                    <div class="detail-text">
-                        <ul>
-                            <li>Bab Perkenalan</li>
-                            <li>Bab Keluarga</li>
-                            <li>Bab Tempat Tinggal</li>
-                            <li>Bab Kehidupan Sehari-hari</li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            <tr class="sub-row">
-                <td class="text-center">2</td>
-                <td style="padding-left: 30px;">b. Adab<br>(Ta'lim Muta'alim)</td>
-                <td class="text-center">82</td>
-                <td class="text-center">B</td>
-                <td>
-                    <div class="detail-text">
-                        <ul>
-                            <li>Giat, rajin, dan semangat</li>
-                            <li>Memulai belajar, ukuran, dan pentingnya berkesinambungan</li>
-                            <li>Bertanwakal</li>
-                            <li>Masa belajar</li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
+                <tr class="sub-row">
+                    <td class="text-center">1</td>
+                    <td style="padding-left: 30px;">a. Bahasa Arab<br>(Al-Arabiyyah Baina Yadaik)</td>
+                    <td class="text-center">72</td>
+                    <td class="text-center">C</td>
+                    <td>
+                        <div class="detail-text">
+                            <ul>
+                                <li>Bab Perkenalan</li>
+                                <li>Bab Keluarga</li>
+                                <li>Bab Tempat Tinggal</li>
+                                <li>Bab Kehidupan Sehari-hari</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="sub-row">
+                    <td class="text-center">2</td>
+                    <td style="padding-left: 30px;">b. Adab<br>(Ta'lim Muta'alim)</td>
+                    <td class="text-center">82</td>
+                    <td class="text-center">B</td>
+                    <td>
+                        <div class="detail-text">
+                            <ul>
+                                <li>Giat, rajin, dan semangat</li>
+                                <li>Memulai belajar, ukuran, dan pentingnya berkesinambungan</li>
+                                <li>Bertanwakal</li>
+                                <li>Masa belajar</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
             @endforelse
         </tbody>
     </table>
@@ -529,12 +560,12 @@
 
             @if(isset($nilaiKesantrian) && $nilaiKesantrian->count() > 0)
                 @foreach($nilaiKesantrian as $index => $item)
-                <tr class="sub-item">
-                    <td></td>
-                    <td>{{ chr(97 + $index) }}. {{ $item->aspek ?? '-' }}</td>
-                    <td style="text-align: center; font-weight: bold;">{{ $item->nilai ?? '-' }}</td>
-                    <td>{{ $item->keterangan ?? '-' }}</td>
-                </tr>
+                    <tr class="sub-item">
+                        <td></td>
+                        <td>{{ chr(97 + $index) }}. {{ $item->aspek ?? '-' }}</td>
+                        <td style="text-align: center; font-weight: bold;">{{ $item->nilai ?? '-' }}</td>
+                        <td>{{ $item->keterangan ?? '-' }}</td>
+                    </tr>
                 @endforeach
             @else
                 <tr class="sub-item">
@@ -608,6 +639,5 @@
             </div>
         </div>
     </div>
-
 </body>
 </html>

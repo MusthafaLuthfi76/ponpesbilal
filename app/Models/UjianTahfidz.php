@@ -18,8 +18,9 @@ class UjianTahfidz extends Model
         'itqan',
         'total_kesalahan',
         'jenis_ujian', // UTS atau UAS
-        'id_tahunAjaran', // ✅ Ganti dari tahun_ajaran_id ke id_tahunAjaran
+        'tahun_ajaran_id',
         'sekali_duduk',
+        'id_penguji',
     ];
 
     /**
@@ -35,7 +36,16 @@ class UjianTahfidz extends Model
      */
     public function tahunAjaran()
     {
-        return $this->belongsTo(TahunAjaran::class, 'id_tahunAjaran', 'id_tahunAjaran');
+        // Using tahun_ajaran_id from migration
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id', 'id_tahunAjaran');
+    }
+
+    /**
+     * Relasi ke Penguji (Pendidik)
+     */
+    public function penguji()
+    {
+        return $this->belongsTo(Pendidik::class, 'id_penguji', 'id_pendidik');
     }
 
     /**
@@ -69,8 +79,10 @@ class UjianTahfidz extends Model
         parent::boot();
 
         static::saving(function ($ujian) {
-            // ✅ Otomatis hitung total kesalahan saat save
-            $ujian->total_kesalahan = $ujian->tajwid + $ujian->itqan;
+            // ✅ Otomatis hitung total kesalahan saat save (handle nullable)
+            $tajwid = $ujian->tajwid ?? 0;
+            $itqan = $ujian->itqan ?? 0;
+            $ujian->total_kesalahan = $tajwid + $itqan;
         });
     }
 }

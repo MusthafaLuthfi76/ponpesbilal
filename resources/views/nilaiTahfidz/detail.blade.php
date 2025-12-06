@@ -54,9 +54,13 @@
                                         <path
                                             d="M12 12a4 4 0 1 0-0.001-8.001A4 4 0 0 0 12 12zm6 8v-1.5c0-1.93-3.582-3.5-6-3.5s-6 1.57-6 3.5V20h12zM7.5 11.5l2.5 1.5 2-3 2 3 2.5-1.5-3-5H10.5l-3 5z" />
                                     </svg>
-                                    <span><strong>Penguji:</strong> Ust.
-                                        {{ $santri->halaqah->pendidik->nama ?? 'Belum ditentukan' }}
-
+                                    <span><strong>Penguji:</strong> 
+                                        @if(isset($ujianPertama) && $ujianPertama->penguji)
+                                            {{ $ujianPertama->penguji->nama }}
+                                        @else
+                                            <span class="text-muted">Belum ditentukan</span>
+                                        @endif
+                                    </span>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -88,8 +92,25 @@
                     </div>
                 </div>
 
-                <!-- Filter UTS/UAS -->
-                <div class="mt-3 d-flex justify-content-end align-items-center gap-2">
+                <!-- Filter Sesi Ujian & UTS/UAS -->
+                <div class="mt-3 d-flex justify-content-end align-items-center gap-2 flex-wrap">
+                    @if(isset($ujianGroups) && $ujianGroups->count() > 1)
+                    <form method="GET" action="{{ route('nilaiTahfidz.show', $santri->nis) }}" class="d-inline">
+                        <select class="form-select" style="width: auto;" name="group" onchange="this.form.submit()">
+                            <option value="">Pilih Sesi Ujian</option>
+                            @foreach($ujianGroups as $groupKey => $groupUjian)
+                                @php
+                                    $firstUjian = $groupUjian->first();
+                                    $tanggal = $firstUjian->created_at ? $firstUjian->created_at->format('d/m/Y') : '-';
+                                    $label = $firstUjian->jenis_ujian . ' - ' . ucfirst($firstUjian->sekali_duduk) . ' (' . $tanggal . ')';
+                                @endphp
+                                <option value="{{ $groupKey }}" {{ $selectedGroupKey == $groupKey ? 'selected' : '' }}>
+                                    {{ $label }} ({{ $groupUjian->count() }} juz)
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                    @endif
                     <select class="form-select" style="width: auto;" id="filterUjian" onchange="filterData()">
                         <option value="">UTS / UAS</option>
                         <option value="UTS">UTS</option>
@@ -241,20 +262,58 @@
                     @csrf
                     <input type="hidden" name="nis" value="{{ $santri->nis }}">
                     <input type="hidden" name="tahunAjaran" value="{{ $santri->id_tahunAjaran }}">
+                    @if(isset($ujianPertama))
+                        <input type="hidden" name="jenis_ujian" value="{{ $ujianPertama->jenis_ujian }}">
+                        <input type="hidden" name="sekali_duduk" value="{{ $ujianPertama->sekali_duduk }}">
+                        <input type="hidden" name="id_penguji" value="{{ $ujianPertama->id_penguji }}">
+                    @endif
 
                     <div class="modal-body">
-
-                        <!-- Jenis Ujian -->
-                        <div class="mb-3">
-                            <label for="jenis_ujian" class="form-label fw-bold">Jenis Ujian <span
-                                    class="text-danger">*</span></label>
-                            <select class="form-select border-gray-300 rounded-lg shadow-sm" id="jenis_ujian"
-                                name="jenis_ujian" required>
-                                <option value="">Pilih Jenis Ujian</option>
-                                <option value="UTS">UTS</option>
-                                <option value="UAS">UAS</option>
-                            </select>
-                        </div>
+                        @if(isset($ujianPertama))
+                            <!-- Info Ujian yang Sudah Ada -->
+                            <div class="alert alert-info mb-3">
+                                <div class="d-flex align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                    </svg>
+                                    <div>
+                                        <strong>Ujian:</strong> {{ $ujianPertama->jenis_ujian }} - 
+                                        <span class="badge {{ $ujianPertama->sekali_duduk == 'ya' ? 'bg-success' : 'bg-secondary' }}">
+                                            {{ ucfirst($ujianPertama->sekali_duduk) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <!-- Jenis Ujian (hanya jika belum ada ujian) -->
+                            <div class="mb-3">
+                                <label for="jenis_ujian" class="form-label fw-bold">Jenis Ujian <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select border-gray-300 rounded-lg shadow-sm" id="jenis_ujian"
+                                    name="jenis_ujian" required>
+                                    <option value="">Pilih Jenis Ujian</option>
+                                    <option value="UTS">UTS</option>
+                                    <option value="UAS">UAS</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Penguji (hanya jika belum ada ujian) -->
+                            <div class="mb-3">
+                                <label for="id_penguji" class="form-label fw-bold">Penguji <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select border-gray-300 rounded-lg shadow-sm" id="id_penguji"
+                                    name="id_penguji" required>
+                                    <option value="">Pilih Penguji</option>
+                                    @if(isset($pendidikList) && $pendidikList->count() > 0)
+                                        @foreach($pendidikList as $pendidik)
+                                            <option value="{{ $pendidik->id_pendidik }}">{{ $pendidik->nama }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        @endif
 
                         <!-- Juz -->
                         <div class="mb-3">
@@ -316,21 +375,23 @@
                                 id="total_kesalahan" name="total_kesalahan" readonly>
                         </div>
 
-                        <!-- Sekali Duduk -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold d-block">Sekali Duduk <span
-                                    class="text-danger">*</span></label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="sekali_duduk" id="sekali_duduk_ya"
-                                    value="ya" required>
-                                <label class="form-check-label" for="sekali_duduk_ya">Ya</label>
+                        @if(!isset($ujianPertama))
+                            <!-- Sekali Duduk (hanya jika belum ada ujian) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold d-block">Sekali Duduk <span
+                                        class="text-danger">*</span></label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="sekali_duduk" id="sekali_duduk_ya"
+                                        value="ya" required>
+                                    <label class="form-check-label" for="sekali_duduk_ya">Ya</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="sekali_duduk"
+                                        id="sekali_duduk_tidak" value="tidak">
+                                    <label class="form-check-label" for="sekali_duduk_tidak">Tidak</label>
+                                </div>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="sekali_duduk"
-                                    id="sekali_duduk_tidak" value="tidak">
-                                <label class="form-check-label" for="sekali_duduk_tidak">Tidak</label>
-                            </div>
-                        </div>
+                        @endif
 
                     </div>
 

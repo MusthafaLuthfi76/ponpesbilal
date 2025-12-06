@@ -6,24 +6,39 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-   public function up()
+    public function up()
+    {
+        Schema::table('setoran', function (Blueprint $table) {
+            if (!Schema::hasColumn('setoran', 'halaman_awal')) {
+                $table->integer('halaman_awal')->nullable()->after('juz');
+            }
+
+            if (!Schema::hasColumn('setoran', 'halaman_akhir')) {
+                $table->integer('halaman_akhir')->nullable()->after('halaman_awal');
+            }
+
+            if (Schema::hasColumn('setoran', 'halaman')) {
+                $table->dropColumn('halaman');
+            }
+        });
+    }
+
+    public function down()
 {
     Schema::table('setoran', function (Blueprint $table) {
-        $table->string('halaman')->nullable()->after('ayat');
+
+        if (Schema::hasColumn('setoran', 'halaman_awal')) {
+            $table->dropColumn('halaman_awal');
+        }
+
+        if (Schema::hasColumn('setoran', 'halaman_akhir')) {
+            $table->dropColumn('halaman_akhir');
+        }
+
+        if (!Schema::hasColumn('setoran', 'halaman')) {
+            $table->string('halaman')->nullable();
+        }
     });
 }
 
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('setoran', function (Blueprint $table) {
-            //
-        });
-    }
 };

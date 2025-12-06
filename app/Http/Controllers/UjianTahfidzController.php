@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Santri;
+use App\Models\TahunAjaran;
 use App\Models\UjianTahfidz;
+use App\Models\Pendidik;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -11,63 +13,73 @@ class UjianTahfidzController extends Controller
 {
     public function index(Request $request)
     {
-        // Query dasar dengan eager loading relasi
-       $query = Santri::with(['halaqah', 'ujianTahfidz.tahunAjaran']);
+        // Query ujian tahfidz dengan eager loading relasi
+        $query = UjianTahfidz::with(['santri', 'tahunAjaran', 'penguji']);
 
         // Filter berdasarkan search (nama santri)
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->whereHas('santri', function($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
                   ->orWhere('nis', 'like', "%{$search}%");
             });
         }
 
-        
-        // Filter berdasarkan semester melalui relasi
+        // Filter berdasarkan semester melalui relasi tahun ajaran
         if ($request->filled('semester')) {
             $query->whereHas('tahunAjaran', function($q) use ($request) {
                 $q->where('semester', $request->semester);
-            
             });
         }
 
-
-        // Filter berdasarkan tahun ajaran melalui relasi
-        // ✔ Filter tahun ajaran dari relasi TahunAjaran
+        // Filter berdasarkan tahun ajaran
         if ($request->filled('tahun')) {
-            $query->whereHas('tahunAjaran', function($q) use ($request) {
-                $q->where('id', $request->tahun);
-
-            
-            });
+            $query->where('tahun_ajaran_id', $request->tahun);
         }
         
-        $tahunList = \App\Models\TahunAjaran::orderBy('tahun', 'desc')->get();
+        $tahunList = TahunAjaran::orderBy('tahun', 'desc')->get();
+        $pendidikList = Pendidik::orderBy('nama', 'asc')->get();
+        $santriList = Santri::orderBy('nama', 'asc')->get();
         
         // Ambil data dengan pagination
-        $santri = $query->orderBy('nama', 'asc')->paginate(4);
+        $ujianList = $query->orderBy('created_at', 'desc')->paginate(10);
 
         // Return view dengan data
-        return view('nilaiTahfidz.index', compact('santri', 'tahunList'));
-
+        return view('nilaiTahfidz.index', compact('ujianList', 'tahunList', 'pendidikList', 'santriList'));
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
         // Ambil data santri dengan relasi halaqah & tahunAjaran
         $santri = Santri::with(['halaqah.pendidik', 'tahunAjaran'])
             ->findOrFail($id);
 
-        // Ambil semua ujian tahfidz santri ini
-        $ujianList = UjianTahfidz::where('nis', $santri->nis)
-            ->with('tahunAjaran')
+        // Ambil semua ujian tahfidz santri ini untuk grouping
+        $semuaUjian = UjianTahfidz::where('nis', $santri->nis)
+            ->with(['tahunAjaran', 'penguji'])
             ->orderBy('created_at', 'desc')
             ->get();
+        
+        // Group ujian berdasarkan kombinasi: jenis_ujian + tahun_ajaran_id + id_penguji + sekali_duduk + tanggal (hari)
+        $ujianGroups = $semuaUjian->groupBy(function($ujian) {
+            $tanggal = $ujian->created_at ? $ujian->created_at->format('Y-m-d') : 'unknown';
+            return $ujian->jenis_ujian . '_' . $ujian->tahun_ajaran_id . '_' . $ujian->id_penguji . '_' . $ujian->sekali_duduk . '_' . $tanggal;
+        });
+        
+        // Ambil group yang dipilih (dari request atau group pertama)
+        $selectedGroupKey = $request->get('group');
+        if ($selectedGroupKey && $ujianGroups->has($selectedGroupKey)) {
+            $ujianList = $ujianGroups->get($selectedGroupKey);
+        } else {
+            $ujianList = $ujianGroups->first() ?? collect();
+        }
+        
+        // Ambil ujian pertama dari group yang dipilih untuk mendapatkan penguji, jenis_ujian, dan sekali_duduk
+        $ujianPertama = $ujianList->first();
 
         // Tambahkan nilai angka & huruf otomatis
         foreach ($ujianList as $u) {
-            $kesalahan = $u->total_kesalahan;
+            $kesalahan = $u->total_kesalahan ?? 0;
 
             // Nilai angka skala 1–100
             // Setiap 1 kesalahan = dikurangi 1 poin
@@ -85,21 +97,28 @@ class UjianTahfidzController extends Controller
             }
         }
 
-        // Hitung total kesalahan
-        $totalTajwid = $ujianList->sum('tajwid');
-        $totalItqan = $ujianList->sum('itqan');
-        $totalKeseluruhan = $ujianList->sum('total_kesalahan');
+        // Hitung total kesalahan dari ujian yang ditampilkan (group yang dipilih)
+        $totalTajwid = $ujianList->sum('tajwid') ?? 0;
+        $totalItqan = $ujianList->sum('itqan') ?? 0;
+        $totalKeseluruhan = $ujianList->sum('total_kesalahan') ?? 0;
 
         // Dropdown tahun ajaran
         $tahunAjaranList = \App\Models\TahunAjaran::orderBy('tahun', 'desc')->get();
+        
+        // Ambil daftar pendidik untuk dropdown (jika belum ada ujian)
+        $pendidikList = \App\Models\Pendidik::orderBy('nama', 'asc')->get();
 
         return view('nilaiTahfidz.detail', compact(
             'santri',
             'ujianList',
+            'ujianPertama',
+            'ujianGroups',
+            'selectedGroupKey',
             'totalTajwid',
             'totalItqan',
             'totalKeseluruhan',
-            'tahunAjaranList'
+            'tahunAjaranList',
+            'pendidikList'
         ));
     }
 
@@ -115,13 +134,14 @@ class UjianTahfidzController extends Controller
             'juz' => 'required|integer|min:1|max:30',
             'tajwid' => 'required|integer|min:0',
             'itqan' => 'required|integer|min:0',
-            'sekali_duduk' => 'required'
+            'sekali_duduk' => 'required',
+            'id_penguji' => 'required|exists:pendidik,id_pendidik'
         ]);
 
         // Hitung total kesalahan (tajwid + itqan)
         $totalKesalahan = $request->tajwid + $request->itqan;
 
-        UjianTahfidz::create([
+        $data = [
             'nis' => $request->nis,
             'tahun_ajaran_id' => $request->tahunAjaran,
             'jenis_ujian' => $request->jenis_ujian,
@@ -130,7 +150,14 @@ class UjianTahfidzController extends Controller
             'itqan' => $request->itqan,
             'total_kesalahan' => $totalKesalahan,
             'sekali_duduk' => $request->sekali_duduk
-        ]);
+        ];
+
+        // Tambahkan id_penguji jika ada
+        if ($request->filled('id_penguji')) {
+            $data['id_penguji'] = $request->id_penguji;
+        }
+
+        UjianTahfidz::create($data);
 
         return redirect()
             ->route('nilaiTahfidz.show', $request->nis)
@@ -144,26 +171,29 @@ class UjianTahfidzController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
+            'tahun_ajaran_id' => 'required|exists:tahunajaran,id_tahunAjaran',
             'jenis_ujian' => 'required|string|in:UTS,UAS',
-            'juz' => 'required|integer|min:1|max:30',
-            'tajwid' => 'required|integer|min:0',
-            'itqan' => 'required|integer|min:0',
             'sekali_duduk' => 'required|in:ya,tidak',
+            'nis' => 'required|exists:santri,nis',
+            'id_penguji' => 'required|exists:pendidik,id_pendidik',
         ]);
-
-        // Hitung total kesalahan (tajwid + itqan)
-        $validated['total_kesalahan'] = $validated['tajwid'] + $validated['itqan'];
 
         // Cari data ujian berdasarkan ID
         $ujianTahfidz = UjianTahfidz::findOrFail($id);
 
         // Update data
-        $ujianTahfidz->update($validated);
+        $ujianTahfidz->update([
+            'tahun_ajaran_id' => $validated['tahun_ajaran_id'],
+            'jenis_ujian' => $validated['jenis_ujian'],
+            'sekali_duduk' => $validated['sekali_duduk'],
+            'nis' => $validated['nis'],
+            'id_penguji' => $validated['id_penguji'],
+        ]);
 
-        // Redirect kembali ke halaman detail santri
+        // Redirect kembali ke index
         return redirect()
-            ->route('nilaiTahfidz.show', $ujianTahfidz->nis)
-            ->with('success', 'Data nilai tahfidz berhasil diupdate');
+            ->route('nilaiTahfidz.index')
+            ->with('success', 'Data ujian berhasil diupdate');
     }
 
     /**
@@ -185,15 +215,136 @@ class UjianTahfidzController extends Controller
         // Cari data ujian berdasarkan ID
         $ujianTahfidz = UjianTahfidz::findOrFail($id);
         
-        // Simpan NIS untuk redirect
-        $nis = $ujianTahfidz->nis;
-        
         // Hapus data
         $ujianTahfidz->delete();
 
-        // Redirect kembali ke halaman detail santri
+        // Redirect kembali ke index
         return redirect()
-            ->route('nilaiTahfidz.show', $nis)
+            ->route('nilaiTahfidz.index')
             ->with('success', 'Data nilai tahfidz berhasil dihapus');
     }
+
+    /**
+     * Menampilkan form untuk membuat ujian baru
+     */
+    public function createUjianBaru()
+    {
+        $tahunAjaranList = TahunAjaran::orderBy('tahun', 'desc')->get();
+        $pendidikList = Pendidik::orderBy('nama', 'asc')->get();
+        $santriList = Santri::orderBy('nama', 'asc')->get();
+
+        return view('nilaiTahfidz.create-ujian', compact('tahunAjaranList', 'pendidikList', 'santriList'));
+    }
+
+    /**
+     * Menyimpan ujian baru (tanpa nilai)
+     */
+    public function storeUjianBaru(Request $request)
+    {
+        $request->validate([
+            'tahun_ajaran_id' => 'required|exists:tahunajaran,id_tahunAjaran',
+            'jenis_ujian' => 'required|in:UTS,UAS',
+            'sekali_duduk' => 'required|in:ya,tidak',
+            'id_penguji' => 'required|exists:pendidik,id_pendidik',
+            'nis' => 'required|exists:santri,nis',
+        ]);
+
+        UjianTahfidz::create([
+            'nis' => $request->nis,
+            'tahun_ajaran_id' => $request->tahun_ajaran_id,
+            'jenis_ujian' => $request->jenis_ujian,
+            'sekali_duduk' => $request->sekali_duduk,
+            'id_penguji' => $request->id_penguji,
+            'juz' => null,
+            'tajwid' => null,
+            'itqan' => null,
+            'total_kesalahan' => 0,
+        ]);
+
+        return redirect()
+            ->route('nilaiTahfidz.index')
+            ->with('success', 'Ujian baru berhasil ditambahkan');
+    }
+
+    /**
+     * Menampilkan halaman input nilai untuk ujian
+     */
+    public function inputNilai($id)
+    {
+        $ujian = UjianTahfidz::with(['santri', 'tahunAjaran', 'penguji'])->findOrFail($id);
+        
+        // Ambil semua juz yang sudah diinput untuk ujian ini (berdasarkan nis, tahun_ajaran_id, jenis_ujian, sekali_duduk, id_penguji yang sama)
+        $juzList = UjianTahfidz::where('nis', $ujian->nis)
+            ->where('tahun_ajaran_id', $ujian->tahun_ajaran_id)
+            ->where('jenis_ujian', $ujian->jenis_ujian)
+            ->where('sekali_duduk', $ujian->sekali_duduk)
+            ->where('id_penguji', $ujian->id_penguji)
+            ->whereNotNull('juz')
+            ->orderBy('juz', 'desc')
+            ->get();
+        
+        // Ambil juz yang sudah digunakan
+        $juzUsed = $juzList->pluck('juz')->toArray();
+        
+        return view('nilaiTahfidz.input-nilai', compact('ujian', 'juzList', 'juzUsed'));
+    }
+
+    /**
+     * Menyimpan nilai ujian (tambah juz baru)
+     */
+    public function storeNilai(Request $request, $id)
+    {
+        $request->validate([
+            'juz' => 'required|integer|min:1|max:30',
+            'tajwid' => 'required|integer|min:0',
+            'itqan' => 'required|integer|min:0',
+        ]);
+
+        $ujian = UjianTahfidz::findOrFail($id);
+        
+        // Cek apakah juz ini sudah ada untuk ujian yang sama
+        $existingJuz = UjianTahfidz::where('nis', $ujian->nis)
+            ->where('tahun_ajaran_id', $ujian->tahun_ajaran_id)
+            ->where('jenis_ujian', $ujian->jenis_ujian)
+            ->where('sekali_duduk', $ujian->sekali_duduk)
+            ->where('id_penguji', $ujian->id_penguji)
+            ->where('juz', $request->juz)
+            ->whereNotNull('juz')
+            ->first();
+        
+        if ($existingJuz) {
+            return redirect()
+                ->route('nilaiTahfidz.inputNilai', $id)
+                ->with('error', 'Juz ' . $request->juz . ' sudah pernah diinput untuk ujian ini');
+        }
+        
+        // Hitung total kesalahan
+        $totalKesalahan = $request->tajwid + $request->itqan;
+
+        // Buat record baru untuk juz ini
+        UjianTahfidz::create([
+            'nis' => $ujian->nis,
+            'tahun_ajaran_id' => $ujian->tahun_ajaran_id,
+            'jenis_ujian' => $ujian->jenis_ujian,
+            'sekali_duduk' => $ujian->sekali_duduk,
+            'id_penguji' => $ujian->id_penguji,
+            'juz' => $request->juz,
+            'tajwid' => $request->tajwid,
+            'itqan' => $request->itqan,
+            'total_kesalahan' => $totalKesalahan,
+        ]);
+
+        return redirect()
+            ->route('nilaiTahfidz.inputNilai', $id)
+            ->with('success', 'Juz ' . $request->juz . ' berhasil ditambahkan');
+    }
+
+    public function create($nis)
+    {
+        $santri = Santri::with(['tahunAjaran','halaqah'])->findOrFail($nis);
+        $tahunAjaran = TahunAjaran::all();
+
+        return view('nilaiTahfidz.create', compact('santri', 'tahunAjaran'));
+    }
+
 }
