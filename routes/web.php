@@ -136,6 +136,10 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/nilaiTahfidz', [NilaiTahfidzController::class, 'index'])->name('nilaiTahfidz.index');
+    Route::get('/nilaiTahfidz/ujian-baru', [NilaiTahfidzController::class, 'createUjianBaru'])->name('nilaiTahfidz.createUjianBaru');
+    Route::post('/nilaiTahfidz/ujian-baru', [NilaiTahfidzController::class, 'storeUjianBaru'])->name('nilaiTahfidz.storeUjianBaru');
+    Route::get('/nilaiTahfidz/{id}/input-nilai', [NilaiTahfidzController::class, 'inputNilai'])->name('nilaiTahfidz.inputNilai');
+    Route::post('/nilaiTahfidz/{id}/input-nilai', [NilaiTahfidzController::class, 'storeNilai'])->name('nilaiTahfidz.storeNilai');
     Route::get('/nilaiTahfidz/{id}/detail', [NilaiTahfidzController::class, 'show'])->name('nilaiTahfidz.show');
     Route::post('/nilaiTahfidz', [NilaiTahfidzController::class, 'store'])->name('nilaiTahfidz.store');
     Route::put('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
