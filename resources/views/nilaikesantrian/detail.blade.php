@@ -2,161 +2,472 @@
 
 @section('page_title', 'Input Nilai Kesantrian')
 
-@section('content')
+{{-- Bootstrap & Font Awesome --}}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
 <style>
-/* 🎨 Gaya dari Nilai Akademik (disesuaikan untuk Kesantrian) */
-
-/* Header Gradien & Sticky */
-.table-header-fancy {
-    /* Mengubah warna gradient agar berbeda dari Akademik (menggunakan Hijau untuk Kesantrian) */
-    background: linear-gradient(45deg, #198754, #20c997); 
-    color: #fff !important;
-    text-transform: uppercase;
-    letter-spacing: .6px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    font-weight: 600; /* Dibuat lebih tebal */
-}
-
-/* Hover */
-.table tbody tr:hover {
-    background-color: #e6fff1; /* Warna hijau muda */
-    transition: .2s;
-}
-
-/* Peningkatan untuk input nilai */
-.nilai-input-kesantrian {
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: bold;
-    border: 1px solid #ced4da; /* Beri border default */
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    
-    /* === PERUBAHAN UTAMA: PERBESAR LEBAR INPUT NILAI === */
-    width: 80px; /* Dibuat 60px agar lebih lebar daripada default Bootstrap */
-    font-size: 14px; /* Perbesar font agar terlihat lebih penuh */
-    /* ================================================= */
-}
-.nilai-input-kesantrian:focus {
-    border-color: #198754 !important;
-    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
-    background-color: #fff;
-}
-
-
-/* Scroll */
-.table-responsive-nilai { 
-    max-height: 55vh; 
-    overflow-y: auto;
-    border: 1px solid #dee2e6; /* Border di sekeliling area scroll */
-    border-radius: 5px;
-}
-/* Hilangkan border tabel jika sudah ada border wrapper */
-.table-responsive-nilai .table {
-    margin-bottom: 0;
-    border: none !important;
-}
-
-/* Floating Button mobile */
-@media (max-width: 768px) {
-    .save-floating {
-        position: fixed;
-        bottom: 12px;
-        right: 12px;
-        padding: 8px 18px;
-        font-size: 14px;
-        z-index: 200;
-        border-radius: 30px;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    :root {
+        --primary-color: #28a745;
+        --secondary-color: #ffc107;
+        --delete-color: #dc3545;
+        --border-color: #dee2e6;
+        --text-color: #212529;
+        --bg-light: #f8f9fa;
     }
-    
-    /* Mobile: mode tampilan input nilai (lebih agresif) */
+
+    body {
+        background-color: #e8f5e9;
+    }
+
+    .container-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 15px;
+    }
+
+    .page-header {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .page-header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .page-header h4 {
+        margin: 0;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        padding: 8px 16px;
+        border: 1px solid var(--primary-color);
+        border-radius: 5px;
+        background: white;
+    }
+
+    .back-btn:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .mapel-info-card {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1e7e34 100%);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 20px;
+        color: white;
+    }
+
+    .mapel-info-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .mapel-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .mapel-details h5 {
+        margin: 0 0 5px 0;
+        font-weight: 600;
+        font-size: 22px;
+        line-height: 1.2;
+    }
+
+    .mapel-details p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
+    /* Tabs Navigation */
+    .nav-tabs {
+        border-bottom: 2px solid var(--border-color);
+        background: white;
+        border-radius: 8px 8px 0 0;
+        padding: 10px 15px 0;
+        margin-bottom: 0;
+    }
+
+    .nav-tabs .nav-link {
+        border: none;
+        color: #666;
+        font-weight: 500;
+        padding: 12px 20px;
+        border-radius: 8px 8px 0 0;
+        transition: all 0.2s;
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: #f8fff9;
+        color: var(--primary-color);
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: white;
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--primary-color);
+        font-weight: 600;
+    }
+
+    /* Tab Content */
+    .tab-content {
+        background: white;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 0;
+    }
+
+    /* Sub Pills Navigation */
+    .nav-pills {
+        padding: 15px 15px 0;
+        gap: 8px;
+        background-color: var(--bg-light);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-pills .nav-link {
+        color: var(--primary-color);
+        font-weight: 500;
+        border-radius: 20px;
+        padding: 8px 16px;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: #e8f5e9;
+        border-color: var(--primary-color);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    /* Table Styling */
+    .table-responsive-nilai {
+        max-height: 55vh;
+        overflow-y: auto;
+        border: 1px solid var(--border-color);
+        margin: 15px;
+        border-radius: 5px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+    }
+
+    thead th {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1e7e34 100%);
+        color: white !important;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        border-bottom: 2px solid var(--border-color);
+        font-weight: 600;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    tbody td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+    }
+
+    tbody tr:hover {
+        background-color: #e6fff1;
+        transition: .2s;
+    }
+
     .nilai-input-kesantrian {
-        width: 40px !important; /* HARUS KECIL */
-        font-size: 11px !important;
-        padding: 2px !important;
-        background: transparent;
-        border: 1px solid transparent !important; 
+        width: 80px;
+        padding: 8px;
+        border: 2px solid var(--border-color);
+        border-radius: 5px;
         text-align: center;
         text-transform: uppercase;
+        font-weight: 600;
+        font-size: 14px;
     }
 
     .nilai-input-kesantrian:focus {
-        border: 1px solid #198754 !important; 
-        background: #fff;
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        background-color: #fff;
     }
 
-    /* Perbaikan layout sel: padding harus minimal */
-    .table td, .table th {
-        padding: 4px !important; /* Dibuat 4px dari 6px agar lebih rapat lagi di mobile */
-        white-space: nowrap; /* Penting untuk mencegah wrapping text */
+    .action-btn {
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--delete-color);
     }
 
-    /* Perbaikan layout sel */
-    .table td, .table th {
-        padding: 6px !important; /* sedikit diperbesar */
-        white-space: nowrap;
+    .action-btn:hover {
+        opacity: 0.85;
+        transform: scale(1.05);
     }
-    
-    /* Rapiin Nav Pills di mobile */
-    .nav-pills .nav-item {
-        margin: 2px 0;
-    }
-    .nav-pills .nav-link {
-        font-size: 12px;
-        padding: 5px 8px;
-    }
-}
 
-/* Peningkatan Nav-pills (Sub-tab) */
-.nav-pills .nav-link.active {
-    background-color: #198754 !important; /* Hijau Kesantrian */
-}
-.nav-pills .nav-link {
-    color: #198754;
-    font-weight: 500;
-}
-.nav-pills .nav-link:hover {
-    color: #198754;
-    background-color: #e6fff1;
-}
+    .save-btn-wrapper {
+        padding: 15px 25px;
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid var(--border-color);
+        background-color: var(--bg-light);
+    }
 
+    .save-btn {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .save-btn:hover {
+        background-color: #1e7e34;
+        transform: translateY(-1px);
+    }
+
+    /* Assign Santri Section */
+    .assign-section {
+        padding: 20px;
+    }
+
+    .filter-section {
+        background-color: var(--bg-light);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .santri-assign-list {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+    }
+
+    .santri-assign-item {
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border-color);
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .santri-assign-item:hover {
+        background-color: #e8f5e9;
+    }
+
+    .santri-assign-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container-wrapper {
+            padding: 0 0 80px 0;
+        }
+
+        .page-header {
+            border-radius: 0;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .page-header-left {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .page-header h4 {
+            font-size: 18px;
+        }
+
+        .back-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .mapel-info-card {
+            border-radius: 0;
+            padding: 20px 15px;
+            margin-bottom: 15px;
+        }
+
+        .mapel-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+
+        .mapel-details h5 {
+            font-size: 18px;
+        }
+
+        .nav-tabs {
+            border-radius: 0;
+            padding: 8px 10px 0;
+        }
+
+        .nav-tabs .nav-link {
+            font-size: 13px;
+            padding: 8px 12px;
+        }
+
+        .tab-content {
+            border-radius: 0;
+        }
+
+        .nav-pills {
+            padding: 10px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        .nav-pills .nav-link {
+            font-size: 12px;
+            padding: 6px 12px;
+            white-space: nowrap;
+        }
+
+        .table-responsive-nilai {
+            margin: 10px;
+            max-height: 50vh;
+        }
+
+        thead th {
+            font-size: 10px;
+            padding: 8px 4px;
+        }
+
+        tbody td {
+            padding: 8px 4px;
+            font-size: 12px;
+        }
+
+        .nilai-input-kesantrian {
+            width: 45px;
+            font-size: 12px;
+            padding: 4px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+        }
+
+        .save-btn {
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            z-index: 200;
+            border-radius: 30px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+            padding: 12px 20px;
+        }
+
+        .assign-section {
+            padding: 15px;
+        }
+    }
 </style>
 
-<div class="container mt-4"> 
+@section('content')
 
-    {{-- A. HEADER DENGAN TOMBOL KEMBALI --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">📝 Nilai Kesantrian: {{ $mapel->nama_matapelajaran }}</h3>
-        <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $mapel->id_tahunAjaran]) }}" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Kembali ke Daftar Mapel
+<div class="container-wrapper">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-left">
+            <h4>
+                <i class="fas fa-edit"></i> Input Nilai Kesantrian
+            </h4>
+        </div>
+        <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $mapel->id_tahunAjaran]) }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Kembali
         </a>
     </div>
-    
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <h5><strong>{{ $mapel->nama_matapelajaran }}</strong></h5>
 
-            <p class="mb-1">Tahun Ajaran:
-                <strong>{{ $tahunAjaran->tahun }} - Semester {{ strtoupper($tahunAjaran->semester) }}</strong>
-            </p>
-
-            <p class="mb-0">Pendidik: <strong>{{ $mapel->pendidik->nama ?? '-' }}</strong></p>
+    <!-- Mapel Info Card -->
+    <div class="mapel-info-card">
+        <div class="mapel-info-header">
+            <div class="mapel-icon">
+                <i class="fas fa-mosque"></i>
+            </div>
+            <div class="mapel-details">
+                <h5>{{ $mapel->nama_matapelajaran }}</h5>
+                <p><i class="fas fa-calendar-alt me-2"></i>Tahun Ajaran: {{ $tahunAjaran->tahun }} - Semester {{ strtoupper($tahunAjaran->semester) }}</p>
+                <p><i class="fas fa-chalkboard-teacher me-2"></i>Pendidik: {{ $mapel->pendidik->nama ?? '-' }}</p>
+            </div>
         </div>
     </div>
 
-
     {{-- Notifikasi --}}
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success mx-3">{{ session('success') }}</div>
     @endif
     @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
+        <div class="alert alert-danger mx-3">{{ session('error') }}</div>
     @endif
     @if ($errors->any())
-        <div class="alert alert-danger">
+        <div class="alert alert-danger mx-3">
             <h6>Terdapat Kesalahan Input:</h6>
             <ul>
                 @foreach ($errors->all() as $error)
@@ -169,46 +480,60 @@
     {{-- Tabs Navigasi Utama --}}
     <ul class="nav nav-tabs" id="nilaiTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="input-tab" data-bs-toggle="tab" href="#inputNilai" role="tab" aria-controls="inputNilai" aria-selected="true">
-                <i class="bi bi-pencil-square"></i> 1. Input Nilai ({{ $nilaiSantri->count() }})
+            <a class="nav-link active" id="input-tab" data-bs-toggle="tab" href="#inputNilai" role="tab">
+                <i class="bi bi-pencil-square"></i> Input Nilai ({{ $nilaiSantri->count() }})
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="assign-tab" data-bs-toggle="tab" href="#assignSantri" role="tab" aria-controls="assignSantri" aria-selected="false">
-                <i class="bi bi-person-plus"></i> 2. Assign Santri ({{ $santriBelumAssign->count() }} Belum Di-assign)
+            <a class="nav-link" id="assign-tab" data-bs-toggle="tab" href="#assignSantri" role="tab">
+                <i class="bi bi-person-plus"></i> Assign Santri ({{ $santriBelumAssign->count() }})
             </a>
         </li>
     </ul>
 
-    <div class="tab-content card shadow-sm p-3">
+    <div class="tab-content">
         
-        {{-- TAB 1: INPUT NILAI (Berisi Sub-Tabs) --}}
-        <div class="tab-pane fade show active" id="inputNilai" role="tabpanel" aria-labelledby="input-tab">
+        {{-- TAB 1: INPUT NILAI --}}
+        <div class="tab-pane fade show active" id="inputNilai" role="tabpanel">
             
             {{-- SUB-TAB NAVIGATION --}}
-            <ul class="nav nav-pills nav-fill mb-3 pt-2" id="subNilaiTabs" role="tablist" style="border-bottom: 1px solid #dee2e6;">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="akhlak-tab" data-bs-toggle="pill" data-bs-target="#akhlak" type="button" role="tab" aria-controls="akhlak" aria-selected="true"><i class="bi bi-heart-fill"></i> Akhlak</button>
+            <ul class="nav nav-pills nav-fill" id="subNilaiTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="akhlak-tab" data-bs-toggle="pill" data-bs-target="#akhlak" type="button">
+                        <i class="bi bi-heart-fill"></i> Akhlak
+                    </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="ibadah-tab" data-bs-toggle="pill" data-bs-target="#ibadah" type="button" role="tab" aria-controls="ibadah" aria-selected="false"><i class="bi bi-book"></i> Ibadah</button>
+                <li class="nav-item">
+                    <button class="nav-link" id="ibadah-tab" data-bs-toggle="pill" data-bs-target="#ibadah" type="button">
+                        <i class="bi bi-book"></i> Ibadah
+                    </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="kerapian-tab" data-bs-toggle="pill" data-bs-target="#kerapian" type="button" role="tab" aria-controls="kerapian" aria-selected="false"><i class="bi bi-scissors"></i> Kerapian</button>
+                <li class="nav-item">
+                    <button class="nav-link" id="kerapian-tab" data-bs-toggle="pill" data-bs-target="#kerapian" type="button">
+                        <i class="bi bi-scissors"></i> Kerapian
+                    </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="kedisiplinan-tab" data-bs-toggle="pill" data-bs-target="#kedisiplinan" type="button" role="tab" aria-controls="kedisiplinan" aria-selected="false"><i class="bi bi-clock"></i> Kedisiplinan</button>
+                <li class="nav-item">
+                    <button class="nav-link" id="kedisiplinan-tab" data-bs-toggle="pill" data-bs-target="#kedisiplinan" type="button">
+                        <i class="bi bi-clock"></i> Kedisiplinan
+                    </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="ekstrakulikuler-tab" data-bs-toggle="pill" data-bs-target="#ekstrakulikuler" type="button" role="tab" aria-controls="ekstrakulikuler" aria-selected="false"><i class="bi bi-activity"></i> Ekstra</button>
+                <li class="nav-item">
+                    <button class="nav-link" id="ekstrakulikuler-tab" data-bs-toggle="pill" data-bs-target="#ekstrakulikuler" type="button">
+                        <i class="bi bi-activity"></i> Ekstra
+                    </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="buku_pegangan-tab" data-bs-toggle="pill" data-bs-target="#buku_pegangan" type="button" role="tab" aria-controls="buku_pegangan" aria-selected="false"><i class="bi bi-journal-check"></i> Buku Peg.</button>
+                <li class="nav-item">
+                    <button class="nav-link" id="buku_pegangan-tab" data-bs-toggle="pill" data-bs-target="#buku_pegangan" type="button">
+                        <i class="bi bi-journal-check"></i> Buku Pegangan
+                    </button>
                 </li>
             </ul>
 
             @if($nilaiSantri->isEmpty())
-                <div class="alert alert-warning">Belum ada santri yang di-assign untuk mata pelajaran ini. Silakan pindah ke tab "Assign Santri".</div>
+                <div class="alert alert-warning m-3">
+                    Belum ada santri yang di-assign untuk mata pelajaran ini. Silakan pindah ke tab "Assign Santri".
+                </div>
             @else
                 <form action="{{ route('nilaikesantrian.update.massal') }}" method="POST">
                     @csrf
@@ -218,8 +543,6 @@
                     {{-- SUB-TAB CONTENT --}}
                     <div class="tab-content" id="subNilaiTabsContent">
                         
-                        {{-- TEMPLATE UNTUK TAB NILAI --}}
-                        {{-- TEMPLATE UNTUK TAB NILAI --}}
 @php
     $categories = [
         'akhlak' => ['title' => 'Akhlak', 'icon' => 'bi bi-heart-fill'],
@@ -227,28 +550,20 @@
         'kerapian' => ['title' => 'Kerapian', 'icon' => 'bi bi-scissors'],
         'kedisiplinan' => ['title' => 'Kedisiplinan', 'icon' => 'bi bi-clock'],
         'ekstrakulikuler' => ['title' => 'Ekstra', 'icon' => 'bi bi-activity'],
-        'buku_pegangan' => ['title' => 'Buku Peg.', 'icon' => 'bi bi-journal-check']
+        'buku_pegangan' => ['title' => 'Buku Pegangan', 'icon' => 'bi bi-journal-check']
     ];
 @endphp
 
 @foreach($categories as $key => $category)
-<div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $key }}" role="tabpanel" aria-labelledby="{{ $key }}-tab">
-    <div class="table-responsive table-responsive-nilai">
-        <table class="table table-striped table-hover text-center align-middle">
-            <thead class="table-header-fancy">
+<div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $key }}" role="tabpanel">
+    <div class="table-responsive-nilai">
+        <table class="table table-striped table-hover">
+            <thead>
                 <tr>
                     <th style="width: 20px;">#</th>
-                    
-                    {{-- 1. HEADER NIS (Hanya Tampil di DESKTOP/Tablet ke atas) --}}
-                    <th class="d-none d-md-table-cell" style="width: 75px;">NIS</th> 
-                    
-                    {{-- 2. HEADER NAMA SANTRI (Berbeda lebar untuk mobile/desktop) --}}
-                    {{-- Di Desktop, Nama Santri mengambil sisa ruang. Di Mobile, ini adalah header utama. --}}
-                    <th style="text-align: left;" class="w-100">Nama Santri</th> 
-                    
-                    {{-- Menggunakan width yang kecil dan sama untuk semua kolom nilai --}}
-                    <th style="width: 360px;">Nilai {{ $category['title'] }} (A/B/C)</th>
-                    
+                    <th class="d-none d-md-table-cell" style="width: 75px;">NIS</th>
+                    <th style="text-align: left;">Nama Santri</th>
+                    <th style="width: 120px;">Nilai {{ $category['title'] }}</th>
                     <th style="width: 50px;">Aksi</th>
                 </tr>
             </thead>
@@ -256,31 +571,21 @@
                 @foreach($nilaiSantri as $nilai)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        
-                        {{-- 1. DATA NIS (Hanya Tampil di DESKTOP) --}}
-                        <td class="d-none d-md-table-cell"><small>{{ $nilai->santri->nis ?? 'N/A' }}</small></td> 
-
-                        {{-- 2. DATA NAMA SANTRI (Memiliki dua tampilan berbeda) --}}
+                        <td class="d-none d-md-table-cell"><small>{{ $nilai->santri->nis ?? 'N/A' }}</small></td>
                         <td style="text-align: left;">
                             <strong>{{ $nilai->santri->nama ?? 'N/A' }}</strong>
-                            
-                            {{-- NIS DI BAWAH NAMA (Hanya Tampil di MOBILE) --}}
                             <small class="text-muted d-block d-md-none">NIS: {{ $nilai->santri->nis ?? 'N/A' }}</small>
                         </td>
-                        
-                        {{-- Kolom Input Nilai DINAMIS --}}
                         <td>
                             <input type="text" 
                                    name="nilai[{{ $nilai->id_nilai_kesantrian }}][nilai_{{ $key }}]" 
                                    value="{{ old('nilai.' . $nilai->id_nilai_kesantrian . '.nilai_' . $key, $nilai->{'nilai_' . $key}) }}" 
-                                   class="form-control form-control-sm nilai-input-kesantrian" 
+                                   class="nilai-input-kesantrian" 
                                    maxlength="1"
                                    placeholder="A/B/C">
                         </td>
-                        
-                        {{-- TOMBOL HAPUS/UN-ASSIGN --}}
-                        <td class="text-center">
-                            <button type="button" class="btn btn-danger btn-sm p-1" 
+                        <td>
+                            <button type="button" class="action-btn" 
                                     title="Un-assign Santri"
                                     onclick="confirmDelete('{{ $nilai->santri->nama ?? $nilai->nis }}', '{{ $nilai->id_nilai_kesantrian }}')">
                                 <i class="bi bi-x"></i>
@@ -296,75 +601,86 @@
                         
                     </div>
                     
-                    <button type="submit" class="btn btn-primary mt-3 float-end d-none d-md-inline">💾 Simpan Semua Nilai</button>
-                    <button class="btn btn-primary save-floating d-md-none">💾 Simpan</button>
+                    <div class="save-btn-wrapper">
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save"></i> Simpan Semua Nilai
+                        </button>
+                    </div>
                 </form>
             @endif
         </div>
 
         {{-- TAB 2: ASSIGN SANTRI --}}
-        <div class="tab-pane fade" id="assignSantri" role="tabpanel" aria-labelledby="assign-tab">
-            <h4>Pilih Santri yang Belum Di-assign</h4>
+        <div class="tab-pane fade" id="assignSantri" role="tabpanel">
+            <div class="assign-section">
+                <h5 class="mb-3"><i class="bi bi-person-plus"></i> Pilih Santri yang Belum Di-assign</h5>
 
-            {{-- Form Filter --}}
-            <form method="GET" action="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}" class="row g-2 align-items-end mb-3">
-                <input type="hidden" name="tab" value="assign">
-                
-                <div class="col-md-auto col-12">
-                    <label for="angkatan" class="form-label mb-0">Angkatan:</label>
-                    <select name="angkatan" class="form-select form-select-sm" onchange="this.form.submit()">
-                        <option value="">Semua</option>
-                        @foreach($angkatanList as $angkatan)
-                            <option value="{{ $angkatan }}" {{ request('angkatan') == $angkatan ? 'selected' : '' }}>{{ $angkatan }}</option>
-                        @endforeach
-                    </select>
+                {{-- Form Filter --}}
+                <div class="filter-section">
+                    <form method="GET" action="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}" class="row g-2">
+                        <input type="hidden" name="tab" value="assign">
+                        
+                        <div class="col-md-3">
+                            <label class="form-label">Angkatan:</label>
+                            <select name="angkatan" class="form-select" onchange="this.form.submit()">
+                                <option value="">Semua</option>
+                                @foreach($angkatanList as $angkatan)
+                                    <option value="{{ $angkatan }}" {{ request('angkatan') == $angkatan ? 'selected' : '' }}>{{ $angkatan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Cari Nama:</label>
+                            <div class="input-group">
+                                <input type="text" name="search_nama" value="{{ request('search_nama') }}" class="form-control" placeholder="Cari nama santri...">
+                                <button type="submit" class="btn btn-outline-success">
+                                    <i class="bi bi-search"></i> Cari
+                                </button>
+                            </div>
+                        </div>
+                        
+                        @if(request('angkatan') || request('search_nama'))
+                            <div class="col-md-3 d-flex align-items-end">
+                                <a href="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}?tab=assign" 
+                                   class="btn btn-outline-danger w-100">
+                                    <i class="bi bi-x-circle"></i> Reset
+                                </a>
+                            </div>
+                        @endif
+                    </form>
                 </div>
 
-                <div class="col-md-4 col-12">
-                    <label for="search_nama" class="form-label mb-0">Cari Nama:</label>
-                    <div class="input-group input-group-sm">
-                         <input type="text" name="search_nama" value="{{ request('search_nama') }}" class="form-control" placeholder="Cari nama santri...">
-                         <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i> Cari</button>
-                    </div>
-                </div>
-                
-                @if(request('angkatan') || request('search_nama'))
-                    <div class="col-auto">
-                        <a href="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}?tab=assign" class="btn btn-sm btn-outline-danger">Reset</a>
-                    </div>
-                @endif
-            </form>
-            
-            <hr>
-
-            {{-- Form Assign Santri --}}
-            <form action="{{ route('nilaikesantrian.assign.store', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}" method="POST">
-                @csrf
-                
-                <div class="list-group mb-3" style="max-height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 5px;">
-                    @forelse($santriBelumAssign as $santri)
-                        <label class="form-check-label list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2" for="santri-{{ $santri->nis }}">
-                             <div class="d-flex align-items-center">
+                {{-- Form Assign Santri --}}
+                <form action="{{ route('nilaikesantrian.assign.store', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}" method="POST">
+                    @csrf
+                    
+                    <div class="santri-assign-list">
+                        @forelse($santriBelumAssign as $santri)
+                            <label class="santri-assign-item d-flex align-items-center" for="santri-{{ $santri->nis }}">
                                 <input class="form-check-input me-3" type="checkbox" name="nis[]" value="{{ $santri->nis }}" id="santri-{{ $santri->nis }}">
-                                <div>
-                                    <strong class="text-success">{{ $santri->nama }}</strong> 
-                                    <small class="text-muted d-block">NIS: {{ $santri->nis }}, Angkatan: {{ $santri->angkatan }}</small>
+                                <div class="flex-grow-1">
+                                    <strong class="text-success">{{ $santri->nama }}</strong>
+                                    <small class="text-muted d-block">NIS: {{ $santri->nis }} • Angkatan: {{ $santri->angkatan }}</small>
                                 </div>
-                             </div>
-                        </label>
-                    @empty
-                        <div class="alert alert-success m-0 rounded-0">Semua santri sudah di-assign ke mata pelajaran ini.</div>
-                    @endforelse
-                </div>
+                            </label>
+                        @empty
+                            <div class="alert alert-success m-3">
+                                <i class="bi bi-check-circle"></i> Semua santri sudah di-assign ke mata pelajaran ini.
+                            </div>
+                        @endforelse
+                    </div>
 
-                @if($santriBelumAssign->isNotEmpty())
-                    <button type="submit" class="btn btn-success mt-1">➕ Assign Santri Terpilih ({{ $santriBelumAssign->count() }})</button>
-                @endif
-            </form>
+                    @if($santriBelumAssign->isNotEmpty())
+                        <button type="submit" class="btn btn-success mt-3 w-100">
+                            <i class="bi bi-plus-circle"></i> Assign Santri  ({{ $santriBelumAssign->count() }})
+                        </button>
+                    @endif
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
 
 {{-- HIDDEN FORM UNTUK DELETE (UN-ASSIGN) SANTRI --}}
 <form id="delete-form" method="POST" style="display: none;">
@@ -372,18 +688,10 @@
     @method('DELETE')
 </form>
 
-@push('scripts')
 <script>
-    // Pastikan Bootstrap 5 tersedia untuk menggunakan Tab dan Pill.
-    if (typeof bootstrap === 'undefined') {
-        console.error("Bootstrap 5 JS is required for tabs/pills functionality.");
-    }
-    
     function confirmDelete(nama, id_nilai_kesantrian) {
         if (confirm(`Yakin ingin MENGHAPUS (Un-assign) santri atas nama ${nama} dari mata pelajaran ini?`)) {
             const form = document.getElementById('delete-form');
-            // Pastikan rute yang digunakan benar, jika Anda menggunakan Laravel resource, ini mungkin perlu disesuaikan.
-            // Asumsi route: /nilai-kesantrian/unassign/{id_nilai_kesantrian}
             form.action = `/nilai-kesantrian/unassign/${id_nilai_kesantrian}`; 
             form.submit();
         }
@@ -392,12 +700,11 @@
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         
-        // --- LOGIKA TABS UTAMA ---
+        // Tab utama
         const activeTabParam = urlParams.get('tab');
         if (activeTabParam === 'assign') {
             const assignTabEl = document.getElementById('assign-tab');
             if (assignTabEl) {
-                // Aktifkan tab Bootstrap
                 const assignTab = new bootstrap.Tab(assignTabEl);
                 assignTab.show();
             }
@@ -414,7 +721,6 @@
                 } else {
                     newUrl.searchParams.delete('tab');
                 }
-                // Hapus sub_tab saat pindah ke tab utama selain input nilai
                 if (tabId !== 'inputNilai') {
                      newUrl.searchParams.delete('sub_tab');
                 }
@@ -422,39 +728,33 @@
             });
         });
         
-        // --- LOGIKA SUB-TABS (NILAI) ---
-        // Jika ada parameter sub_tab di URL, aktifkan sub-tab yang sesuai
+        // Sub-tabs
         const activeSubTabParam = urlParams.get('sub_tab');
         if (activeSubTabParam) {
             const subTabEl = document.getElementById(activeSubTabParam + '-tab');
             if (subTabEl) {
-                // Aktifkan tab utama 'inputNilai' dulu (jika belum)
                 const inputTabEl = document.getElementById('input-tab');
                 if (inputTabEl && !inputTabEl.classList.contains('active')) {
                     new bootstrap.Tab(inputTabEl).show();
                 }
-                // Aktifkan sub-tab
                 const subTab = new bootstrap.Tab(subTabEl);
                 subTab.show();
             }
         }
         
-        // Event listener untuk menyimpan status sub-tab di URL
         const subTabTriggers = document.querySelectorAll('#subNilaiTabs button[data-bs-toggle="pill"]');
         subTabTriggers.forEach(function(trigger) {
             trigger.addEventListener('shown.bs.tab', function (event) {
                 const newUrl = new URL(window.location.href);
-                // Mendapatkan ID tab content (cth: 'akhlak')
                 const tabId = event.target.getAttribute('data-bs-target').substring(1); 
                 
                 newUrl.searchParams.set('sub_tab', tabId);
-                newUrl.searchParams.delete('tab'); // Pastikan tab utama kembali ke 'inputNilai'
+                newUrl.searchParams.delete('tab');
                 
                 window.history.pushState({path: newUrl.href}, '', newUrl.href);
             });
         });
-        
     });
 </script>
-@endpush
+
 @endsection

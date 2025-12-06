@@ -2,179 +2,574 @@
 
 @section('page_title', 'Nilai Mata Pelajaran')
 
-@section('content')
+{{-- Bootstrap & Font Awesome --}}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <style>
-/* 🎨 Header Gradien & Sticky */
-.table-header-fancy {
-    background: linear-gradient(45deg, #007bff, #6610f2);
-    color: #fff !important;
-    text-transform: uppercase;
-    letter-spacing: .6px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-/* Hover */
-.table tbody tr:hover {
-    background-color: #eef6ff;
-    transition: .2s;
-}
-
-/* Predikat warna */
-.predikat-A { color: #0a7b27; font-weight: bold; }
-.predikat-B { color: #1c8a74; font-weight: bold; }
-.predikat-C { color: #ce7100; font-weight: bold; }
-.predikat-D { color: #b00020; font-weight: bold; }
-
-/* Scroll */
-.table-responsive {
-    max-height: 70vh;
-    overflow-y: auto;
-}
-
-/* Floating Button mobile */
-@media (max-width: 768px) {
-    .save-floating {
-        position: fixed;
-        bottom: 12px;
-        right: 12px;
-        padding: 8px 18px;
-        font-size: 14px;
-        z-index: 200;
-        border-radius: 30px;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    :root {
+        --primary-color: #28a745;
+        --secondary-color: #ffc107;
+        --delete-color: #dc3545;
+        --border-color: #dee2e6;
+        --text-color: #212529;
+        --bg-light: #f8f9fa;
     }
-}
 
-/* Mobile: mode tampilan angka saja */
-@media (max-width: 768px) {
-    .nilai-input {
-        width: 45px;
-        font-size: 11px;
-        padding: 2px !important;
-        background: transparent;
+    body {
+        background-color: #e8f5e9;
+    }
+
+    .container-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 15px;
+    }
+
+    .page-header {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .page-header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .page-header h4 {
+        margin: 0;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .back-btn, .assign-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        padding: 8px 16px;
+        border: 1px solid var(--primary-color);
+        border-radius: 5px;
+        background: white;
+    }
+
+    .back-btn:hover, .assign-btn:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .assign-btn {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .assign-btn:hover {
+        background-color: #1e7e34;
+    }
+
+    .mapel-info-card {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1e7e34 100%);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 20px;
+        color: white;
+    }
+
+    .mapel-info-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .mapel-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .mapel-details h5 {
+        margin: 0 0 5px 0;
+        font-weight: 600;
+        font-size: 22px;
+        line-height: 1.2;
+    }
+
+    .mapel-details p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
+    .mapel-stats {
+        display: flex;
+        gap: 30px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stat-item i {
+        font-size: 20px;
+        opacity: 0.9;
+    }
+
+    .stat-item div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    .stat-value {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .nilai-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .nilai-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 25px;
+        background-color: var(--bg-light);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .nilai-header h5 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .save-btn-wrapper {
+        padding: 15px 25px;
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid var(--border-color);
+        background-color: var(--bg-light);
+    }
+
+    .save-btn {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
         border: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .save-btn:hover {
+        background-color: #1e7e34;
+        transform: translateY(-1px);
+    }
+
+    /* Table Styling */
+    .table-responsive {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead th {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1e7e34 100%);
+        color: white !important;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        border-bottom: 2px solid var(--border-color);
+        font-weight: 600;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    tbody td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--border-color);
         text-align: center;
     }
 
-    /* Saat fokus: muncul border lagi */
+    tbody tr:hover {
+        background-color: #eef6ff;
+        transition: .2s;
+    }
+
+    .nilai-input {
+        width: 80px;
+        padding: 8px;
+        border: 2px solid var(--border-color);
+        border-radius: 5px;
+        text-align: center;
+        font-weight: 500;
+    }
+
     .nilai-input:focus {
-        border: 1px solid #007bff !important;
-        background: #fff;
+        border-color: var(--primary-color);
         outline: none;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
     }
 
-    /* Pertegas teks */
-    .rata, .predikat {
-        font-size: 12px !important;
+    .rata-input {
+        background-color: var(--bg-light);
+        font-weight: 600;
+        color: var(--primary-color);
     }
 
-    /* Perbaikan layout sel */
-    .table td, .table th {
-        padding: 3px !important;
-        white-space: nowrap;
+    /* Predikat Badges */
+    .predikat {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
     }
-}
 
+    .predikat-A {
+        background-color: #d4edda;
+        color: #155724;
+    }
 
+    .predikat-B {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
 
+    .predikat-C {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .predikat-D {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .action-btn {
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--delete-color);
+    }
+
+    .action-btn:hover {
+        opacity: 0.85;
+        transform: scale(1.05);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container-wrapper {
+            padding: 0 0 20px 0;
+        }
+
+        .page-header {
+            border-radius: 0;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .page-header-left {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .page-header h4 {
+            font-size: 18px;
+        }
+
+        .back-btn, .assign-btn {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .mapel-info-card {
+            border-radius: 0;
+            padding: 20px 15px;
+            margin-bottom: 15px;
+        }
+
+        .mapel-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+
+        .mapel-details h5 {
+            font-size: 18px;
+        }
+
+        .mapel-stats {
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            flex: 1;
+            min-width: calc(50% - 8px);
+        }
+
+        .nilai-card {
+            border-radius: 0;
+        }
+
+        .nilai-header {
+            padding: 15px;
+        }
+
+        .nilai-header h5 {
+            font-size: 16px;
+        }
+
+        .save-btn {
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            z-index: 200;
+            border-radius: 30px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+            padding: 12px 20px;
+        }
+
+        .nilai-input {
+            width: 50px;
+            font-size: 12px;
+            padding: 4px;
+        }
+
+        thead th {
+            font-size: 10px;
+            padding: 8px 4px;
+        }
+
+        tbody td {
+            padding: 8px 4px;
+            font-size: 12px;
+        }
+    }
 </style>
 
-<div class="container mt-4">
+@section('content')
 
-    <h3 class="mb-3">📗 Nilai Mata Pelajaran</h3>
-
-    <!-- Mapel Info -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <h5><strong>{{ $mapel->nama_matapelajaran }}</strong></h5>
-
-            <p class="mb-1">Tahun Ajaran:
-                <strong>{{ $mapel->tahunAjaran->tahun }} - Semester {{ strtoupper($mapel->tahunAjaran->semester) }}</strong>
-            </p>
-
-            <p class="mb-1">Pendidik: <strong>{{ $mapel->pendidik->nama ?? '-' }}</strong></p>
-
-            <a href="{{ route('nilaiakademik.mapel.assign.form', $mapel->id_matapelajaran) }}" class="btn btn-success btn-sm mt-2">+ Assign Santri</a>
-            <a href="{{ route('nilaiakademik.mapel.index') }}" class="btn btn-secondary btn-sm mt-2">⬅ Daftar Mata Pelajaran</a>
+<div class="container-wrapper">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-left">
+            <h4>
+                <i class="fas fa-graduation-cap"></i> Nilai Mata Pelajaran
+            </h4>
+        </div>
+        <div>
+            <a href="{{ route('nilaiakademik.mapel.assign.form', $mapel->id_matapelajaran) }}" class="assign-btn">
+                <i class="fas fa-user-plus"></i> Assign Santri
+            </a>
+            <a href="{{ route('nilaiakademik.mapel.index') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </a>
         </div>
     </div>
 
-    <!-- FORM -->
-    <form action="{{ route('nilaiakademik.mapel.updateAll', $mapel->id_matapelajaran) }}" method="POST">
-        @csrf
-        @method('PUT')
-
-        <div class="card shadow-sm">
-            <div class="card-body">
-
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped text-center align-middle">
-                        <thead class="table-header-fancy">
-                            <tr>
-                                <th>#</th>
-                                <th>Santri</th>
-                                <th>UTS</th>
-                                <th>UAS</th>
-                                <th>Praktik</th>
-                                <th>Izin</th>
-                                <th>Sakit</th>
-                                <th>Ghaib</th>
-                                <th>Rata-rata</th>
-                                <th>Predikat</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                        @foreach($nilai as $n)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $n->santri->nama }}</td>
-
-                                <td><input oninput="updateRow(this)" type="number" name="nilai[{{ $n->id_nilai_akademik }}][uts]" value="{{ $n->nilai_UTS }}" class="form-control nilai-input"></td>
-                                <td><input oninput="updateRow(this)" type="number" name="nilai[{{ $n->id_nilai_akademik }}][uas]" value="{{ $n->nilai_UAS }}" class="form-control nilai-input"></td>
-                                <td><input oninput="updateRow(this)" type="number" name="nilai[{{ $n->id_nilai_akademik }}][praktik]" value="{{ $n->nilai_praktik }}" class="form-control nilai-input"></td>
-
-                                <td><input type="number" name="nilai[{{ $n->id_nilai_akademik }}][izin]" value="{{ $n->jumlah_izin }}" class="form-control"></td>
-                                <td><input type="number" name="nilai[{{ $n->id_nilai_akademik }}][sakit]" value="{{ $n->jumlah_sakit }}" class="form-control"></td>
-                                <td><input type="number" name="nilai[{{ $n->id_nilai_akademik }}][ghaib]" value="{{ $n->jumlah_ghaib }}" class="form-control"></td>
-
-                                <td>
-                                    <input type="text" class="form-control text-center bg-light rata"
-                                           readonly value="{{ number_format($n->nilai_rata_rata, 2) }}">
-                                </td>
-
-                                <td>
-                                    <span class="predikat {{ 'predikat-'. $n->predikat }}">
-                                        {{ $n->predikat }}
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteNilai('{{ $n->id_nilai_akademik }}')">🗑</button>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <button class="btn btn-primary mt-3 float-end d-none d-md-inline">💾 Simpan Semua</button>
-                <button class="btn btn-primary save-floating d-md-none">💾 Simpan</button>
-
+    <!-- Mapel Info Card -->
+    <div class="mapel-info-card">
+        <div class="mapel-info-header">
+            <div class="mapel-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="mapel-details">
+                <h5>{{ $mapel->nama_matapelajaran }}</h5>
+                <p><i class="fas fa-calendar-alt me-2"></i>Tahun Ajaran: {{ $mapel->tahunAjaran->tahun }} - Semester {{ strtoupper($mapel->tahunAjaran->semester) }}</p>
             </div>
         </div>
-    </form>
+        <div class="mapel-stats">
+            <div class="stat-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <div>
+                    <span class="stat-label">Pendidik</span>
+                    <span class="stat-value">{{ $mapel->pendidik->nama ?? '-' }}</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-users"></i>
+                <div>
+                    <span class="stat-label">Total Santri</span>
+                    <span class="stat-value">{{ $nilai->count() }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- DELETE FORM -->
-    <form id="deleteForm" method="POST" style="display:none;">
-        @csrf @method('DELETE')
-    </form>
+    <!-- Nilai Card -->
+    <div class="nilai-card">
+        <div class="nilai-header">
+            <h5><i class="fas fa-clipboard-list"></i> Daftar Nilai</h5>
+        </div>
 
+        <form action="{{ route('nilaiakademik.mapel.updateAll', $mapel->id_matapelajaran) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Santri</th>
+                            <th>UTS</th>
+                            <th>UAS</th>
+                            <th>Praktik</th>
+                            <th>Izin</th>
+                            <th>Sakit</th>
+                            <th>Ghaib</th>
+                            <th>Rata-rata</th>
+                            <th>Predikat</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($nilai as $n)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $n->santri->nama }}</td>
+
+                            <td>
+                                <input oninput="updateRow(this)" type="number" 
+                                       name="nilai[{{ $n->id_nilai_akademik }}][uts]" 
+                                       value="{{ $n->nilai_UTS }}" 
+                                       class="nilai-input">
+                            </td>
+                            <td>
+                                <input oninput="updateRow(this)" type="number" 
+                                       name="nilai[{{ $n->id_nilai_akademik }}][uas]" 
+                                       value="{{ $n->nilai_UAS }}" 
+                                       class="nilai-input">
+                            </td>
+                            <td>
+                                <input oninput="updateRow(this)" type="number" 
+                                       name="nilai[{{ $n->id_nilai_akademik }}][praktik]" 
+                                       value="{{ $n->nilai_praktik }}" 
+                                       class="nilai-input">
+                            </td>
+
+                            <td>
+                                <input type="number" 
+                                       name="nilai[{{ $n->id_nilai_akademik }}][izin]" 
+                                       value="{{ $n->jumlah_izin }}" 
+                                       class="nilai-input">
+                            </td>
+                            <td>
+                                <input type="number" 
+                                       name="nilai[{{ $n->id_nilai_akademik }}][sakit]" 
+                                       value="{{ $n->jumlah_sakit }}" 
+                                       class="nilai-input">
+                            </td>
+                            <td>
+                                <input type="number" 
+                                       name="nilai[{{ $n->id_nilai_akademik }}][ghaib]" 
+                                       value="{{ $n->jumlah_ghaib }}" 
+                                       class="nilai-input">
+                            </td>
+
+                            <td>
+                                <input type="text" class="nilai-input rata-input rata" 
+                                       readonly value="{{ number_format($n->nilai_rata_rata, 2) }}">
+                            </td>
+
+                            <td>
+                                <span class="predikat predikat-{{ $n->predikat }}">
+                                    {{ $n->predikat }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <button type="button" class="action-btn" 
+                                        onclick="deleteNilai('{{ $n->id_nilai_akademik }}')" 
+                                        title="Hapus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 24 24" fill="none" stroke="white" stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="2">
+                                        <path d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="save-btn-wrapper">
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i> Simpan Semua
+                </button>
+            </div>
+
+        </form>
+    </div>
 </div>
+
+<!-- DELETE FORM -->
+<form id="deleteForm" method="POST" style="display:none;">
+    @csrf @method('DELETE')
+</form>
 
 <script>
 function deleteNilai(id) {

@@ -10,7 +10,7 @@ use App\Http\Controllers\PendidikController;
 use App\Http\Controllers\HalaqahController;
 use App\Http\Controllers\NilaiMapelController;
 use App\Http\Controllers\SetoranController;
-use App\Http\Controllers\NilaiTahfidzController;
+use App\Http\Controllers\UjianTahfidzController;
 use App\Http\Controllers\RaporController;
 use App\Http\Controllers\NilaiKesantrianController;
 use App\Http\Controllers\TahunAjaranController;
@@ -135,16 +135,16 @@ Route::middleware('auth')->group(function () {
     | Nilai Tahfidz
     |--------------------------------------------------------------------------
     */
-    Route::get('/nilaiTahfidz', [NilaiTahfidzController::class, 'index'])->name('nilaiTahfidz.index');
-    Route::get('/nilaiTahfidz/ujian-baru', [NilaiTahfidzController::class, 'createUjianBaru'])->name('nilaiTahfidz.createUjianBaru');
-    Route::post('/nilaiTahfidz/ujian-baru', [NilaiTahfidzController::class, 'storeUjianBaru'])->name('nilaiTahfidz.storeUjianBaru');
-    Route::get('/nilaiTahfidz/{id}/input-nilai', [NilaiTahfidzController::class, 'inputNilai'])->name('nilaiTahfidz.inputNilai');
-    Route::post('/nilaiTahfidz/{id}/input-nilai', [NilaiTahfidzController::class, 'storeNilai'])->name('nilaiTahfidz.storeNilai');
-    Route::get('/nilaiTahfidz/{id}/detail', [NilaiTahfidzController::class, 'show'])->name('nilaiTahfidz.show');
-    Route::post('/nilaiTahfidz', [NilaiTahfidzController::class, 'store'])->name('nilaiTahfidz.store');
-    Route::put('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
-    Route::delete('/nilaiTahfidz/{id}', [NilaiTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
-    Route::get('/nilai-tahfidz/{nis}/create', [NilaiTahfidzController::class, 'create'])
+    Route::get('/nilaiTahfidz', [UjianTahfidzController::class, 'index'])->name('nilaiTahfidz.index');
+    Route::get('/nilaiTahfidz/ujian-baru', [UjianTahfidzController::class, 'createUjianBaru'])->name('nilaiTahfidz.createUjianBaru');
+    Route::post('/nilaiTahfidz/ujian-baru', [UjianTahfidzController::class, 'storeUjianBaru'])->name('nilaiTahfidz.storeUjianBaru');
+    Route::get('/nilaiTahfidz/{id}/input-nilai', [UjianTahfidzController::class, 'inputNilai'])->name('nilaiTahfidz.inputNilai');
+    Route::post('/nilaiTahfidz/{id}/input-nilai', [UjianTahfidzController::class, 'storeNilai'])->name('nilaiTahfidz.storeNilai');
+    Route::get('/nilaiTahfidz/{id}/detail', [UjianTahfidzController::class, 'show'])->name('nilaiTahfidz.show');
+    Route::post('/nilaiTahfidz', [UjianTahfidzController::class, 'store'])->name('nilaiTahfidz.store');
+    Route::put('/nilaiTahfidz/{id}', [UjianTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
+    Route::delete('/nilaiTahfidz/{id}', [UjianTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
+    Route::get('/nilai-tahfidz/{nis}/create', [UjianTahfidzController::class, 'create'])
     ->name('nilaiTahfidz.create');
 
 
