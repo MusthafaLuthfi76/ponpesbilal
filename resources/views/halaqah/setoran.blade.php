@@ -92,12 +92,14 @@
         align-items: center;
         justify-content: center;
         font-size: 24px;
+        flex-shrink: 0;
     }
 
     .santri-details h5 {
         margin: 0 0 5px 0;
         font-weight: 600;
         font-size: 22px;
+        line-height: 1.2;
     }
 
     .santri-details p {
@@ -143,7 +145,8 @@
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
+        overflow: hidde
+        n;
     }
 
     .setoran-header {
@@ -184,7 +187,9 @@
         transform: translateY(-1px);
     }
 
+    /* --- Tabel Desktop Styling --- */
     table {
+        min-width: 800px; /* Lebar minimum untuk memicu scroll di mobile */
         width: 100%;
         border-collapse: collapse;
     }
@@ -203,6 +208,7 @@
     tbody td {
         padding: 15px;
         border-bottom: 1px solid var(--border-color);
+        text-align: left;
     }
 
     .status-badge {
@@ -230,13 +236,17 @@
 
     .action-btn {
         border: none;
-        border-radius: 5px;
-        width: 32px;
-        height: 32px;
+        border-radius: 50%; 
+        width: 36px;
+        height: 36px;
         color: #fff;
         margin: 0 3px;
         cursor: pointer;
         transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
 
     .edit {
@@ -269,11 +279,10 @@
         font-size: 18px;
         margin-bottom: 10px;
     }
-
+    
     /* Modal Styles */
     .modal-header {
-       
-        color: #999;
+        color: var(--text-color);
     }
 
     .form-label {
@@ -294,12 +303,132 @@
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
     }
+
+    /* --- FIX WIDTH & ALIGNMENT UNTUK KOLOM AKSI (DESKTOP + MOBILE) --- */
+    th:last-child,
+    td:last-child {
+    width: 120px !important; /* ukuran kolom */
+    text-align: center !important;
+}
+
+/* Wrapper tombol supaya rapi */
+    .action-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+    
+    /* ===================================================
+    ⭐ MOBILE SCROLLABLE TABLE IMPLEMENTATION (< 768px)
+    =================================================== */
+    @media (max-width: 768px) {
+        
+        .container-wrapper {
+            /* Pastikan padding horizontal di container-wrapper memadai */
+            padding: 0 15px 20px 15px; 
+        }
+        
+        /* 1. Header (Kembali & Judul) - Dibuat 100% lebar */
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px;
+        }
+        .page-header-left {
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        /* 2. Santri Info Card - Dibuat lebih ringkas */
+        .santri-info-card {
+            padding: 20px;
+        }
+        .santri-stats {
+            flex-direction: column; 
+            gap: 15px;
+        }
+        .stat-item {
+            justify-content: space-between; 
+            width: 100%;
+        }
+        /* Sembunyikan ikon di statistik agar lebih ringkas */
+        .stat-item i {
+            display: none; 
+        }
+        .stat-label {
+             /* Ubah kembali nilai opacity yang dihapus oleh Card View CSS sebelumnya */
+            opacity: 0.8; 
+            font-size: 12px; 
+            font-weight: normal;
+        }
+        .stat-value {
+            font-size: 18px;
+        }
+
+        /* 3. Setoran Header dan Tombol */
+        .setoran-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px;
+            gap: 10px;
+        }
+        .add-setoran-btn {
+            width: 100%; 
+            justify-content: center;
+        }
+
+        /* 4. Implementasi Tabel Scrollable */
+        .table-responsive {
+            overflow-x: auto; /* Memicu Scroll Horizontal */
+            /* Tambahkan padding di sini agar scroll tidak mentok ke sisi layar */
+            padding: 0 15px 0 15px; 
+        }
+        
+        /* Hapus semua properti Card View yang tidak diperlukan */
+        thead {
+            display: table-header-group; /* Tampilkan Header */
+        }
+        tr {
+            display: table-row;
+            margin-bottom: 0;
+            border: none;
+            padding: 0;
+            box-shadow: none;
+            background: none;
+        }
+        td {
+            display: table-cell;
+            text-align: left;
+            padding: 10px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            position: static; /* Hapus positioning relatif */
+            font-size: 14px;
+        }
+        td:last-child {
+            text-align: center;
+        }
+        /* Hapus semua pseudoelemen (label kolom) */
+        tr td:before,
+        tr td:nth-last-child(1)::before {
+            content: none;
+        }
+        
+        /* Perataan tombol aksi */
+        .action-btn {
+            margin: 0 3px;
+        }
+    }
 </style>
 
 @section('content')
 
     <div class="container-wrapper">
-        {{-- Page Header --}}
+        
         <div class="page-header">
             <div class="page-header-left">
                 <h4><svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m20.148 5.437l-.659-1.043c-.364-.577-.546-.866-.785-.892c-.238-.027-.505.247-1.038.795c-1.722 1.77-3.444 1.508-5.166 4.691c-1.722-3.183-3.444-2.921-5.166-4.691c-.533-.548-.8-.822-1.038-.795c-.239.026-.421.315-.785.892l-.658 1.043c-.255.402-.382.604-.347.816c.034.212.217.357.584.647l6.182 4.898c.591.468.887.702 1.228.702s.637-.234 1.228-.702L19.91 6.9c.367-.29.55-.435.584-.647c.035-.212-.092-.414-.346-.816M22.5 8.5l-16 12v-4.696M2.5 8.5l16 12v-4.696"/></svg> Setoran Hafalan</h4>
@@ -309,7 +438,7 @@
             </a>
         </div>
 
-
+        
         {{-- Santri Info Card --}}
         <div class="santri-info-card">
             <div class="santri-info-header">
@@ -346,6 +475,7 @@
             </div>
         </div>
 
+
         {{-- Setoran Card --}}
         <div class="setoran-card">
             <div class="setoran-header">
@@ -355,6 +485,7 @@
                 </button>
             </div>
 
+            {{-- **TABLE CONTAINER DENGAN OVERFLOW-X: AUTO DI MOBILE** --}}
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -366,54 +497,55 @@
                             <th>HALAMAN</th>
                             <th>STATUS</th>
                             <th>CATATAN</th>
-                            <th>ACTION</th>
+                            <th>AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($setoran as $s)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $s->tanggal_setoran->format('d/m/Y') }}</td>
-                                <td>{{ $s->juz ?? '-' }}</td>
-                                <td>{{ $s->ayat }}</td>
-                                <td>{{ $s->halaman }}</td>
-                                <td>
+                                {{-- data-label DIBIARKAN ADA, JIKA SUATU SAAT KEMBALI KE CARD VIEW --}}
+                                <td data-label="NO">{{ $loop->iteration }}</td>
+                                <td data-label="TANGGAL">{{ $s->tanggal_setoran->format('d/m/Y') }}</td>
+                                <td data-label="JUZ">{{ $s->juz ?? '-' }}</td>
+                                <td data-label="AYAT">{{ $s->ayat }}</td>
+                                <td data-label="HALAMAN">{{ $s->halaman }}</td>
+                                <td data-label="STATUS">
                                     <span
                                         class="status-badge 
-                @if ($s->status == 'Lancar') status-lancar
-                @elseif($s->status == 'Kurang Lancar') status-kurang
-                @else status-tidak @endif">
+                                        @if ($s->status == 'Lancar') status-lancar
+                                        @elseif($s->status == 'Kurang Lancar') status-kurang
+                                        @else status-tidak @endif">
                                         {{ $s->status }}
                                     </span>
                                 </td>
-                                <td>{{ $s->catatan ?? '-' }}</td>
-                                <td>
-                                    <!-- Tombol Edit -->
-                                    <button class="action-btn edit" data-bs-toggle="modal"
-                                        data-bs-target="#editSetoranModal" data-id="{{ $s->id_setoran }}"
-                                        data-nis="{{ $santri->nis }}"
-                                        data-tanggal="{{ $s->tanggal_setoran->format('Y-m-d') }}"
-                                        data-juz="{{ $s->juz }}" data-ayat="{{ $s->ayat }}"
-                                        data-halaman="{{ $s->halaman }}" data-status="{{ $s->status }}"
-                                        data-catatan="{{ $s->catatan }}">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                        viewBox="0 0 24 24" fill="white">
-                                        <path
-                                            d="M21 12a1 1 0 0 0-1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6a1 1 0 0 0 0-2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-6a1 1 0 0 0-1-1m-15 .76V17a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .71-.29l6.92-6.93L21.71 8a1 1 0 0 0 0-1.42l-4.24-4.29a1 1 0 0 0-1.42 0l-2.82 2.83l-6.94 6.93a1 1 0 0 0-.29.71m10.76-8.35l2.83 2.83l-1.42 1.42l-2.83-2.83ZM8 13.17l5.93-5.93l2.83 2.83L10.83 16H8Z" />
-                                    </svg>
-                                    </button>
+                                <td data-label="CATATAN">{{ $s->catatan ?? '-' }}</td>
+                                <td data-label="AKSI" class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        <button class="action-btn edit" data-bs-toggle="modal"
+                                            data-bs-target="#editSetoranModal" data-id="{{ $s->id_setoran }}"
+                                            data-nis="{{ $santri->nis }}"
+                                            data-tanggal="{{ $s->tanggal_setoran->format('Y-m-d') }}"
+                                            data-juz="{{ $s->juz }}" data-ayat="{{ $s->ayat }}"
+                                            data-halaman="{{ $s->halaman }}" data-status="{{ $s->status }}"
+                                            data-catatan="{{ $s->catatan }}" title="Edit">
+                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                viewBox="0 0 24 24" fill="white">
+                                                <path
+                                                    d="M21 12a1 1 0 0 0-1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6a1 1 0 0 0 0-2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-6a1 1 0 0 0-1-1m-15 .76V17a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .71-.29l6.92-6.93L21.71 8a1 1 0 0 0 0-1.42l-4.24-4.29a1 1 0 0 0-1.42 0l-2.82 2.83l-6.94 6.93a1 1 0 0 0-.29.71m10.76-8.35l2.83 2.83l-1.42 1.42l-2.83-2.83ZM8 13.17l5.93-5.93l2.83 2.83L10.83 16H8Z" />
+                                            </svg>
+                                        </button>
 
-                                    <!-- Tombol Delete -->
-                                    <button class="action-btn delete" data-bs-toggle="modal"
-                                        data-bs-target="#deleteSetoranModal" data-id="{{ $s->id_setoran }}"
-                                        data-nis="{{ $santri->nis }}" data-surah="{{ $s->surah }}">
-                                                                               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                            viewBox="0 0 24 24" fill="none" stroke="white" stroke-linecap="round"
-                                            stroke-linejoin="round" stroke-width="2">
-                                            <path
-                                                d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
-                                        </svg>
-                                    </button>
+                                        <button class="action-btn delete" data-bs-toggle="modal"
+                                            data-bs-target="#deleteSetoranModal" data-id="{{ $s->id_setoran }}"
+                                            data-nis="{{ $santri->nis }}" data-surah="{{ $s->surah }}" title="Hapus">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                viewBox="0 0 24 24" fill="none" stroke="white" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2">
+                                                <path
+                                                    d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -428,13 +560,12 @@
                             </tr>
                         @endforelse
                     </tbody>
-
                 </table>
             </div>
         </div>
     </div>
 
-    {{-- Modal Tambah Setoran --}}
+    {{-- Modal Tambah Setoran (Kode tetap sama) --}}
     <div class="modal fade" id="addSetoranModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -493,7 +624,7 @@
         </div>
     </div>
 
-    {{-- Modal Edit Setoran --}}
+    {{-- Modal Edit Setoran (Kode tetap sama) --}}
     <div class="modal fade" id="editSetoranModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -550,7 +681,7 @@
         </div>
     </div>
 
-    {{-- Modal Delete Setoran --}}
+    {{-- Modal Delete Setoran (Kode tetap sama) --}}
     <div class="modal fade" id="deleteSetoranModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -558,10 +689,10 @@
                     @csrf
                     @method('DELETE')
                     <div class="modal-header border-0 justify-content-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
                                 fill="green" class="ml-auto">
                                 <path
-                                    d="M13.435 2.075a3.33 3.33 0 0 0-2.87 0c-.394.189-.755.497-1.26.928l-.079.066a2.56 2.56 0 0 1-1.58.655l-.102.008c-.662.053-1.135.09-1.547.236a3.33 3.33 0 0 0-2.03 2.029c-.145.412-.182.885-.235 1.547l-.008.102a2.56 2.56 0 0 1-.655 1.58l-.066.078c-.431.506-.74.867-.928 1.261a3.33 3.33 0 0 0 0 2.87c.189.394.497.755.928 1.26l.066.079c.41.48.604.939.655 1.58l.008.102c.053.662.09 1.135.236 1.547a3.33 3.33 0 0 0 2.029 2.03c.412.145.885.182 1.547.235l.102.008c.629.05 1.09.238 1.58.655l.078.066c.506.431.867.74 1.261.928a3.33 3.33 0 0 0 2.87 0c.394-.189.755-.497 1.26-.928l.079-.066c.48-.41.939-.604 1.58-.655l.102-.008c.662-.053 1.135-.09 1.547-.236a3.33 3.33 0 0 0 2.03-2.029c.145-.412.182-.885.235-1.547l.008-.102c.05-.629.238-1.09.655-1.58l.066-.079c.431-.505.74-.866.928-1.26a3.33 3.33 0 0 0 0-2.87c-.189-.394-.497-.755-.928-1.26l-.066-.079a2.56 2.56 0 0 1-.655-1.58l-.008-.102c-.053-.662-.09-1.135-.236-1.547a3.33 3.33 0 0 0-2.029-2.03c-.412-.145-.885-.182-1.547-.235l-.102-.008a2.56 2.56 0 0 1-1.58-.655l-.079-.066c-.505-.431-.866-.74-1.26-.928M12 6.877a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75m.75 8.996v.5a.75.75 0 0 1-1.5 0v-.5a.75.75 0 0 1 1.5 0" />
+                                    d="M13.435 2.075a3.33 3.33 0 0 0-2.87 0c-.394.189-.755.497-1.26.928l-.079.066a2.56 2.56 0 0 1-1.58.655l-.102.008c-.662.053-1.135.09-1.547.236a3.33 3.33 0 0 0-2.03 2.029c-.145.412-.182.885-.235 1.547l-.008.102a2.56 2.56 0 0 1-.655 1.58l-.066.078c-.431.506-.74.867-.928 1.261a3.33 3.33 0 0 0 0 2.87c.189.394.497.755.928 1.26l.066.079c.41.48.604.939.655 1.58l.008.102c.053.662.09 1.135.236 1.547a3.33 3.33 0 0 0 2.029 2.03c.412.145.885.182 1.547.235l.102.008c.629.05 1.09.238 1.58.655l.078.066c.506.431.867.74 1.261.928a3.33 3.33 0 0 0 2.87 0c.394-.189.755-.497 1.26-.928l.079-.066c.48-.41.939-.604 1.58-.655l.102-.008c.662-.053 1.135-.09 1.547-.236a3.33 3.33 0 0 0 2.03-2.029c.145-.412.182-.885.235-1.547l-.008-.102c.05-.629.238-1.09.655-1.58l.066-.079c.431-.505.74-.866.928-1.26a3.33 3.33 0 0 0 0-2.87c-.189-.394-.497-.755-.928-1.26l-.066-.079a2.56 2.56 0 0 1-.655-1.58l-.008-.102c-.053-.662-.09-1.135-.236-1.547a3.33 3.33 0 0 0-2.029-2.03c-.412-.145-.885-.182-1.547-.235l-.102-.008a2.56 2.56 0 0 1-1.58-.655l-.079-.066c-.505-.431-.866-.74-1.26-.928M12 6.877a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75m.75 8.996v.5a.75.75 0 0 1-1.5 0v-.5a.75.75 0 0 1 1.5 0" />
                             </svg>
                     </div>
                     <div class="modal-body text-center">
@@ -584,6 +715,7 @@
             const button = event.relatedTarget;
             const form = document.getElementById('editSetoranForm');
 
+            // Ganti URL aksi form
             form.action = `/setoran/${button.dataset.nis}/${button.dataset.id}`;
 
             document.getElementById('edit_tanggal_setoran').value = button.dataset.tanggal;
@@ -600,6 +732,7 @@
             const form = document.getElementById('deleteSetoranForm');
             const surahName = document.getElementById('deleteSurahName');
 
+            // Ganti URL aksi form
             form.action = `/setoran/${button.dataset.nis}/${button.dataset.id}`;
             surahName.textContent = button.dataset.surah;
         });

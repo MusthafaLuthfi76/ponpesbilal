@@ -18,33 +18,36 @@
     <div class="container-fluid bg-light p-4" style="position: relative; z-index: 1;">
 
         <!-- Filter Form -->
-        <form method="GET" action="{{ url()->current() }}" class="mb-4" id="filterForm">
-            <div class="row align-items-center">
-                <div class="col-md-4 mb-2">
-                    <input type="text" name="search" class="form-control" placeholder="Search..."
-                        value="{{ request('search') }}" oninput="this.form.submit()">
-                </div>
+<form method="GET" action="{{ url()->current() }}" class="mb-4" id="filterForm">
+    <div class="row align-items-center">
 
-                <div class="col-md-3 mb-2">
-                    <select name="semester" class="form-select" onchange="this.form.submit()">
-                        <option value="">Semester</option>
-                        <option value="Ganjil" {{ request('semester') == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
-                        <option value="Genap" {{ request('semester') == 'Genap' ? 'selected' : '' }}>Genap</option>
-                    </select>
-                </div>
+        <div class="col-md-4 mb-2">
+            <input type="text" name="search" class="form-control" placeholder="Search..."
+                value="{{ request('search') }}" oninput="this.form.submit()">
+        </div>
 
-                <div class="col-md-3 mb-2">
-                    <select name="tahun" class="form-select" onchange="this.form.submit()">
-                         <option value="">Tahun Ajaran</option>
-                        @foreach($tahunList as $t)
-                            <option value="{{ $t->id_tahunAjaran }}"
-                                {{ request('tahun') == $t->id_tahunAjaran ? 'selected' : '' }}>
-                                {{ $t->tahun }}
-                            </option>
-                        @endforeach
-                    </select>
-                 </div>
-             </form>
+        <div class="col-md-3 mb-2">
+            <select name="semester" class="form-select" onchange="this.form.submit()">
+                <option value="">Semester</option>
+                <option value="Ganjil" {{ request('semester') == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
+                <option value="Genap" {{ request('semester') == 'Genap' ? 'selected' : '' }}>Genap</option>
+            </select>
+        </div>
+
+        <div class="col-md-3 mb-2">
+            <select name="tahun" class="form-select" onchange="this.form.submit()">
+                <option value="">Tahun Ajaran</option>
+                @foreach($tahunList as $t)
+                    <option value="{{ $t->id_tahunAjaran }}"
+                        {{ request('tahun') == $t->id_tahunAjaran ? 'selected' : '' }}>
+                        {{ $t->tahun }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+    </div> <!-- ✅ Penutup row yang sebelumnya hilang -->
+</form> <!-- ✅ Penutup form yang benar -->
 
         <!-- Data List -->
         @forelse ($santri as $s)

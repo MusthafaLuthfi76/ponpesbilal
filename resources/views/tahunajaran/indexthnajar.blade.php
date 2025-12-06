@@ -77,12 +77,17 @@ th {
 tr:hover {
     background: #f9fdfb;
 }
+/* Kolom AKSI fix width */
+.aksi-col {
+     width: 140px !important;
+    text-align: center !important;
+}
 
 /* ⚙️ Aksi */
 .action-btns {
     display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
 }
 .btn-sm {
     padding: 6px 10px;
@@ -214,7 +219,7 @@ tr:hover {
                     <th>No</th>
                     <th>Tahun</th>
                     <th>Semester</th>
-                    <th class="text-center">Aksi</th>
+                    <th class="aksi-col">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -223,7 +228,7 @@ tr:hover {
                 <td data-label="No">{{ $index + 1 }}</td>
                 <td data-label="Tahun">{{ $t->tahun }}</td>
                 <td data-label="Semester">{{ $t->semester }}</td>
-                <td data-label="Aksi" class="text-center">
+                <td data-label="Aksi" class="text-end">
                     <div class="action-btns">
                         <button class="btn btn-warning btn-sm" title="Edit"
                             data-bs-toggle="modal" data-bs-target="#editModal{{ $t->id_tahunAjaran }}">
