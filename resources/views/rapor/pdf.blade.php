@@ -91,12 +91,12 @@
 
         /* Section Title */
         .section-title {
-            font-weight: bold;
-            background: white;
-            padding: 8px 0;
-            margin-top: 20px;
-            margin-bottom: 0;
-            font-size: 12px;
+        font-weight: bold;
+        background: white;
+        padding: 8px 0;
+        margin-top: 20px;
+        margin-bottom: 5px;  /* ← INI YANG PENTING! */
+        font-size: 12px;
         }
 
         /* Tables */
@@ -539,76 +539,135 @@
     </div>
 
     <!-- BAGIAN B: KESANTRIAN -->
-    <div class="section-title">B. KESANTRIAN</div>
+<div class="section-title">B. KESANTRIAN</div>
 
-    <table class="kesantrian-table">
-        <thead>
-            <tr>
-                <th style="width:5%">No</th>
-                <th style="width:35%">Mata Pelajaran</th>
-                <th style="width:12%">Nilai</th>
-                <th>Keterangan</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="section-row">
-                <td>1</td>
-                <td><b>Penilaian Akhlak Santri</b></td>
+<table class="kesantrian-table">
+    <thead>
+        <tr>
+            <th style="width:5%">No</th>
+            <th style="width:35%">Mata Pelajaran</th>
+            <th style="width:12%">Nilai</th>
+            <th>Keterangan</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="section-row" style="border-top: 3px solid #000;">
+            <td style="width:5%">1</td>
+            <td style="width:35%"><b>Penilaian Akhlak Santri</b></td>
+            <td style="width:12%"></td>
+            <td></td>
+        </tr>
+
+        {{-- BAGIAN NILAI KESANTRIAN --}}
+        @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+            @foreach($nilaiKesantrian as $index => $item)
+                <tr class="sub-item">
+                    <td></td>
+                    <td>{{ chr(97 + $index) }}. {{ $item['aspek'] ?? '-' }}</td>
+                    <td style="text-align: center; font-weight: bold;">{{ $item['nilai'] ?? '-' }}</td>
+                    <td>{{ $item['keterangan'] ?? '-' }}</td>
+                </tr>
+            @endforeach
+        @else
+            <tr class="sub-item">
                 <td></td>
+                <td>a. Ibadah</td>
+                <td style="text-align: center; font-weight: bold;">-</td>
+                <td>-</td>
+            </tr>
+            <tr class="sub-item">
                 <td></td>
+                <td>b. Akhlak</td>
+                <td style="text-align: center; font-weight: bold;">-</td>
+                <td>-</td>
             </tr>
-
-            @if(isset($nilaiKesantrian) && $nilaiKesantrian->count() > 0)
-                @foreach($nilaiKesantrian as $index => $item)
-                    <tr class="sub-item">
-                        <td></td>
-                        <td>{{ chr(97 + $index) }}. {{ $item->aspek ?? '-' }}</td>
-                        <td style="text-align: center; font-weight: bold;">{{ $item->nilai ?? '-' }}</td>
-                        <td>{{ $item->keterangan ?? '-' }}</td>
-                    </tr>
-                @endforeach
-            @else
-                <tr class="sub-item">
-                    <td></td>
-                    <td>a. Ibadah</td>
-                    <td style="text-align: center; font-weight: bold;">C</td>
-                    <td>Jayyid</td>
-                </tr>
-                <tr class="sub-item">
-                    <td></td>
-                    <td>b. Akhlak</td>
-                    <td style="text-align: center; font-weight: bold;">B</td>
-                    <td>Jayyid Jiddan</td>
-                </tr>
-                <tr class="sub-item">
-                    <td></td>
-                    <td>c. Kerapian</td>
-                    <td style="text-align: center; font-weight: bold;">B</td>
-                    <td>Jayyid Jiddan</td>
-                </tr>
-                <tr class="sub-item">
-                    <td></td>
-                    <td>d. Kedisiplinan</td>
-                    <td style="text-align: center; font-weight: bold;">C</td>
-                    <td>Jayyid</td>
-                </tr>
-            @endif
-
-            <tr class="section-row">
-                <td>2</td>
-                <td><b>Ekstrakulikuler</b></td>
-                <td style="text-align: center; font-weight: bold;">B</td>
-                <td>Jayyid Jiddan</td>
+            <tr class="sub-item">
+                <td></td>
+                <td>c. Kerapian</td>
+                <td style="text-align: center; font-weight: bold;">-</td>
+                <td>-</td>
             </tr>
-
-            <tr class="section-row">
-                <td>3</td>
-                <td><b>Buku Pegangan</b></td>
-                <td style="text-align: center; font-weight: bold;">C+</td>
-                <td>Kurang memahami dengan baik buku pegangan santri</td>
+            <tr class="sub-item">
+                <td></td>
+                <td>d. Kedisiplinan</td>
+                <td style="text-align: center; font-weight: bold;">-</td>
+                <td>-</td>
             </tr>
-        </tbody>
-    </table>
+        @endif
+ 
+        <tr class="section-row">
+            <td>2</td>
+            <td><b>Ekstrakurikuler</b></td>
+            <td style="text-align: center; font-weight: bold;">
+                @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                    {{ $santri->nilaiKesantrian->first()->nilai_ekstrakulikuler ?? '-' }}
+                @else
+                    -
+                @endif
+            </td>
+            <td>
+                @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                    @php
+                        $nilaiEkskul = $santri->nilaiKesantrian->first()->nilai_ekstrakulikuler ?? null;
+                    @endphp
+                    @if($nilaiEkskul)
+                        @php
+                            $nilaiEkskulUpper = strtoupper(trim($nilaiEkskul));
+                            $keteranganEkskul = [
+                                'A' => 'Mumtaz',
+                                'B' => 'Jayyid Jiddan',
+                                'C' => 'Jayyid',
+                                'D' => 'Maqbul',
+                                'E' => 'Rasib',
+                            ][$nilaiEkskulUpper] ?? $nilaiEkskul;
+                        @endphp
+                        {{ $keteranganEkskul }}
+                    @else
+                        -
+                    @endif
+                @else
+                    -
+                @endif
+            </td>
+        </tr>
+
+        <tr class="section-row">
+            <td>3</td>
+            <td><b>Buku Pegangan</b></td>
+            <td style="text-align: center; font-weight: bold;">
+                @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                    {{ $santri->nilaiKesantrian->first()->nilai_buku_pegangan ?? '-' }}
+                @else
+                    -
+                @endif
+            </td>
+            <td>
+                @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                    @php
+                        $nilaiBukuPegangan = $santri->nilaiKesantrian->first()->nilai_buku_pegangan ?? null;
+                    @endphp
+                    @if($nilaiBukuPegangan)
+                        @php
+                            $nilaiBukuUpper = strtoupper(trim($nilaiBukuPegangan));
+                            $keteranganBuku = [
+                                'A' => 'Sangat memahami dengan baik buku pegangan santri',
+                                'B' => 'Memahami dengan baik buku pegangan santri',
+                                'C' => 'Cukup memahami buku pegangan santri',
+                                'D' => 'Kurang memahami buku pegangan santri',
+                                'E' => 'Tidak memahami buku pegangan santri',
+                            ][$nilaiBukuUpper] ?? 'Memahami buku pegangan santri';
+                        @endphp
+                        {{ $keteranganBuku }}
+                    @else
+                        -
+                    @endif
+                @else
+                    -
+                @endif
+            </td>
+        </tr>
+    </tbody>
+</table>
 
     <!-- TANDA TANGAN -->
     <div class="signature-wrapper">

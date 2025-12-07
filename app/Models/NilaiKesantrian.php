@@ -22,7 +22,6 @@ class NilaiKesantrian extends Model
         'nilai_ibadah',
         'nilai_kerapian',
         'nilai_kedisiplinan',
-        'nilai_kebersihan',
         'nilai_ekstrakulikuler',
         'nilai_buku_pegangan',
     ];
