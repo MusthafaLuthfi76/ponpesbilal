@@ -17,7 +17,7 @@
     <div class="container-fluid bg-light p-4">
         <div class="card shadow-sm border">
             <div class="card-body">
-                <form action="{{ route('nilaiTahfidz.storeUjianBaru') }}" method="POST">
+                    <form id="formCreateUjian" action="{{ route('nilaiTahfidz.storeUjianBaru') }}" method="POST">
                     @csrf
 
                     <!-- Tahun Ajaran -->
@@ -113,6 +113,81 @@
                         </button>
                     </div>
                 </form>
+
+                <!-- Duplicate modal -->
+                <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="duplicateModalLabel">Kesalahan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="duplicateModalMessage" class="mb-0 text-danger fw-semibold"></p>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <script>
+                        (function() {
+                            const form = document.getElementById('formCreateUjian');
+                            if (!form) return;
+
+                            form.addEventListener('submit', function(e) {
+                                e.preventDefault();
+
+                                const formData = new FormData(form);
+                                const payload = {
+                                    nis: formData.get('nis'),
+                                    tahun_ajaran_id: formData.get('tahun_ajaran_id'),
+                                    jenis_ujian: formData.get('jenis_ujian'),
+                                    sekali_duduk: formData.get('sekali_duduk')
+                                };
+
+                                // CSRF token from meta or hidden input
+                                const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : form.querySelector('input[name="_token"]').value;
+
+                                fetch("{{ route('nilaiTahfidz.checkDuplicate') }}", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'X-CSRF-TOKEN': token,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(payload)
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.exists) {
+                                        // show Bootstrap modal with error message instead of alert
+                                        const msg = 'Ujian untuk santri ini pada tahun ajaran dan semester yang sama sudah ada.';
+                                        const modalEl = document.getElementById('duplicateModal');
+                                        if (modalEl) {
+                                            const bodyEl = modalEl.querySelector('#duplicateModalMessage');
+                                            if (bodyEl) bodyEl.textContent = msg;
+                                            const duplicateModal = new bootstrap.Modal(modalEl);
+                                            duplicateModal.show();
+                                        } else {
+                                            // fallback
+                                            alert(msg);
+                                        }
+                                    } else {
+                                        // submit normally
+                                        form.submit();
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    // Fallback to normal submit on error
+                                    form.submit();
+                                });
+                            });
+                        })();
+                    </script>
             </div>
         </div>
     </div>

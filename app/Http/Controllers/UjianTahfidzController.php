@@ -249,6 +249,21 @@ class UjianTahfidzController extends Controller
             'nis' => 'required|exists:santri,nis',
         ]);
 
+        // Prevent duplicate ujian records for same santri + tahun ajaran + jenis ujian
+        // Note: we intentionally DO NOT include 'sekali_duduk' here so admin cannot create
+        // a second ujian of the same jenis for the same student & year even if 'sekali_duduk' differs.
+        $exists = UjianTahfidz::where('nis', $request->nis)
+            ->where('tahun_ajaran_id', $request->tahun_ajaran_id)
+            ->where('jenis_ujian', $request->jenis_ujian)
+            ->exists();
+
+        if ($exists) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Ujian untuk santri ini pada tahun ajaran dan semester yang sama sudah ada.');
+        }
+
         UjianTahfidz::create([
             'nis' => $request->nis,
             'tahun_ajaran_id' => $request->tahun_ajaran_id,
@@ -264,6 +279,27 @@ class UjianTahfidzController extends Controller
         return redirect()
             ->route('nilaiTahfidz.index')
             ->with('success', 'Ujian baru berhasil ditambahkan');
+    }
+
+    /**
+     * AJAX: Check duplicate ujian existence
+     */
+    public function checkDuplicateUjian(Request $request)
+    {
+        $data = $request->validate([
+            'tahun_ajaran_id' => 'required|exists:tahunajaran,id_tahunAjaran',
+            'jenis_ujian' => 'required|in:UTS,UAS',
+            'sekali_duduk' => 'required|in:ya,tidak',
+            'nis' => 'required|exists:santri,nis',
+        ]);
+
+        // Check existence ignoring 'sekali_duduk' so duplicates are prevented regardless
+        $exists = UjianTahfidz::where('nis', $data['nis'])
+            ->where('tahun_ajaran_id', $data['tahun_ajaran_id'])
+            ->where('jenis_ujian', $data['jenis_ujian'])
+            ->exists();
+
+        return response()->json(['exists' => $exists]);
     }
 
     /**

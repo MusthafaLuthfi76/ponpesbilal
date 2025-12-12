@@ -136,6 +136,7 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/nilaiTahfidz', [UjianTahfidzController::class, 'index'])->name('nilaiTahfidz.index');
+    Route::post('/nilaiTahfidz/check-duplicate', [UjianTahfidzController::class, 'checkDuplicateUjian'])->name('nilaiTahfidz.checkDuplicate');
     Route::get('/nilaiTahfidz/ujian-baru', [UjianTahfidzController::class, 'createUjianBaru'])->name('nilaiTahfidz.createUjianBaru');
     Route::post('/nilaiTahfidz/ujian-baru', [UjianTahfidzController::class, 'storeUjianBaru'])->name('nilaiTahfidz.storeUjianBaru');
     Route::get('/nilaiTahfidz/{id}/input-nilai', [UjianTahfidzController::class, 'inputNilai'])->name('nilaiTahfidz.inputNilai');

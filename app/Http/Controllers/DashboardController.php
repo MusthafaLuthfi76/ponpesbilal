@@ -3,17 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use App\Models\Santri;
+use App\Models\MataPelajaran;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Example static stats; can be replaced with real data later.
+        // Hitung jumlah berdasarkan status santri
+        $santri_mts = Santri::where('status', 'MTS')->count();
+        $santri_ma = Santri::where('status', 'MA')->count();
+        $alumni = Santri::where('status', 'Alumni')->count();
+
+        // Hitung jumlah mata pelajaran
+        $mata_pelajaran = MataPelajaran::count();
+
         $stats = [
-            'santri_ma' => 176,
-            'santri_mts' => 145,
-            'alumni' => 245,
-            'mata_pelajaran' => 20,
+            'santri_ma'        => $santri_ma,
+            'santri_mts'       => $santri_mts,
+            'alumni'           => $alumni,
+            'mata_pelajaran'   => $mata_pelajaran,
         ];
 
         return view('dashboard', [
