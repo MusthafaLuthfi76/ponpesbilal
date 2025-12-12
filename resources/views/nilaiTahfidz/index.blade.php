@@ -160,7 +160,7 @@
                                 <span class="info-label">Periode</span>
                                 @if ($ujian->tahunAjaran)
                                     <div>
-                                        <span class="badge badge-custom {{ $ujian->tahunAjaran->semester == 'Ganjil' ? 'semester-ganjil' : 'semester-genap' }} mb-1 px-3 py-2">
+                                        <span class="badge badge-custom {{ strtoupper($ujian->tahunAjaran->semester) == 'GANJIL' ? 'semester-ganjil' : 'semester-genap' }} mb-1 px-3 py-2">
                                             Semester {{ $ujian->tahunAjaran->semester }}
                                         </span>
                                         <div class="small text-muted">{{ $ujian->tahunAjaran->tahun }}</div>
@@ -265,7 +265,7 @@
                         <div class="d-flex align-items-center gap-3 ms-3">
                             <div class="text-center">
                                 @if ($ujian->tahunAjaran)
-                                    <span class="badge badge-custom {{ $ujian->tahunAjaran->semester == 'Ganjil' ? 'semester-ganjil' : 'semester-genap' }} mb-1 px-3 py-2">
+                                    <span class="badge badge-custom {{ strtoupper($ujian->tahunAjaran->semester) == 'GANJIL' ? 'semester-ganjil' : 'semester-genap' }} mb-1 px-3 py-2">
                                         Semester {{ $ujian->tahunAjaran->semester }}
                                     </span>
                                     <div class="small text-muted fw-bold">{{ $ujian->tahunAjaran->tahun }}</div>
@@ -503,15 +503,17 @@
             color: white;
         }
 
-        /* Semester badges */
+        /* Semester badges - distinct colors */
         .semester-ganjil {
-            background-color: #0d6efd; /* bootstrap primary */
+            background-color: #28a745; /* Green - for ODD semesters */
             color: #fff;
+            font-weight: 500;
         }
 
         .semester-genap {
-            background-color: #198754; /* bootstrap success (a bit darker) */
+            background-color: #fd7e14; /* Orange - for EVEN semesters */
             color: #fff;
+            font-weight: 500;
         }
 
         /* Info Grid for Mobile */

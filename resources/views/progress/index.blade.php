@@ -566,6 +566,36 @@ body {
   text-align: center;
 }
 
+/* Garis Threshold */
+.chart-threshold-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #FF5722;
+  opacity: 0.8;
+  z-index: 5;
+}
+
+.threshold-label {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  background: #FF5722;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: white;
+  font-weight: bold;
+}
+
+/* Pastikan chart body bisa menampung threshold absolute */
+.chart-card-body {
+  position: relative;
+  padding-top: 3rem;
+}
+
+
 /* Timeline Card */
 .timeline-card {
   background: white;
@@ -764,6 +794,27 @@ body {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .chart-bars {
+    gap: 1rem;
+  }
+
+  .chart-bar {
+    width: 40px;
+  }
+
+  .chart-value {
+    font-size: 0.75rem;
+  }
+
+  .chart-label {
+    font-size: 0.75rem;
+  }
+
+  .threshold-label {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+  }
 }
 </style>
 
@@ -951,27 +1002,51 @@ body {
         </div>
       </div>
 
-      <!-- CHART -->
-      @if(isset($chartLabels))
+      @php
+          // Ambang batas threshold
+          $threshold = 20;
+
+          // Filter hanya 4 bulan terakhir
+          $last4Indexes = array_slice(array_keys($chartLabels), -4);
+          $chartLabels4 = array_intersect_key($chartLabels, array_flip($last4Indexes));
+          $chartValues4 = array_intersect_key($chartValues, array_flip($last4Indexes));
+
+          // Tinggi maksimal bar = threshold (untuk membandingkan ke ambang batas)
+          $maxHeight = max(max($chartValues4), $threshold);
+      @endphp
+
+      @if(count($chartLabels4) > 0)
       <div class="chart-card">
-        <div class="chart-card-header">
-          <h3 class="chart-card-title">Progress 6 Bulan Terakhir</h3>
-          <p class="chart-card-subtitle">Periode: {{ $bulanMulai ?? '' }} - {{ $bulanAkhir ?? '' }}</p>
-        </div>
-        <div class="chart-card-body">
-          <div class="chart-bars">
-            @foreach($chartLabels as $index => $label)
-              <div class="chart-bar-item">
-                <div class="chart-bar-wrapper">
-                  <div class="chart-bar" style="height: {{ $chartValues[$index] > 0 ? ($chartValues[$index] / max($chartValues) * 100) : 10 }}%">
-                    <span class="chart-value">{{ $chartValues[$index] }}</span>
-                  </div>
-                </div>
-                <p class="chart-label">{{ $label }}</p>
-              </div>
-            @endforeach
+          <div class="chart-card-header">
+              <h3 class="chart-card-title">Progress 4 Bulan Terakhir</h3>
+              <p class="chart-card-subtitle">Threshold: {{ $threshold }} halaman per bulan</p>
           </div>
-        </div>
+
+          <div class="chart-card-body">
+              
+              <!-- Garis Threshold -->
+              <div class="chart-threshold-line" 
+                  style="bottom: {{ ($threshold / $maxHeight) * 100 }}%">
+                  <span class="threshold-label">
+                      Threshold ({{ $threshold }} halaman)
+                  </span>
+              </div>
+
+              <div class="chart-bars">
+                  @foreach($chartLabels4 as $index => $label)
+                      <div class="chart-bar-item">
+                          <div class="chart-bar-wrapper">
+                              <div class="chart-bar"
+                                  style="height: {{ ($chartValues4[$index] / $maxHeight) * 100 }}%">
+                                  <span class="chart-value">{{ $chartValues4[$index] }}</span>
+                              </div>
+                          </div>
+                          <p class="chart-label">{{ $label }}</p>
+                      </div>
+                  @endforeach
+              </div>
+
+          </div>
       </div>
       @endif
 
