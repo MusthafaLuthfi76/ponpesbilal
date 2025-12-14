@@ -1,25 +1,14 @@
 {
   "version": 2,
-  "framework": "laravel",
-  "builds": [
-    { "src": "public/index.php", "use": "@vercel/php@^0.8.2" }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/public/index.php" }
-  ],
-  "env": {
-    "APP_NAME": "@APP_NAME",
-    "APP_ENV": "@APP_ENV",
-    "APP_DEBUG": "@APP_DEBUG",
-    "APP_URL": "@APP_URL",
-    "LOG_CHANNEL": "stack",
-    "DB_CONNECTION": "@DB_CONNECTION",
-    "DB_HOST": "@DB_HOST",
-    "DB_PORT": "@DB_PORT",
-    "DB_DATABASE": "@DB_DATABASE",
-    "DB_USERNAME": "@DB_USERNAME",
-    "DB_PASSWORD": "@DB_PASSWORD"
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.6.0"
+    }
   },
-  "buildCommand": "composer install --prefer-dist --no-dev --no-interaction && php artisan optimize"
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ]
 }
