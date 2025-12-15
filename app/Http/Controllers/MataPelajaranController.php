@@ -51,6 +51,12 @@ class MataPelajaranController extends Controller
             'id_tahunAjaran' => ['required', 'exists:tahunajaran,id_tahunAjaran'],
         ]);
 
+        // Validasi total bobot = 100%
+        $totalBobot = $data['bobot_UTS'] + $data['bobot_UAS'] + $data['bobot_praktik'];
+        if ($totalBobot != 100) {
+            return back()->withInput()->withErrors(['bobot_total' => "Total bobot harus 100% (saat ini: $totalBobot%)"]);
+        }
+
         MataPelajaran::create($data);
         return redirect()->route('matapelajaran.index')->with('success', 'Mata pelajaran berhasil ditambahkan');
     }
@@ -68,6 +74,12 @@ class MataPelajaranController extends Controller
             'id_pendidik' => ['nullable', 'exists:pendidik,id_pendidik'],
             'id_tahunAjaran' => ['required', 'exists:tahunajaran,id_tahunAjaran'],
         ]);
+
+        // Validasi total bobot = 100%
+        $totalBobot = $data['bobot_UTS'] + $data['bobot_UAS'] + $data['bobot_praktik'];
+        if ($totalBobot != 100) {
+            return back()->withInput()->withErrors(['bobot_total' => "Total bobot harus 100% (saat ini: $totalBobot%)"]);
+        }
 
         $mataPelajaran->update($data);
         return redirect()->route('matapelajaran.index')->with('success', 'Mata pelajaran berhasil diperbarui');

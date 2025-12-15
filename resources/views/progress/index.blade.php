@@ -540,11 +540,11 @@ body {
   background: linear-gradient(to top, #3CA27B, #5fcc9a);
   border-radius: 8px 8px 0 0;
   position: relative;
-  min-height: 40px;
+  min-height: 6px;
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: center;
-  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   transition: all 0.3s;
 }
 
@@ -1049,6 +1049,21 @@ body {
           </div>
       </div>
       @endif
+
+            <script>
+              // Debug info for chart calculations (will appear in browser console)
+              try {
+                const _chartDebug = {
+                  labels: @json(array_values($chartLabels4 ?? [])),
+                  values: @json(array_values($chartValues4 ?? [])),
+                  maxHeight: {{ $maxHeight ?? 0 }},
+                  threshold: {{ $threshold ?? 0 }}
+                };
+                console.info('CHART DEBUG:', _chartDebug);
+              } catch (e) {
+                console.warn('Chart debug unavailable', e);
+              }
+            </script>
 
       <!-- TIMELINE -->
       <div class="timeline-card">

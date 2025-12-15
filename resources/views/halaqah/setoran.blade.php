@@ -754,12 +754,12 @@
                         <div class="row">
                           <div class="col-md-6 mb-3">
                             <label class="form-label">Halaman Awal</label>
-                            <input type="number" class="form-control" name="halaman_awal" placeholder="Misal: 12" required>
+                            <input type="number" class="form-control" id="halaman_awal" name="halaman_awal" placeholder="Misal: 12" required>
                             </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Halaman Akhir</label>
-                            <input type="number" class="form-control" name="halaman_akhir" placeholder="Misal: 15" required>
+                            <input type="number" class="form-control" id="halaman_akhir" name="halaman_akhir" placeholder="Misal: 15" required>
                         </div>
 
                         </div>
@@ -875,6 +875,56 @@
 
     {{-- JS untuk handle modal edit & delete --}}
     <script>
+        // ===== JUZ ORDER & LOGIC =====
+        const juzOrder = [30, 29, 28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
+        const HALAMAN_PER_JUZ = 20;
+
+        // Data setoran terakhir dari Laravel
+        const setoranTerakhir = @json($setoranTerakhir);
+
+        // Function untuk calculate juz & halaman next
+        function calculateNextSetoran() {
+            if (!setoranTerakhir) {
+                // Belum ada setoran, mulai dari juz 30, halaman 1
+                return {
+                    juz: 30,
+                    halaman_awal: 1
+                };
+            }
+
+            let currentJuz = parseInt(setoranTerakhir.juz) || 30;
+            let currentHalAkhir = parseInt(setoranTerakhir.halaman_akhir) || 1;
+
+            // Cari index juz saat ini
+            let juzIndex = juzOrder.indexOf(currentJuz);
+            if (juzIndex === -1) juzIndex = 0; // Default ke juz 30 jika invalid
+
+            let nextHalaman = currentHalAkhir + 1;
+            let nextJuz = currentJuz;
+
+            // Check apakah halaman sudah melebihi 20 → next juz
+            if (nextHalaman > HALAMAN_PER_JUZ) {
+                nextHalaman = 1;
+                juzIndex = (juzIndex + 1) % juzOrder.length; // Wrap around
+                nextJuz = juzOrder[juzIndex];
+            }
+
+            return {
+                juz: nextJuz,
+                halaman_awal: nextHalaman
+            };
+        }
+
+        // When modal TAMBAH opens, auto-fill juz & halaman
+        const addModal = document.getElementById('addSetoranModal');
+        addModal.addEventListener('show.bs.modal', () => {
+            const next = calculateNextSetoran();
+            document.getElementById('juz').value = next.juz;
+            document.getElementById('halaman_awal').value = next.halaman_awal;
+            // halaman_akhir biarkan kosong, user isi manual
+        });
+
+        // When modal EDIT opens
         const editModal = document.getElementById('editSetoranModal');
         editModal.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
@@ -891,6 +941,7 @@
             document.getElementById('edit_catatan').value = button.dataset.catatan ?? '';
         });
 
+        // When modal DELETE opens
         const deleteModal = document.getElementById('deleteSetoranModal');
         deleteModal.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;

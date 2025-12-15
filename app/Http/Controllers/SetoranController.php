@@ -17,8 +17,14 @@ class SetoranController extends Controller
             ->get();
 
         $id_halaqah = $santri->id_halaqah;
+        
+        // Get last setoran untuk auto-fill juz dan halaman
+        $setoranTerakhir = Setoran::where('nis', $nis)
+            ->orderBy('tanggal_setoran', 'desc')
+            ->orderBy('id_setoran', 'desc')
+            ->first();
 
-        return view('halaqah.setoran', compact('santri', 'setoran', 'id_halaqah'));
+        return view('halaqah.setoran', compact('santri', 'setoran', 'id_halaqah', 'setoranTerakhir'));
     }
 
     // Menyimpan setoran baru (USER INPUT MANUAL)

@@ -172,6 +172,10 @@ Route::middleware('auth')->group(function () {
     */
     Route::get('/nilai-kesantrian', [NilaiKesantrianController::class, 'index'])->name('nilaikesantrian.index');
     Route::post('/nilai-kesantrian', [NilaiKesantrianController::class, 'store'])->name('nilaikesantrian.store');
+    Route::put('/nilai-kesantrian/{id_matapelajaran}', [NilaiKesantrianController::class, 'update'])->name('nilaikesantrian.update');
+    Route::delete('/nilai-kesantrian/{id_matapelajaran}', [NilaiKesantrianController::class, 'destroy'])->name('nilaikesantrian.destroy');
+    Route::put('/nilai-kesantrian/nilai/{id}', [NilaiKesantrianController::class, 'updateNilai'])->name('nilaikesantrian.nilai.update');
+    Route::delete('/nilai-kesantrian/nilai/{id}', [NilaiKesantrianController::class, 'destroyNilai'])->name('nilaikesantrian.nilai.destroy');
     Route::get('/nilai-kesantrian/{id_matapelajaran}/{id_tahunAjaran}', [NilaiKesantrianController::class, 'show'])->name('nilaikesantrian.show');
     Route::post('/nilai-kesantrian/update-massal', [NilaiKesantrianController::class, 'updateNilaiMassal'])->name('nilaikesantrian.update.massal');
     Route::post('/nilai-kesantrian/assign/{id_matapelajaran}/{id_tahunAjaran}', [NilaiKesantrianController::class, 'assignStore'])->name('nilaikesantrian.assign.store');
