@@ -746,7 +746,7 @@
                                     required value="{{ date('Y-m-d') }}">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="juz" class="form-label">Juz (Opsional)</label>
+                                <label for="juz" class="form-label">Juz</label>
                                 <input type="text" class="form-control" id="juz" name="juz"
                                     placeholder="Contoh: 1">
                             </div>
