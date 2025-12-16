@@ -46,7 +46,8 @@ class RaporController extends Controller
             'nilaiAkademik.mataPelajaran',
             'ujianTahfidz',
             'setoran',
-            'nilaiKesantrian' 
+            'nilaiKesantrian',
+            'tahunAjaran'
         ])
         ->where('nis', $nis)
         ->firstOrFail();
@@ -95,17 +96,44 @@ class RaporController extends Controller
         }
 
         // ================
+        // PERHITUNGAN NILAI TAHFIDZ
+        // ================
+        $nilaiTahfidzData = $this->hitungNilaiTahfidz($santri);
+        
+        // ================
+        // LIST JUZ YANG DIUJIKAN
+        // ================
+        $daftarJuzDiuji = $santri->ujianTahfidz
+            ->pluck('juz')
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values()
+            ->implode(', ');
+
+        // ================
         // LOAD PDF
         // ================
         $pdf = Pdf::loadView('rapor.pdf', [
-            'santri'          => $santri,
-            'nilaiAkademik'   => $nilaiAkademik,
-            'nilaiKesantrian' => $nilaiKesantrianFormatted, // ← PAKAI YANG SUDAH DIFORMAT
+            'santri'               => $santri,
+            'nilaiAkademik'        => $nilaiAkademik,
+            'nilaiKesantrian'      => $nilaiKesantrianFormatted,
 
-            // Variabel tambahan untuk Bagian Tahfizh
-            'totalHalaman'    => $totalHalaman,
-            'daftarHalaman'   => $daftarHalaman,
-            'daftarJuz'       => $daftarJuz,
+            // Variabel Setoran
+            'totalHalaman'         => $totalHalaman,
+            'daftarHalaman'        => $daftarHalaman,
+            'daftarJuz'            => $daftarJuz,
+
+            // VARIABEL NILAI TAHFIDZ SAJA (TANPA TAHSIN)
+            'nilaiTahfidz'         => $nilaiTahfidzData['nilai_akhir'],
+            'nilaiHurufTahfidz'    => $nilaiTahfidzData['nilai_huruf'],
+            'totalJuzDiuji'        => $nilaiTahfidzData['total_juz'],
+            'targetJuz'            => $nilaiTahfidzData['target_juz'],
+            'totalKesalahan'       => $nilaiTahfidzData['total_kesalahan'],
+            'nilaiMaksimal'        => $nilaiTahfidzData['nilai_maksimal'],
+            
+            // LIST JUZ YANG DIUJIKAN
+            'daftarJuzDiuji'       => $daftarJuzDiuji,
         ]);
 
         return $pdf->stream('Rapor_' . $santri->nama . '.pdf');
@@ -133,7 +161,8 @@ class RaporController extends Controller
             'nilaiAkademik.mataPelajaran',
             'ujianTahfidz',
             'setoran',
-            'nilaiKesantrian'  
+            'nilaiKesantrian',
+            'tahunAjaran'
         ])
         ->whereIn('nis', $nisList)
         ->orderBy('nama', 'asc')
@@ -176,14 +205,37 @@ class RaporController extends Controller
             // Transform nilai kesantrian
             $nilaiKesantrianFormatted = $this->formatNilaiKesantrian($santri);
 
+            // HITUNG NILAI TAHFIDZ SAJA
+            $nilaiTahfidzData = $this->hitungNilaiTahfidz($santri);
+            
+            // LIST JUZ YANG DIUJIKAN
+            $daftarJuzDiuji = $santri->ujianTahfidz
+                ->pluck('juz')
+                ->filter()
+                ->unique()
+                ->sort()
+                ->values()
+                ->implode(', ');
+
             // Render view untuk santri ini
             $html .= view('rapor.pdf', [
-                'santri'          => $santri,
-                'nilaiAkademik'   => $santri->nilaiAkademik,
-                'nilaiKesantrian' => $nilaiKesantrianFormatted, // ← PAKAI YANG SUDAH DIFORMAT
-                'totalHalaman'    => $totalHalaman,
-                'daftarHalaman'   => $daftarHalaman,
-                'daftarJuz'       => $daftarJuz,
+                'santri'               => $santri,
+                'nilaiAkademik'        => $santri->nilaiAkademik,
+                'nilaiKesantrian'      => $nilaiKesantrianFormatted,
+                'totalHalaman'         => $totalHalaman,
+                'daftarHalaman'        => $daftarHalaman,
+                'daftarJuz'            => $daftarJuz,
+
+                // VARIABEL NILAI TAHFIDZ SAJA (TANPA TAHSIN)
+                'nilaiTahfidz'         => $nilaiTahfidzData['nilai_akhir'],
+                'nilaiHurufTahfidz'    => $nilaiTahfidzData['nilai_huruf'],
+                'totalJuzDiuji'        => $nilaiTahfidzData['total_juz'],
+                'targetJuz'            => $nilaiTahfidzData['target_juz'],
+                'totalKesalahan'       => $nilaiTahfidzData['total_kesalahan'],
+                'nilaiMaksimal'        => $nilaiTahfidzData['nilai_maksimal'],
+                
+                // LIST JUZ YANG DIUJIKAN
+                'daftarJuzDiuji'       => $daftarJuzDiuji,
             ])->render();
             
             // Tambahkan page break kecuali untuk halaman terakhir
@@ -203,6 +255,86 @@ class RaporController extends Controller
     }
 
     /**
+     * METHOD: Hitung Nilai Tahfidz
+     * 
+     * @param  \App\Models\Santri  $santri
+     * @return array
+     */
+    private function hitungNilaiTahfidz($santri)
+    {
+        // 1️⃣ Ambil data ujian tahfidz
+        $ujianTahfidz = $santri->ujianTahfidz;
+
+        // 2️⃣ Hitung total juz & kesalahan
+        $totalJuz = $ujianTahfidz->pluck('juz')->filter()->unique()->count();
+        $totalKesalahan = $ujianTahfidz->sum('total_kesalahan');
+
+        // 3️⃣ Tentukan target juz berdasarkan semester, kelas, jenjang
+        $targetJuz = $this->getTargetJuz($santri);
+
+        // 4️⃣ Hitung nilai maksimal berdasarkan selisih
+        $selisih = max(0, $targetJuz - $totalJuz);
+
+        $nilaiMaks = match (true) {
+            $selisih === 0 => 100,
+            $selisih === 1 => 90,
+            $selisih <= 3  => 80,
+            default        => 70,
+        };
+
+        // 5️⃣ Pengurangan & nilai akhir
+        $pengurangan = min($totalKesalahan, 20) * 0.5;
+        $nilaiAkhir = max(0, $nilaiMaks - $pengurangan);
+
+        // 6️⃣ Nilai huruf
+        $nilaiHuruf = match (true) {
+            $nilaiAkhir >= 90 => 'A',
+            $nilaiAkhir >= 80 => 'B',
+            $nilaiAkhir >= 70 => 'C',
+            $nilaiAkhir >= 60 => 'D',
+            default           => 'E',
+        };
+
+        return [
+            'total_juz'       => $totalJuz,
+            'target_juz'      => $targetJuz,
+            'total_kesalahan' => $totalKesalahan,
+            'nilai_maksimal'  => $nilaiMaks,
+            'nilai_akhir'     => round($nilaiAkhir, 1), // 1 desimal
+            'nilai_huruf'     => $nilaiHuruf,
+        ];
+    }
+
+    /**
+     * METHOD: Tentukan Target Juz
+     * 
+     * RUMUS BERDASARKAN CHAT WA:
+     * - Semester GENAP: 2 juz (semua kelas)
+     * - Semester GANJIL: 3 juz (semua kelas MTS & MA)
+     * 
+     * @param  \App\Models\Santri  $santri
+     * @return int
+     */
+    private function getTargetJuz($santri)
+    {
+        // Cek apakah relasi tahunAjaran ada
+        if (!$santri->tahunAjaran) {
+            return 3; // Default semester ganjil
+        }
+
+        $semester = strtolower($santri->tahunAjaran->semester ?? '');
+
+        // 🔹 SEMESTER GENAP → TARGET = 2 JUZ (untuk semua kelas)
+        if ($semester === 'genap') {
+            return 2;
+        }
+
+        // 🔹 SEMESTER GANJIL → TARGET = 3 JUZ (untuk semua kelas)
+        // Sesuai chat WA: MTS kelas 1,2,3 dan MA kelas 1,2,3 = 3 juz
+        return 3;
+    }
+
+    /**
      * Helper: Format nilai kesantrian dari database ke format PDF
      * 
      * @param  \App\Models\Santri  $santri
@@ -210,12 +342,10 @@ class RaporController extends Controller
      */
     private function formatNilaiKesantrian($santri)
     {
-        // Karena nilaiKesantrian adalah hasMany, ambil yang pertama saja
-        // Atau bisa disesuaikan dengan logic bisnis kamu
         $nilaiKesantrian = $santri->nilaiKesantrian->first();
 
         if (!$nilaiKesantrian) {
-            return collect(); // Return empty collection jika null
+            return collect();
         }
 
         return collect([
@@ -249,27 +379,26 @@ class RaporController extends Controller
      * @return string
      */
     private function getKeteranganNilai($nilai)
-{
-    if (!$nilai || $nilai === '-') {
-        return '-';
+    {
+        if (!$nilai || $nilai === '-') {
+            return '-';
+        }
+        
+        $nilai = strtoupper(trim($nilai));
+        
+        $keteranganMap = [
+            'A'   => 'Mumtaz',
+            'A-'  => 'Mumtaz',
+            'B+'  => 'Jayyid Jiddan',
+            'B'   => 'Jayyid Jiddan',
+            'B-'  => 'Jayyid Jiddan',
+            'C+'  => 'Jayyid',
+            'C'   => 'Jayyid',
+            'C-'  => 'Jayyid',
+            'D'   => 'Maqbul',
+            'E'   => 'Dha\'if',
+        ];
+        
+        return $keteranganMap[$nilai] ?? $nilai;
     }
-    
-    $nilai = strtoupper(trim($nilai));
-    
-    // HAPUS KURUNG - HANYA BAHASA ARAB/INDONESIA SAJA
-    $keteranganMap = [
-        'A'   => 'Mumtaz',
-        'A-'  => 'Mumtaz',
-        'B+'  => 'Jayyid Jiddan',
-        'B'   => 'Jayyid Jiddan',
-        'B-'  => 'Jayyid Jiddan',
-        'C+'  => 'Jayyid',
-        'C'   => 'Jayyid',
-        'C-'  => 'Jayyid',
-        'D'   => 'Maqbul',
-        'E'   => 'Dha\'if',
-    ];
-    
-    return $keteranganMap[$nilai] ?? $nilai;
-}
 }

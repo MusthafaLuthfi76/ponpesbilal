@@ -37,14 +37,62 @@ class UjianTahfidzController extends Controller
             $query->where('tahun_ajaran_id', $request->tahun);
         }
         
+        // Group berdasarkan santri + tahun ajaran + jenis ujian + sekali duduk + penguji
+        $ujianListRaw = $query->orderBy('created_at', 'desc')->get();
+        
+        // Group data
+        $ujianGrouped = $ujianListRaw->groupBy(function($ujian) {
+            return $ujian->nis . '_' . 
+                   $ujian->tahun_ajaran_id . '_' . 
+                   $ujian->jenis_ujian . '_' . 
+                   $ujian->sekali_duduk . '_' . 
+                   $ujian->id_penguji;
+        });
+        
+        // Transform group menjadi collection dengan agregat data
+        $ujianListGrouped = $ujianGrouped->map(function($group) {
+            $first = $group->first();
+            
+            // Hitung agregat
+            $juzList = $group->pluck('juz')->filter()->unique()->sort()->values();
+            $totalKesalahan = $group->sum('total_kesalahan');
+            $totalTajwid = $group->sum('tajwid');
+            $totalItqan = $group->sum('itqan');
+            
+            return (object) [
+                'id' => $first->id, // ID untuk link detail
+                'nis' => $first->nis,
+                'santri' => $first->santri,
+                'tahunAjaran' => $first->tahunAjaran,
+                'penguji' => $first->penguji,
+                'jenis_ujian' => $first->jenis_ujian,
+                'sekali_duduk' => $first->sekali_duduk,
+                'juz_count' => $juzList->count(),
+                'juz_list' => $juzList->implode(', '),
+                'juz' => $juzList->count() > 0 ? $juzList->implode(', ') : null, // untuk kompatibilitas view
+                'tajwid' => $totalTajwid > 0 ? $totalTajwid : null, // untuk kompatibilitas view
+                'itqan' => $totalItqan > 0 ? $totalItqan : null, // untuk kompatibilitas view
+                'total_kesalahan' => $totalKesalahan,
+                'created_at' => $first->created_at,
+            ];
+        })->values();
+        
+        // Manual pagination (karena sudah di-group)
+        $perPage = 10;
+        $currentPage = request()->get('page', 1);
+        $ujianList = new \Illuminate\Pagination\LengthAwarePaginator(
+            $ujianListGrouped->forPage($currentPage, $perPage),
+            $ujianListGrouped->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+        
         $tahunList = TahunAjaran::orderBy('tahun', 'desc')->get();
         $pendidikList = Pendidik::orderBy('nama', 'asc')->get();
         $santriList = Santri::orderBy('nama', 'asc')->get();
-        
-        // Ambil data dengan pagination
-        $ujianList = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        // Return view dengan data
+        // Return view dengan data - VARIABEL SUDAH KONSISTEN
         return view('nilaiTahfidz.index', compact('ujianList', 'tahunList', 'pendidikList', 'santriList'));
     }
 
@@ -76,26 +124,6 @@ class UjianTahfidzController extends Controller
         
         // Ambil ujian pertama dari group yang dipilih untuk mendapatkan penguji, jenis_ujian, dan sekali_duduk
         $ujianPertama = $ujianList->first();
-
-        // Tambahkan nilai angka & huruf otomatis
-        foreach ($ujianList as $u) {
-            $kesalahan = $u->total_kesalahan ?? 0;
-
-            // Nilai angka skala 1–100
-            // Setiap 1 kesalahan = dikurangi 1 poin
-            $u->nilai_angka = max(0, 100 - $kesalahan);
-
-            // Konversi ke huruf
-            if ($u->nilai_angka >= 90) {
-                $u->nilai_huruf = 'A';
-            } elseif ($u->nilai_angka >= 80) {
-                $u->nilai_huruf = 'B';
-            } elseif ($u->nilai_angka >= 70) {
-                $u->nilai_huruf = 'C';
-            } else {
-                $u->nilai_huruf = 'D';
-            }
-        }
 
         // Hitung total kesalahan dari ujian yang ditampilkan (group yang dipilih)
         $totalTajwid = $ujianList->sum('tajwid') ?? 0;
@@ -250,8 +278,6 @@ class UjianTahfidzController extends Controller
         ]);
 
         // Prevent duplicate ujian records for same santri + tahun ajaran + jenis ujian
-        // Note: we intentionally DO NOT include 'sekali_duduk' here so admin cannot create
-        // a second ujian of the same jenis for the same student & year even if 'sekali_duduk' differs.
         $exists = UjianTahfidz::where('nis', $request->nis)
             ->where('tahun_ajaran_id', $request->tahun_ajaran_id)
             ->where('jenis_ujian', $request->jenis_ujian)
@@ -293,7 +319,6 @@ class UjianTahfidzController extends Controller
             'nis' => 'required|exists:santri,nis',
         ]);
 
-        // Check existence ignoring 'sekali_duduk' so duplicates are prevented regardless
         $exists = UjianTahfidz::where('nis', $data['nis'])
             ->where('tahun_ajaran_id', $data['tahun_ajaran_id'])
             ->where('jenis_ujian', $data['jenis_ujian'])
@@ -309,7 +334,7 @@ class UjianTahfidzController extends Controller
     {
         $ujian = UjianTahfidz::with(['santri', 'tahunAjaran', 'penguji'])->findOrFail($id);
         
-        // Ambil semua juz yang sudah diinput untuk ujian ini (berdasarkan nis, tahun_ajaran_id, jenis_ujian, sekali_duduk, id_penguji yang sama)
+        // Ambil semua juz yang sudah diinput untuk ujian ini
         $juzList = UjianTahfidz::where('nis', $ujian->nis)
             ->where('tahun_ajaran_id', $ujian->tahun_ajaran_id)
             ->where('jenis_ujian', $ujian->jenis_ujian)
@@ -382,5 +407,4 @@ class UjianTahfidzController extends Controller
 
         return view('nilaiTahfidz.create', compact('santri', 'tahunAjaran'));
     }
-
 }

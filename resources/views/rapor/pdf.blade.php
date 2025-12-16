@@ -91,12 +91,12 @@
 
         /* Section Title */
         .section-title {
-        font-weight: bold;
-        background: white;
-        padding: 8px 0;
-        margin-top: 20px;
-        margin-bottom: 5px;  /* ← INI YANG PENTING! */
-        font-size: 12px;
+            font-weight: bold;
+            background: white;
+            padding: 8px 0;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-size: 12px;
         }
 
         /* Tables */
@@ -140,7 +140,7 @@
             font-weight: bold;
         }
 
-        /* Sub rows untuk Tahfizh/Tahsin */
+        /* Sub rows untuk sub-item */
         table.data-table tr.sub-row td:first-child {
             text-align: center;
             font-weight: normal;
@@ -349,7 +349,7 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Al-Qur'an Section -->
+            <!-- 1. Al-Qur'an (PARENT - TANPA NILAI) -->
             <tr>
                 <td class="no-cell">1</td>
                 <td class="subject-cell">Al-Qur'an</td>
@@ -358,102 +358,106 @@
                 <td></td>
             </tr>
 
-            @forelse ($santri->ujianTahfidz as $index => $t)
-                <tr class="sub-row">
-                    <td class="text-center">{{ $index + 1 }}</td>
-                    <td style="padding-left: 30px;">
-                        {{ $index == 0 ? 'a. Tahfizh' : 'b. Tahsin' }}
-                    </td>
+            <!-- a. Tahfizh (SUB-ITEM) -->
+            <tr class="sub-row">
+                <td></td>
+                <td style="padding-left: 30px;">a. Tahfizh</td>
 
-                    {{-- Nilai Angka --}}
-                    <td class="text-center">{{ $t->nilai_angka ?? '-' }}</td>
+                {{-- Nilai Angka Tahfidz --}}
+                <td class="text-center">
+                    {{ $nilaiTahfidz ?? '-' }}
+                </td>
 
-                    {{-- Nilai Huruf --}}
-                    <td class="text-center">
-                        @php
-                            $kesalahan = $t->total_kesalahan ?? 999;
-                            if($kesalahan <= 5) echo 'A';
-                            elseif($kesalahan <= 10) echo 'B';
-                            else echo 'C';
-                        @endphp
-                    </td>
+                {{-- Nilai Huruf Tahfidz --}}
+                <td class="text-center">
+                    {{ $nilaiHurufTahfidz ?? '-' }}
+                </td>
 
-                    {{-- Keterangan --}}
-                    <td>
-                        <div class="detail-text">
-                            {{-- === IF TAHFIZH === --}}
-                            @if($index == 0)
-                                {{-- Tanggal Setoran --}}
-                                <div class="detail-header">Setoran:</div>
-                                <ul style="margin: 3px 0 3px 15px; padding:0;">
-                                    @forelse($santri->setoran as $s)
-                                        <li>
-                                            {{ \Carbon\Carbon::parse($s->tanggal_setoran)->format('d F Y') }}
-                                            ({{ $s->halaman_awal }}–{{ $s->halaman_akhir }})
-                                        </li>
-                                    @empty
-                                        <li>-</li>
-                                    @endforelse
-                                </ul>
+                {{-- Keterangan Tahfidz --}}
+                <td>
+                    <div class="detail-text">
+                        {{-- Target & Pencapaian --}}
+                        <div class="detail-header">Target Hafalan:</div>
+                        <b>{{ $targetJuz ?? 0 }} Juz</b><br>
 
-                                {{-- Daftar Halaman --}}
-                                <div class="detail-header">Daftar Halaman:</div>
-                                <b>{{ $daftarHalaman ?: '-' }}</b><br>
+                        <div class="detail-header">Jumlah Hafalan yang Diujikan:</div>
+                        <b>{{ $totalJuzDiuji ?? 0 }} Juz 
+                        @if(!empty($daftarJuzDiuji))
+                            ({{ $daftarJuzDiuji }})
+                        @endif
+                        </b><br>
 
-                                {{-- Total Halaman --}}
-                                <div class="detail-header">Total Halaman:</div>
-                                <b>{{ $totalHalaman }} Halaman</b><br>
+                        <div class="detail-header">Total Kesalahan:</div>
+                        <b>{{ $totalKesalahan ?? 0 }}</b><br>
 
-                                {{-- Juz yang Disetorkan --}}
-                                <div class="detail-header">Juz yang Disetorkan:</div>
-                                <b>{{ $daftarJuz ?: '-' }}</b><br>
+                        {{-- Setoran --}}
+                        <div class="detail-header" style="margin-top: 8px;">Setoran:</div>
+                        <ul>
+                            @forelse($santri->setoran as $s)
+                                <li>
+                                    {{ \Carbon\Carbon::parse($s->tanggal_setoran)->format('d F Y') }}
+                                    (Hal. {{ $s->halaman_awal }}–{{ $s->halaman_akhir }})
+                                </li>
+                            @empty
+                                <li>Belum ada setoran</li>
+                            @endforelse
+                        </ul>
 
-                                {{-- Juz yang Diujikan --}}
-                                <div class="detail-header">Jumlah Hafalan yang Diujikan:</div>
-                                <b>Juz {{ $t->juz ?? '-' }}</b><br>
+                        <div class="detail-header">Daftar Halaman:</div>
+                        <b>{{ $daftarHalaman ?: '-' }}</b><br>
 
-                                {{-- Sekali Duduk --}}
-                                <div class="detail-header" style="margin-top: 8px;">Sekali Duduk</div>
-                                <b>{{ ucfirst($t->sekali_duduk ?? '-') }}</b>
-                            @else
-                                {{-- === IF TAHSIN === --}}
-                                Materi yang dipelajari:
-                                <ul style="margin-top: 3px;">
-                                    <li>Pengenalan Ilmu Tajwid</li>
-                                    <li>Makhorijul Huruf</li>
-                                </ul>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                {{-- Jika belum ada ujian --}}
-                <tr class="sub-row">
-                    <td class="text-center">1</td>
-                    <td style="padding-left: 30px;">a. Tahfizh</td>
-                    <td class="text-center">-</td>
-                    <td class="text-center">-</td>
-                    <td><i>Belum ada data ujian tahfizh</i></td>
-                </tr>
+                        <div class="detail-header">Total Halaman:</div>
+                        <b>{{ $totalHalaman ?? 0 }} Halaman</b><br>
 
-                <tr class="sub-row">
-                    <td class="text-center">2</td>
-                    <td style="padding-left: 30px;">b. Tahsin</td>
-                    <td class="text-center">-</td>
-                    <td class="text-center">-</td>
-                    <td><i>Belum ada data ujian tahsin</i></td>
-                </tr>
-            @endforelse
+                        <div class="detail-header">Juz yang Disetorkan:</div>
+                        <b>{{ $daftarJuz ?: '-' }}</b>
+                    </div>
+                </td>
+            </tr>
 
-            <!-- Dirasah Islamiyah Section -->
+            <!-- b. Tahsin (SUB-ITEM - NILAI DARI AKADEMIK) -->
+            <tr class="sub-row">
+                <td></td>
+                <td style="padding-left: 30px;">b. Tahsin</td>
+                
+                {{-- Nilai Angka Tahsin dari Nilai Akademik --}}
+                <td class="text-center">
+                    @php
+                        // Cari nilai tahsin dari nilaiAkademik
+                        $nilaiTahsin = $santri->nilaiAkademik->first(function($nilai) {
+                            return stripos($nilai->mataPelajaran->nama_matapelajaran ?? '', 'tahsin') !== false;
+                        });
+                    @endphp
+                    {{ $nilaiTahsin->nilai_rata_rata ?? '-' }}
+                </td>
+                
+                {{-- Nilai Huruf Tahsin dari Nilai Akademik --}}
+                <td class="text-center">
+                    {{ $nilaiTahsin->predikat ?? '-' }}
+                </td>
+                
+                {{-- Keterangan Tahsin --}}
+                <td>
+                    <div class="detail-text">
+                        @if($nilaiTahsin && $nilaiTahsin->keterangan)
+                            {!! nl2br(e($nilaiTahsin->keterangan)) !!}
+                        @else
+                            -
+                        @endif
+                    </div>
+                </td>
+            </tr>
+
+            <!-- 2. Dirasah Islamiyah (PARENT - TANPA NILAI) -->
             <tr class="highlight-row">
                 <td class="no-cell">2</td>
                 <td class="subject-cell" colspan="4">Dirasah Islamiyah</td>
             </tr>
 
+            <!-- Sub-item Dirasah Islamiyah -->
             @forelse ($santri->nilaiAkademik as $index => $a)
                 <tr class="sub-row">
-                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td></td>
                     <td style="padding-left: 30px;">
                         {{ chr(97 + $index) }}. {{ $a->mataPelajaran->nama_matapelajaran ?? '-' }}
                     </td>
@@ -471,35 +475,9 @@
                 </tr>
             @empty
                 <tr class="sub-row">
-                    <td class="text-center">1</td>
-                    <td style="padding-left: 30px;">a. Bahasa Arab<br>(Al-Arabiyyah Baina Yadaik)</td>
-                    <td class="text-center">72</td>
-                    <td class="text-center">C</td>
-                    <td>
-                        <div class="detail-text">
-                            <ul>
-                                <li>Bab Perkenalan</li>
-                                <li>Bab Keluarga</li>
-                                <li>Bab Tempat Tinggal</li>
-                                <li>Bab Kehidupan Sehari-hari</li>
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="sub-row">
-                    <td class="text-center">2</td>
-                    <td style="padding-left: 30px;">b. Adab<br>(Ta'lim Muta'alim)</td>
-                    <td class="text-center">82</td>
-                    <td class="text-center">B</td>
-                    <td>
-                        <div class="detail-text">
-                            <ul>
-                                <li>Giat, rajin, dan semangat</li>
-                                <li>Memulai belajar, ukuran, dan pentingnya berkesinambungan</li>
-                                <li>Bertanwakal</li>
-                                <li>Masa belajar</li>
-                            </ul>
-                        </div>
+                    <td></td>
+                    <td style="padding-left: 30px;" colspan="4">
+                        <i>Belum ada data nilai akademik</i>
                     </td>
                 </tr>
             @endforelse
@@ -539,135 +517,135 @@
     </div>
 
     <!-- BAGIAN B: KESANTRIAN -->
-<div class="section-title">B. KESANTRIAN</div>
+    <div class="section-title">B. KESANTRIAN</div>
 
-<table class="kesantrian-table">
-    <thead>
-        <tr>
-            <th style="width:5%">No</th>
-            <th style="width:35%">Mata Pelajaran</th>
-            <th style="width:12%">Nilai</th>
-            <th>Keterangan</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="section-row" style="border-top: 3px solid #000;">
-            <td style="width:5%">1</td>
-            <td style="width:35%"><b>Penilaian Akhlak Santri</b></td>
-            <td style="width:12%"></td>
-            <td></td>
-        </tr>
+    <table class="kesantrian-table">
+        <thead>
+            <tr>
+                <th style="width:5%">No</th>
+                <th style="width:35%">Mata Pelajaran</th>
+                <th style="width:12%">Nilai</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="section-row" style="border-top: 3px solid #000;">
+                <td style="width:5%">1</td>
+                <td style="width:35%"><b>Penilaian Akhlak Santri</b></td>
+                <td style="width:12%"></td>
+                <td></td>
+            </tr>
 
-        {{-- BAGIAN NILAI KESANTRIAN --}}
-        @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-            @foreach($nilaiKesantrian as $index => $item)
+            {{-- BAGIAN NILAI KESANTRIAN --}}
+            @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                @foreach($nilaiKesantrian as $index => $item)
+                    <tr class="sub-item">
+                        <td></td>
+                        <td>{{ chr(97 + $index) }}. {{ $item['aspek'] ?? '-' }}</td>
+                        <td style="text-align: center; font-weight: bold;">{{ $item['nilai'] ?? '-' }}</td>
+                        <td>{{ $item['keterangan'] ?? '-' }}</td>
+                    </tr>
+                @endforeach
+            @else
                 <tr class="sub-item">
                     <td></td>
-                    <td>{{ chr(97 + $index) }}. {{ $item['aspek'] ?? '-' }}</td>
-                    <td style="text-align: center; font-weight: bold;">{{ $item['nilai'] ?? '-' }}</td>
-                    <td>{{ $item['keterangan'] ?? '-' }}</td>
+                    <td>a. Ibadah</td>
+                    <td style="text-align: center; font-weight: bold;">-</td>
+                    <td>-</td>
                 </tr>
-            @endforeach
-        @else
-            <tr class="sub-item">
-                <td></td>
-                <td>a. Ibadah</td>
-                <td style="text-align: center; font-weight: bold;">-</td>
-                <td>-</td>
-            </tr>
-            <tr class="sub-item">
-                <td></td>
-                <td>b. Akhlak</td>
-                <td style="text-align: center; font-weight: bold;">-</td>
-                <td>-</td>
-            </tr>
-            <tr class="sub-item">
-                <td></td>
-                <td>c. Kerapian</td>
-                <td style="text-align: center; font-weight: bold;">-</td>
-                <td>-</td>
-            </tr>
-            <tr class="sub-item">
-                <td></td>
-                <td>d. Kedisiplinan</td>
-                <td style="text-align: center; font-weight: bold;">-</td>
-                <td>-</td>
-            </tr>
-        @endif
- 
-        <tr class="section-row">
-            <td>2</td>
-            <td><b>Ekstrakurikuler</b></td>
-            <td style="text-align: center; font-weight: bold;">
-                @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                    {{ $santri->nilaiKesantrian->first()->nilai_ekstrakulikuler ?? '-' }}
-                @else
-                    -
-                @endif
-            </td>
-            <td>
-                @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                    @php
-                        $nilaiEkskul = $santri->nilaiKesantrian->first()->nilai_ekstrakulikuler ?? null;
-                    @endphp
-                    @if($nilaiEkskul)
-                        @php
-                            $nilaiEkskulUpper = strtoupper(trim($nilaiEkskul));
-                            $keteranganEkskul = [
-                                'A' => 'Mumtaz',
-                                'B' => 'Jayyid Jiddan',
-                                'C' => 'Jayyid',
-                                'D' => 'Maqbul',
-                                'E' => 'Rasib',
-                            ][$nilaiEkskulUpper] ?? $nilaiEkskul;
-                        @endphp
-                        {{ $keteranganEkskul }}
+                <tr class="sub-item">
+                    <td></td>
+                    <td>b. Akhlak</td>
+                    <td style="text-align: center; font-weight: bold;">-</td>
+                    <td>-</td>
+                </tr>
+                <tr class="sub-item">
+                    <td></td>
+                    <td>c. Kerapian</td>
+                    <td style="text-align: center; font-weight: bold;">-</td>
+                    <td>-</td>
+                </tr>
+                <tr class="sub-item">
+                    <td></td>
+                    <td>d. Kedisiplinan</td>
+                    <td style="text-align: center; font-weight: bold;">-</td>
+                    <td>-</td>
+                </tr>
+            @endif
+     
+            <tr class="section-row">
+                <td>2</td>
+                <td><b>Ekstrakurikuler</b></td>
+                <td style="text-align: center; font-weight: bold;">
+                    @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                        {{ $santri->nilaiKesantrian->first()->nilai_ekstrakulikuler ?? '-' }}
                     @else
                         -
                     @endif
-                @else
-                    -
-                @endif
-            </td>
-        </tr>
+                </td>
+                <td>
+                    @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                        @php
+                            $nilaiEkskul = $santri->nilaiKesantrian->first()->nilai_ekstrakulikuler ?? null;
+                        @endphp
+                        @if($nilaiEkskul)
+                            @php
+                                $nilaiEkskulUpper = strtoupper(trim($nilaiEkskul));
+                                $keteranganEkskul = [
+                                    'A' => 'Mumtaz',
+                                    'B' => 'Jayyid Jiddan',
+                                    'C' => 'Jayyid',
+                                    'D' => 'Maqbul',
+                                    'E' => 'Rasib',
+                                ][$nilaiEkskulUpper] ?? $nilaiEkskul;
+                            @endphp
+                            {{ $keteranganEkskul }}
+                        @else
+                            -
+                        @endif
+                    @else
+                        -
+                    @endif
+                </td>
+            </tr>
 
-        <tr class="section-row">
-            <td>3</td>
-            <td><b>Buku Pegangan</b></td>
-            <td style="text-align: center; font-weight: bold;">
-                @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                    {{ $santri->nilaiKesantrian->first()->nilai_buku_pegangan ?? '-' }}
-                @else
-                    -
-                @endif
-            </td>
-            <td>
-                @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                    @php
-                        $nilaiBukuPegangan = $santri->nilaiKesantrian->first()->nilai_buku_pegangan ?? null;
-                    @endphp
-                    @if($nilaiBukuPegangan)
-                        @php
-                            $nilaiBukuUpper = strtoupper(trim($nilaiBukuPegangan));
-                            $keteranganBuku = [
-                                'A' => 'Sangat memahami dengan baik buku pegangan santri',
-                                'B' => 'Memahami dengan baik buku pegangan santri',
-                                'C' => 'Cukup memahami buku pegangan santri',
-                                'D' => 'Kurang memahami buku pegangan santri',
-                                'E' => 'Tidak memahami buku pegangan santri',
-                            ][$nilaiBukuUpper] ?? 'Memahami buku pegangan santri';
-                        @endphp
-                        {{ $keteranganBuku }}
+            <tr class="section-row">
+                <td>3</td>
+                <td><b>Buku Pegangan</b></td>
+                <td style="text-align: center; font-weight: bold;">
+                    @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                        {{ $santri->nilaiKesantrian->first()->nilai_buku_pegangan ?? '-' }}
                     @else
                         -
                     @endif
-                @else
-                    -
-                @endif
-            </td>
-        </tr>
-    </tbody>
-</table>
+                </td>
+                <td>
+                    @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
+                        @php
+                            $nilaiBukuPegangan = $santri->nilaiKesantrian->first()->nilai_buku_pegangan ?? null;
+                        @endphp
+                        @if($nilaiBukuPegangan)
+                            @php
+                                $nilaiBukuUpper = strtoupper(trim($nilaiBukuPegangan));
+                                $keteranganBuku = [
+                                    'A' => 'Sangat memahami dengan baik buku pegangan santri',
+                                    'B' => 'Memahami dengan baik buku pegangan santri',
+                                    'C' => 'Cukup memahami buku pegangan santri',
+                                    'D' => 'Kurang memahami buku pegangan santri',
+                                    'E' => 'Tidak memahami buku pegangan santri',
+                                ][$nilaiBukuUpper] ?? 'Memahami buku pegangan santri';
+                            @endphp
+                            {{ $keteranganBuku }}
+                        @else
+                            -
+                        @endif
+                    @else
+                        -
+                    @endif
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <!-- TANDA TANGAN -->
     <div class="signature-wrapper">
