@@ -10,39 +10,42 @@ use Illuminate\Http\Request;
 class MataPelajaranController extends Controller
 {
     public function index(Request $request)
-{
-    $q = $request->input('q');
-    $tahunId = $request->input('tahun');
+    {
+        $q = $request->input('q');
+        $tahunId = $request->input('tahun');
 
-    $query = MataPelajaran::with('tahunAjaran');
-    if ($q) {
-        $query->where(function($w) use ($q){
-            $w->where('id_matapelajaran','like',"%$q%")
-              ->orWhere('nama_matapelajaran','like',"%$q%");
-        });
+        $query = MataPelajaran::with('tahunAjaran');
+
+        if ($q) {
+            $query->where(function ($w) use ($q) {
+                $w->where('id_matapelajaran', 'like', "%$q%")
+                  ->orWhere('nama_matapelajaran', 'like', "%$q%");
+            });
+        }
+
+        if ($tahunId) {
+            $query->where('id_tahunAjaran', $tahunId);
+        }
+
+        $mataPelajaran = $query->orderBy('id_matapelajaran')
+                               ->paginate(10)
+                               ->appends($request->query());
+
+        $tahunAjaran = TahunAjaran::orderBy('tahun')->get();
+        $pendidik = Pendidik::all();
+
+        return view('matapelajaran.index', compact('mataPelajaran', 'tahunAjaran', 'tahunId', 'q', 'pendidik'));
     }
-    if ($tahunId) {
-        $query->where('id_tahunAjaran', $tahunId);
-    }
-
-    $mataPelajaran = $query->orderBy('id_matapelajaran')
-                           ->paginate(10)
-                           ->appends($request->query());
-
-    $tahunAjaran = TahunAjaran::orderBy('tahun')->get();
-
-    // Tambahkan ini:
-    $pendidik = Pendidik::all();
-
-    return view('matapelajaran.index', compact('mataPelajaran', 'tahunAjaran', 'tahunId', 'q', 'pendidik'));
-}
-
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'id_matapelajaran' => ['required', 'integer', 'unique:matapelajaran,id_matapelajaran'],
             'nama_matapelajaran' => ['required', 'string', 'max:100'],
+
+            // kolom baru
+            'kelas' => ['required', 'in:7,8,9,10,11,12'],
+            'materi_pelajaran' => ['nullable', 'string'],
+
             'kkm' => ['required', 'numeric', 'min:0', 'max:100'],
             'bobot_UTS' => ['required', 'numeric', 'min:0', 'max:100'],
             'bobot_UAS' => ['required', 'numeric', 'min:0', 'max:100'],
@@ -51,13 +54,14 @@ class MataPelajaranController extends Controller
             'id_tahunAjaran' => ['required', 'exists:tahunajaran,id_tahunAjaran'],
         ]);
 
-        // Validasi total bobot = 100%
         $totalBobot = $data['bobot_UTS'] + $data['bobot_UAS'] + $data['bobot_praktik'];
+
         if ($totalBobot != 100) {
             return back()->withInput()->withErrors(['bobot_total' => "Total bobot harus 100% (saat ini: $totalBobot%)"]);
         }
 
         MataPelajaran::create($data);
+
         return redirect()->route('matapelajaran.index')->with('success', 'Mata pelajaran berhasil ditambahkan');
     }
 
@@ -67,6 +71,11 @@ class MataPelajaranController extends Controller
 
         $data = $request->validate([
             'nama_matapelajaran' => ['required', 'string', 'max:100'],
+
+            // kolom baru
+            'kelas' => ['required', 'in:7,8,9,10,11,12'],
+            'materi_pelajaran' => ['nullable', 'string'],
+
             'kkm' => ['required', 'numeric', 'min:0', 'max:100'],
             'bobot_UTS' => ['required', 'numeric', 'min:0', 'max:100'],
             'bobot_UAS' => ['required', 'numeric', 'min:0', 'max:100'],
@@ -75,13 +84,14 @@ class MataPelajaranController extends Controller
             'id_tahunAjaran' => ['required', 'exists:tahunajaran,id_tahunAjaran'],
         ]);
 
-        // Validasi total bobot = 100%
         $totalBobot = $data['bobot_UTS'] + $data['bobot_UAS'] + $data['bobot_praktik'];
+
         if ($totalBobot != 100) {
             return back()->withInput()->withErrors(['bobot_total' => "Total bobot harus 100% (saat ini: $totalBobot%)"]);
         }
 
         $mataPelajaran->update($data);
+
         return redirect()->route('matapelajaran.index')->with('success', 'Mata pelajaran berhasil diperbarui');
     }
 

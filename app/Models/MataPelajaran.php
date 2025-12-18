@@ -8,22 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class MataPelajaran extends Model
 {
     use HasFactory;
-    // Nama tabel yang digunakan
-    protected $table = 'matapelajaran';
 
-    // Primary key custom
+    protected $table = 'matapelajaran';
     protected $primaryKey = 'id_matapelajaran';
 
-    // Tidak auto-increment (karena di migration tidak pakai increments)
-    public $incrementing = false;
-
-    // Jenis primary key (unsignedBigInteger)
+    // id_matapelajaran dari migration sudah auto increment
+    public $incrementing = true;
     protected $keyType = 'int';
 
-    // Kolom yang bisa diisi mass-assignment
     protected $fillable = [
-        'id_matapelajaran',
         'nama_matapelajaran',
+        'kelas',
+        'materi_pelajaran',
         'kkm',
         'bobot_UTS',
         'bobot_UAS',
@@ -32,13 +28,11 @@ class MataPelajaran extends Model
         'id_tahunAjaran'
     ];
 
-    // Relasi ke tabel pendidik
     public function pendidik()
     {
         return $this->belongsTo(Pendidik::class, 'id_pendidik', 'id_pendidik');
     }
 
-    // Relasi ke tabel tahunajaran
     public function tahunAjaran()
     {
         return $this->belongsTo(TahunAjaran::class, 'id_tahunAjaran', 'id_tahunAjaran');

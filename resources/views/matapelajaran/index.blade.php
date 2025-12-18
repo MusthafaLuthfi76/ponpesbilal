@@ -39,12 +39,13 @@
     </div>
 @endif
 
-<div class="table-responsive">
+<!-- Desktop Table View -->
+<div class="table-responsive d-none d-lg-block">
     <table class="table table-hover mb-0">
         <thead class="table-light">
             <tr>
-                <th>ID Mata Pelajaran</th>
                 <th>Nama Mata Pelajaran</th>
+                <th>Kelas</th>
                 <th>Tahun Ajaran</th>
                 <th>Pendidik</th>
                 <th>KKM</th>
@@ -57,8 +58,8 @@
         <tbody>
         @forelse($mataPelajaran as $mp)
             <tr>
-                <td>{{ $mp->id_matapelajaran }}</td>
                 <td>{{ $mp->nama_matapelajaran }}</td>
+                <td>{{ $mp->kelas }}</td>
                 <td>
                     {{ $mp->tahunAjaran?->tahun ?? '-' }} - Semester {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}
                 </td>
@@ -68,23 +69,25 @@
                 <td>{{ $mp->bobot_UAS }}%</td>
                 <td>{{ $mp->bobot_praktik }}%</td>
                 <td class="text-center">
-                    <div class="actions">
-                        <!-- View Button -->
-                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewModal"
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewModal"
                             data-id="{{ $mp->id_matapelajaran }}"
                             data-nama="{{ $mp->nama_matapelajaran }}"
+                            data-kelas="{{ $mp->kelas }}"
+                            data-materi="{{ $mp->materi_pelajaran }}"
                             data-tahun="{{ $mp->tahunAjaran?->tahun ?? '-' }} - Semester {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}"
                             data-kkm="{{ $mp->kkm }}"
                             data-uts="{{ $mp->bobot_UTS }}"
                             data-uas="{{ $mp->bobot_UAS }}"
                             data-praktik="{{ $mp->bobot_praktik }}"
-                            data-pendidik="{{ $mp->pendidik?->nama_pendidik ?? '-' }}"
+                            data-pendidik="{{ $mp->pendidik?->nama ?? '-' }}"
                         ><i class="bi bi-eye"></i></button>
 
-                        <!-- Edit Button -->
-                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal"
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal"
                             data-id="{{ $mp->id_matapelajaran }}"
                             data-nama="{{ $mp->nama_matapelajaran }}"
+                            data-kelas="{{ $mp->kelas }}"
+                            data-materi="{{ $mp->materi_pelajaran }}"
                             data-tahun="{{ $mp->id_tahunAjaran }}"
                             data-kkm="{{ $mp->kkm }}"
                             data-uts="{{ $mp->bobot_UTS }}"
@@ -96,7 +99,7 @@
                         <form action="{{ route('matapelajaran.destroy', $mp->id_matapelajaran) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus {{ $mp->nama_matapelajaran }}?')">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
+                            <button class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
                         </form>
                     </div>
                 </td>
@@ -108,6 +111,59 @@
         @endforelse
         </tbody>
     </table>
+</div>
+
+<!-- Mobile Card View -->
+<div class="d-lg-none">
+    @forelse($mataPelajaran as $mp)
+    <div class="card mb-3">
+        <div class="card-body">
+            <h6 class="card-title mb-2">{{ $mp->nama_matapelajaran }}</h6>
+            <div class="mb-2">
+                <span class="badge bg-primary">Kelas {{ $mp->kelas }}</span>
+                <span class="badge bg-secondary">{{ $mp->pendidik->nama ?? '-' }}</span>
+            </div>
+            <p class="card-text small mb-2">
+                <strong>Tahun:</strong> {{ $mp->tahunAjaran?->tahun ?? '-' }} - {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}
+            </p>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-info flex-fill" data-bs-toggle="modal" data-bs-target="#viewModal"
+                    data-id="{{ $mp->id_matapelajaran }}"
+                    data-nama="{{ $mp->nama_matapelajaran }}"
+                    data-kelas="{{ $mp->kelas }}"
+                    data-materi="{{ $mp->materi_pelajaran }}"
+                    data-tahun="{{ $mp->tahunAjaran?->tahun ?? '-' }} - Semester {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}"
+                    data-kkm="{{ $mp->kkm }}"
+                    data-uts="{{ $mp->bobot_UTS }}"
+                    data-uas="{{ $mp->bobot_UAS }}"
+                    data-praktik="{{ $mp->bobot_praktik }}"
+                    data-pendidik="{{ $mp->pendidik?->nama ?? '-' }}"
+                ><i class="bi bi-eye"></i> Detail</button>
+
+                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal"
+                    data-id="{{ $mp->id_matapelajaran }}"
+                    data-nama="{{ $mp->nama_matapelajaran }}"
+                    data-kelas="{{ $mp->kelas }}"
+                    data-materi="{{ $mp->materi_pelajaran }}"
+                    data-tahun="{{ $mp->id_tahunAjaran }}"
+                    data-kkm="{{ $mp->kkm }}"
+                    data-uts="{{ $mp->bobot_UTS }}"
+                    data-uas="{{ $mp->bobot_UAS }}"
+                    data-praktik="{{ $mp->bobot_praktik }}"
+                    data-pendidik="{{ $mp->id_pendidik }}"
+                ><i class="bi bi-pencil-square"></i></button>
+
+                <form action="{{ route('matapelajaran.destroy', $mp->id_matapelajaran) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus {{ $mp->nama_matapelajaran }}?')">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    @empty
+    <div class="alert alert-info">Belum ada data</div>
+    @endforelse
 </div>
 
 <div class="mt-3 d-flex justify-content-between align-items-center">
@@ -129,15 +185,27 @@
         </div>
         <div class="modal-body">
           <div class="row g-3">
-            <div class="col-md-3">
-              <label class="form-label">ID Mata Pelajaran</label>
-              <input type="number" name="id_matapelajaran" class="form-control" required>
-            </div>
-            <div class="col-md-9">
+            <div class="col-md-8">
               <label class="form-label">Nama Mata Pelajaran</label>
               <input type="text" name="nama_matapelajaran" class="form-control" required>
             </div>
             <div class="col-md-4">
+              <label class="form-label">Kelas</label>
+              <select name="kelas" class="form-select" required>
+                <option value="">Pilih Kelas</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Materi Pelajaran</label>
+              <textarea name="materi_pelajaran" class="form-control" rows="3" placeholder="Opsional"></textarea>
+            </div>
+            <div class="col-md-6">
               <label class="form-label">Tahun Ajaran</label>
               <select name="id_tahunAjaran" class="form-select" required>
                 <option value="">Pilih Tahun Ajaran</option>
@@ -148,28 +216,28 @@
                 @endforeach
               </select>
             </div>
-            <div class="form-group mt-3">
-            <label>Pendidik</label>
-            <select name="id_pendidik" class="form-select" required>
-              <option value="">-- Pilih Pendidik --</option>
-              @foreach($pendidik as $p)
-                <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option>
-              @endforeach
-            </select>
-          </div>
-            <div class="col-md-2">
+            <div class="col-md-6">
+              <label class="form-label">Pendidik</label>
+              <select name="id_pendidik" class="form-select" required>
+                <option value="">Pilih Pendidik</option>
+                @foreach($pendidik as $p)
+                  <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-3">
               <label class="form-label">KKM</label>
               <input type="number" name="kkm" class="form-control" min="0" max="100" required>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label class="form-label">Bobot UTS</label>
-              <input type="number" name="bobot_UTS" class="form-control" min="0" max="100" required>
+              <input type="number" name="bobot_UTS" class="form-control bobot-input" min="0" max="100" required>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label class="form-label">Bobot UAS</label>
-              <input type="number" name="bobot_UAS" class="form-control" min="0" max="100" required>
+              <input type="number" name="bobot_UAS" class="form-control bobot-input" min="0" max="100" required>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label class="form-label">Bobot Praktik</label>
               <input type="number" name="bobot_praktik" class="form-control bobot-input" min="0" max="100" required>
             </div>
@@ -203,11 +271,26 @@
         </div>
         <div class="modal-body">
           <div class="row g-3">
-            <div class="col-md-9">
+            <div class="col-md-8">
               <label class="form-label">Nama Mata Pelajaran</label>
               <input type="text" name="nama_matapelajaran" id="edit_nama" class="form-control" required>
             </div>
             <div class="col-md-4">
+              <label class="form-label">Kelas</label>
+              <select name="kelas" id="edit_kelas" class="form-select" required>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Materi Pelajaran</label>
+              <textarea name="materi_pelajaran" id="edit_materi" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="col-md-6">
               <label class="form-label">Tahun Ajaran</label>
               <select name="id_tahunAjaran" id="edit_tahun" class="form-select" required>
                 @foreach($tahunAjaran as $t)
@@ -217,27 +300,27 @@
                 @endforeach
               </select>
             </div>
-            <div class="col-md-4">
-              <label class="form-label">Pendidik / Guru</label>
+            <div class="col-md-6">
+              <label class="form-label">Pendidik</label>
               <select name="id_pendidik" id="edit_pendidik" class="form-select" required>
                 @foreach($pendidik as $p)
                   <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option>
                 @endforeach
               </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label class="form-label">KKM</label>
               <input type="number" name="kkm" id="edit_kkm" class="form-control" min="0" max="100" required>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label class="form-label">Bobot UTS</label>
-              <input type="number" name="bobot_UTS" id="edit_uts" class="form-control" min="0" max="100" required>
+              <input type="number" name="bobot_UTS" id="edit_uts" class="form-control bobot-input-edit" min="0" max="100" required>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label class="form-label">Bobot UAS</label>
-              <input type="number" name="bobot_UAS" id="edit_uas" class="form-control" min="0" max="100" required>
+              <input type="number" name="bobot_UAS" id="edit_uas" class="form-control bobot-input-edit" min="0" max="100" required>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label class="form-label">Bobot Praktik</label>
               <input type="number" name="bobot_praktik" id="edit_praktik" class="form-control bobot-input-edit" min="0" max="100" required>
             </div>
@@ -270,6 +353,8 @@
         <dl class="row mb-0">
           <dt class="col-sm-4">ID</dt><dd class="col-sm-8" id="v_id"></dd>
           <dt class="col-sm-4">Nama</dt><dd class="col-sm-8" id="v_nama"></dd>
+          <dt class="col-sm-4">Kelas</dt><dd class="col-sm-8" id="v_kelas"></dd>
+          <dt class="col-sm-4">Materi</dt><dd class="col-sm-8" id="v_materi"></dd>
           <dt class="col-sm-4">Tahun Ajaran</dt><dd class="col-sm-8" id="v_tahun"></dd>
           <dt class="col-sm-4">Pendidik</dt><dd class="col-sm-8" id="v_pendidik"></dd>
           <dt class="col-sm-4">KKM</dt><dd class="col-sm-8" id="v_kkm"></dd>
@@ -294,7 +379,6 @@ createModal.addEventListener('show.bs.modal', () => {
   updateCreateBobot();
 });
 
-// Track bobot input changes in CREATE modal
 document.querySelectorAll('#createModal .bobot-input').forEach(input => {
   input.addEventListener('input', updateCreateBobot);
 });
@@ -330,6 +414,8 @@ editModal.addEventListener('show.bs.modal', event => {
   const btn = event.relatedTarget;
   const id = btn.getAttribute('data-id');
   document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
+  document.getElementById('edit_kelas').value = btn.getAttribute('data-kelas');
+  document.getElementById('edit_materi').value = btn.getAttribute('data-materi') || '';
   document.getElementById('edit_tahun').value = btn.getAttribute('data-tahun');
   document.getElementById('edit_kkm').value = btn.getAttribute('data-kkm');
   document.getElementById('edit_uts').value = btn.getAttribute('data-uts');
@@ -341,7 +427,6 @@ editModal.addEventListener('show.bs.modal', event => {
   updateEditBobot();
 });
 
-// Track bobot input changes in EDIT modal
 document.querySelectorAll('#editModal .bobot-input-edit').forEach(input => {
   input.addEventListener('input', updateEditBobot);
 });
@@ -376,6 +461,8 @@ viewModal.addEventListener('show.bs.modal', event => {
   const b = event.relatedTarget;
   document.getElementById('v_id').textContent = b.getAttribute('data-id');
   document.getElementById('v_nama').textContent = b.getAttribute('data-nama');
+  document.getElementById('v_kelas').textContent = b.getAttribute('data-kelas');
+  document.getElementById('v_materi').textContent = b.getAttribute('data-materi') || '-';
   document.getElementById('v_tahun').textContent = b.getAttribute('data-tahun');
   document.getElementById('v_pendidik').textContent = b.getAttribute('data-pendidik');
   document.getElementById('v_kkm').textContent = b.getAttribute('data-kkm');
