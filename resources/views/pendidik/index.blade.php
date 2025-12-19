@@ -227,10 +227,16 @@ tbody tr:last-child td {
                                 </div>
                                 <div class="modal-body">
                                     <label class="form-label">Nama Lengkap</label>
-                                    <input type="text" name="nama" class="form-control" value="{{ $p->nama }}" required>
+                                    <input type="text" name="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama', $p->nama) }}" required>
+                                    @error('nama')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
 
                                     <label class="form-label mt-3">Jabatan</label>
-                                    <input type="text" name="jabatan" class="form-control" value="{{ $p->jabatan }}" required>
+                                    <input type="text" name="jabatan" class="form-control @error('jabatan') is-invalid @enderror" value="{{ old('jabatan', $p->jabatan) }}" required>
+                                    @error('jabatan')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
 
                                     <label class="form-label mt-3">User</label>
                                     <select name="id_user" class="form-select" required>
@@ -276,20 +282,29 @@ tbody tr:last-child td {
                 </div>
                 <div class="modal-body">
                     <label class="form-label">Nama Lengkap</label>
-                    <input type="text" name="nama" class="form-control" required>
+                    <input type="text" name="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama') }}" required>
+                    @error('nama')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
 
                     <label class="form-label mt-3">Jabatan</label>
-                    <input type="text" name="jabatan" class="form-control" required>
+                    <input type="text" name="jabatan" class="form-control @error('jabatan') is-invalid @enderror" value="{{ old('jabatan') }}" required>
+                    @error('jabatan')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
 
                     <label class="form-label mt-3">User</label>
-                    <select name="id_user" class="form-select" required>
+                    <select name="id_user" class="form-select @error('id_user') is-invalid @enderror" required>
                         <option value="">-- Pilih User --</option>
                         @foreach($users as $user)
-                            <option value="{{ $user->id_user }}">
+                            <option value="{{ $user->id_user }}" {{ old('id_user')==$user->id_user?'selected':'' }}>
                                 {{ $user->id_user }} - {{ $user->nama }}
                             </option>
                         @endforeach
                     </select>
+                    @error('id_user')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

@@ -19,8 +19,8 @@ class PendidikController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'jabatan' => 'required|string|max:50',
+            'nama' => ['required','string','max:100','regex:/^[A-Za-z\s]+$/'],
+            'jabatan' => ['required','string','max:50','regex:/^[A-Za-z\s]+$/'],
             'id_user' => 'required|exists:user,id_user',
         ]);
 
@@ -42,8 +42,8 @@ class PendidikController extends Controller
         $pendidik = Pendidik::findOrFail($id);
 
         $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'jabatan' => 'required|string|max:50',
+            'nama' => ['required','string','max:100','regex:/^[A-Za-z\s]+$/'],
+            'jabatan' => ['required','string','max:50','regex:/^[A-Za-z\s]+$/'],
             'id_user' => 'required|exists:user,id_user',
         ]);
 

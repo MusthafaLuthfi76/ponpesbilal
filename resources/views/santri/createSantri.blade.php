@@ -263,40 +263,55 @@
                     @csrf
                     <div class="form-group">
                         <label for="nis">NIS</label>
-                        <input type="text" id="nis" name="nis" class="form-control" required>
+                        <input type="text" id="nis" name="nis" class="form-control @error('nis') is-invalid @enderror" value="{{ old('nis') }}" required>
+                        @error('nis')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="nama">Nama</label>
-                        <input type="text" id="nama" name="nama" class="form-control" required>
+                        <input type="text" id="nama" name="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama') }}" required>
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="angkatan">Angkatan</label>
-                        <input type="text" id="angkatan" name="angkatan" class="form-control">
+                        <input type="text" id="angkatan" name="angkatan" class="form-control @error('angkatan') is-invalid @enderror" value="{{ old('angkatan') }}" placeholder="Isi angka saja, contoh: 2024">
+                        @error('angkatan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="status">Status</label>
-                        <select id="status" name="status" class="form-control" required>
+                        <select id="status" name="status" class="form-control @error('status') is-invalid @enderror" required>
                             <option value="">-- Pilih Status --</option>
-                            <option value="MA">Madrasah Aliyah (MA)</option>
-                            <option value="MTS">Madrasah Tsanawiyah (MTS)</option>
-                            <option value="Alumni">Alumni</option>
-                            <option value="Keluar">Keluar</option>
+                            <option value="MA" {{ old('status')=='MA'?'selected':'' }}>Madrasah Aliyah (MA)</option>
+                            <option value="MTS" {{ old('status')=='MTS'?'selected':'' }}>Madrasah Tsanawiyah (MTS)</option>
+                            <option value="Alumni" {{ old('status')=='Alumni'?'selected':'' }}>Alumni</option>
+                            <option value="Keluar" {{ old('status')=='Keluar'?'selected':'' }}>Keluar</option>
                         </select>
+                        @error('status')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="id_tahunAjaran">Tahun Ajaran</label>
-                        <select id="id_tahunAjaran" name="id_tahunAjaran" class="form-control" required>
+                        <select id="id_tahunAjaran" name="id_tahunAjaran" class="form-control @error('id_tahunAjaran') is-invalid @enderror" required>
                             <option value="">-- Pilih Tahun Ajaran --</option>
                             @foreach($tahunajaran as $ta)
-                                <option value="{{ $ta->id_tahunAjaran }}">
+                                <option value="{{ $ta->id_tahunAjaran }}" {{ old('id_tahunAjaran')==$ta->id_tahunAjaran?'selected':'' }}>
                                     {{ $ta->tahun }} - {{ $ta->semester }}
                                 </option>
                             @endforeach
                         </select>
+                        @error('id_tahunAjaran')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <button type="submit" class="btn btn-success">Simpan</button>

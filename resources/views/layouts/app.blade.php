@@ -149,6 +149,7 @@
             top:0;
             z-index:1020;
         }
+
         /* Overlay belakang sidebar */
         .sidebar-overlay {
             display:none;
@@ -234,7 +235,7 @@
                 @elseif(auth()->user()->role == 'musyrif')
                     <!-- Musyrif - Tahfidz Focus -->
                     <a href="{{ route('halaqah.index') }}" class="item {{ request()->routeIs('halaqah.*') ? 'active' : '' }}">Setoran Harian</a>
-                    <a href="{{ route('nilaiTahfidz.index') }}" class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}"Ujian Tahfidz"</a>
+                    <a href="{{ route('nilaiTahfidz.index') }}" class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}">Ujian Tahfidz</a>
                 @endif
             </div>
             <div class="footer">
@@ -260,6 +261,20 @@
                     <div class="alert alert-dismissible fade show alert-toast error" role="alert">
                         <i class="bi bi-exclamation-circle-fill"></i>
                         <span>{{ session('error') }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                @if($errors->any())
+                    <div class="alert alert-dismissible fade show alert-toast error" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <div>
+                            <div class="fw-semibold">Terjadi kesalahan</div>
+                            <ul class="mb-0 ps-3">
+                                @foreach($errors->all() as $err)
+                                    <li>{{ $err }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
@@ -289,6 +304,7 @@
 
         menuToggle.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
+
     </script>
     @stack('scripts')
 </body>

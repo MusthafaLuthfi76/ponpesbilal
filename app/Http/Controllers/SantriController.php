@@ -20,7 +20,7 @@ class SantriController extends Controller
         $validated = $request->validate([
             'nis' => 'required|string|max:20|unique:santri,nis',
             'nama' => 'required|string|max:100',
-            'angkatan' => 'nullable|string|max:10',
+            'angkatan' => 'nullable|digits_between:1,10',
             'status' => 'required|in:MA,MTS,Alumni,Keluar',
             'id_tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
             'id_halaqah' => 'nullable',
@@ -51,7 +51,7 @@ class SantriController extends Controller
         $validated = $request->validate([
             'nis' => 'required|string|max:20|unique:santri,nis,' . $nis . ',nis',
             'nama' => 'required|string|max:100',
-            'angkatan' => 'nullable|string|max:10',
+            'angkatan' => 'nullable|digits_between:1,10',
             'status' => 'required|in:MA,MTS,Alumni,Keluar',
             'id_tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
             'id_halaqah' => 'nullable',

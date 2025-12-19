@@ -7,11 +7,11 @@
     <h5 class="mb-0">Daftar Mata Pelajaran</h5>
 </div>
 
-<form method="GET" action="{{ route('matapelajaran.index') }}" class="row g-2 mb-3">
+<form method="GET" action="{{ route('matapelajaran.index') }}" class="row g-2 mb-3" id="mpSearchForm">
     <div class="col-md-6">
         <div class="input-group">
             <span class="input-group-text">Search</span>
-            <input type="text" name="q" value="{{ $q }}" class="form-control" placeholder="Cari nama mata pelajaran">
+      <input type="text" name="q" value="{{ $q }}" class="form-control" placeholder="Cari nama mata pelajaran" id="mpSearchInput" autocomplete="off">
         </div>
     </div>
     <div class="col-md-4">
@@ -57,7 +57,7 @@
         </thead>
         <tbody>
         @forelse($mataPelajaran as $mp)
-            <tr>
+          <tr class="mp-row" data-search="{{ strtolower($mp->nama_matapelajaran) }}">
                 <td>{{ $mp->nama_matapelajaran }}</td>
                 <td>{{ $mp->kelas }}</td>
                 <td>
@@ -113,10 +113,12 @@
     </table>
 </div>
 
+    <div id="mpNoResultDesktop" class="alert alert-info mt-2 d-none">Data tidak ditemukan.</div>
+
 <!-- Mobile Card View -->
 <div class="d-lg-none">
     @forelse($mataPelajaran as $mp)
-    <div class="card mb-3">
+  <div class="card mb-3 mp-card" data-search="{{ strtolower($mp->nama_matapelajaran) }}">
         <div class="card-body">
             <h6 class="card-title mb-2">{{ $mp->nama_matapelajaran }}</h6>
             <div class="mb-2">
@@ -166,6 +168,8 @@
     @endforelse
 </div>
 
+  <div id="mpNoResultMobile" class="alert alert-info d-none d-lg-none">Data tidak ditemukan.</div>
+
 <div class="mt-3 d-flex justify-content-between align-items-center">
     <div class="small text-muted">
         Menampilkan {{ $mataPelajaran->firstItem() }}–{{ $mataPelajaran->lastItem() }} dari {{ $mataPelajaran->total() }} data
@@ -187,7 +191,10 @@
           <div class="row g-3">
             <div class="col-md-8">
               <label class="form-label">Nama Mata Pelajaran</label>
-              <input type="text" name="nama_matapelajaran" class="form-control" required>
+              <input type="text" name="nama_matapelajaran" class="form-control @error('nama_matapelajaran') is-invalid @enderror" value="{{ old('nama_matapelajaran') }}" required>
+              @error('nama_matapelajaran')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <div class="col-md-4">
               <label class="form-label">Kelas</label>
@@ -273,7 +280,10 @@
           <div class="row g-3">
             <div class="col-md-8">
               <label class="form-label">Nama Mata Pelajaran</label>
-              <input type="text" name="nama_matapelajaran" id="edit_nama" class="form-control" required>
+              <input type="text" name="nama_matapelajaran" id="edit_nama" class="form-control @error('nama_matapelajaran') is-invalid @enderror" required>
+              @error('nama_matapelajaran')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <div class="col-md-4">
               <label class="form-label">Kelas</label>
@@ -372,6 +382,49 @@
 
 @push('scripts')
 <script>
+// ============== AUTO SEARCH ==============
+const mpSearchForm = document.getElementById('mpSearchForm');
+const mpSearchInput = document.getElementById('mpSearchInput');
+
+if (mpSearchForm && mpSearchInput) {
+  // Prevent form submit (kita pakai filter klien agar tanpa reload)
+  mpSearchForm.addEventListener('submit', (e) => e.preventDefault());
+
+  const rows = Array.from(document.querySelectorAll('.mp-row'));
+  const cards = Array.from(document.querySelectorAll('.mp-card'));
+  const noDesktop = document.getElementById('mpNoResultDesktop');
+  const noMobile = document.getElementById('mpNoResultMobile');
+
+  const filter = (term) => {
+    const q = term.trim().toLowerCase();
+    let found = 0;
+
+    rows.forEach(r => {
+      const source = (r.dataset.search || '').toLowerCase();
+      const match = source.includes(q);
+      r.classList.toggle('d-none', !match);
+      if (match) found++;
+    });
+
+    cards.forEach(c => {
+      const source = (c.dataset.search || '').toLowerCase();
+      const match = source.includes(q);
+      c.classList.toggle('d-none', !match);
+      if (match) found++;
+    });
+
+    if (noDesktop) noDesktop.classList.toggle('d-none', found !== 0);
+    if (noMobile) noMobile.classList.toggle('d-none', found !== 0);
+  };
+
+  mpSearchInput.addEventListener('input', () => {
+    filter(mpSearchInput.value);
+  });
+
+  // Initial filter to respect prefilled q
+  filter(mpSearchInput.value || '');
+}
+
 // ============== CREATE MODAL ==============
 const createModal = document.getElementById('createModal');
 

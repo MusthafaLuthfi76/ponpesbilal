@@ -206,12 +206,18 @@
                     @method('PUT')
                     <div class="mb-3">
                         <label>Nama</label>
-                        <input type="text" name="nama" class="form-control" value="{{ $santri->nama }}" required>
+                        <input type="text" name="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama', $santri->nama) }}" required>
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
                         <label>Angkatan</label>
-                        <input type="text" name="angkatan" class="form-control" value="{{ $santri->angkatan }}">
+                        <input type="text" name="angkatan" class="form-control @error('angkatan') is-invalid @enderror" value="{{ old('angkatan', $santri->angkatan) }}" placeholder="Isi angka saja, contoh: 2024">
+                        @error('angkatan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
