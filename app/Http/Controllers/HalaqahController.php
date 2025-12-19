@@ -12,7 +12,7 @@ class HalaqahController extends Controller
     public function index()
     {
         $pendidik = Pendidik::all();
-        $kelompok = KelompokHalaqah::paginate(10);
+        $kelompok = KelompokHalaqah::with('pendidik')->paginate(10);
 
         return view('halaqah.index', compact('kelompok', 'pendidik'));
     }
