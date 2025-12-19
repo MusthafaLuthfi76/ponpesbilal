@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('page_title', 'Kelompok Halaqoh')
+@section('page_title', auth()->user()->role == 'musyrif' ? 'Setoran Harian' : 'Kelompok Halaqoh')
 
 {{-- Bootstrap & Font Awesome --}}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -247,7 +247,7 @@
     <div class="container">
         {{-- HEADER (Role banner & Search) --}}
         <header class="header" role="banner">
-            <h3>Kelompok Halaqoh</h3>
+            <h3>{{ auth()->user()->role == 'musyrif' ? 'Setoran Harian' : 'Kelompok Halaqoh' }}</h3>
             <div class="header-right">
                 <div class="search-box" role="search">
                     <i class="fas fa-search" aria-hidden="true"></i>

@@ -208,31 +208,35 @@
         <aside class="sidebar" id="sidebar">
             <div class="menu">
                 <div class="title">Menu</div>
+                
+                <!-- Dashboard - All roles -->
                 <a href="{{ route('dashboard') }}" class="item {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-                <a href="{{ route('santri.index') }}" class="item {{ request()->routeIs('santri.*') ? 'active' : '' }}">Data Santri</a>
-                <a href="{{ route('matapelajaran.index') }}" class="item {{ request()->routeIs('matapelajaran.*') ? 'active' : '' }}">Mata Pelajaran</a>
-                <a href="{{ route('tahunajaran.index') }}" class="item {{ request()->routeIs('tahunajaran.*') ? 'active' : '' }}">Tahun Ajar</a>
-                <a href="{{ route('halaqah.index') }}" 
-                class="item {{ request()->routeIs('halaqah.*') ? 'active' : '' }}">
-                Kelompok Halaqah
-                </a>
-                <a href="{{ route('pendidik.index') }}" class="item {{ request()->routeIs('pendidik.*') ? 'active' : '' }}">Data Pendidik</a>
-                <a href="{{ route('nilaiakademik.mapel.index') }}" 
-                class="item {{ request()->routeIs('nilaiakademik.mapel.*') ? 'active' : '' }}">
-                Nilai Akademik
-                </a>
-                <a href="{{ route('nilaiTahfidz.index') }}"
-                class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}">
-                Nilai Tahfidz
-                </a>
-                <a href="{{ route('nilaikesantrian.index') }}" class="item {{ request()->routeIs('nilaikesantrian.*') ? 'active' : '' }}">
-                    Nilai Kesantrian
-                </a>
-                <a href="{{ route('rapor.index') }}" 
-                class="item {{ request()->routeIs('rapor.*') ? 'active' : '' }}">
-                Laporan & Rapor
-                </a>
-                </div>
+                
+                @if(auth()->user()->role == 'admin')
+                    <!-- Admin - Full Access -->
+                    <a href="{{ route('santri.index') }}" class="item {{ request()->routeIs('santri.*') ? 'active' : '' }}">Data Santri</a>
+                    <a href="{{ route('matapelajaran.index') }}" class="item {{ request()->routeIs('matapelajaran.*') ? 'active' : '' }}">Mata Pelajaran</a>
+                    <a href="{{ route('tahunajaran.index') }}" class="item {{ request()->routeIs('tahunajaran.*') ? 'active' : '' }}">Tahun Ajar</a>
+                    <a href="{{ route('halaqah.index') }}" class="item {{ request()->routeIs('halaqah.*') ? 'active' : '' }}">Kelompok Halaqah</a>
+                    <a href="{{ route('pendidik.index') }}" class="item {{ request()->routeIs('pendidik.*') ? 'active' : '' }}">Data Pendidik</a>
+                    <a href="{{ route('user.index') }}" class="item {{ request()->routeIs('user.*') ? 'active' : '' }}">Manajemen User</a>
+                    <a href="{{ route('nilaiakademik.mapel.index') }}" class="item {{ request()->routeIs('nilaiakademik.mapel.*') ? 'active' : '' }}">Nilai Akademik</a>
+                    <a href="{{ route('nilaiTahfidz.index') }}" class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}">Nilai Tahfidz</a>
+                    <a href="{{ route('nilaikesantrian.index') }}" class="item {{ request()->routeIs('nilaikesantrian.*') ? 'active' : '' }}">Nilai Kesantrian</a>
+                    <a href="{{ route('rapor.index') }}" class="item {{ request()->routeIs('rapor.*') ? 'active' : '' }}">Laporan & Rapor</a>
+                
+                @elseif(auth()->user()->role == 'pengajar')
+                    <!-- Pengajar - Limited Access -->
+                    <a href="{{ route('matapelajaran.index') }}" class="item {{ request()->routeIs('matapelajaran.*') ? 'active' : '' }}">Mata Pelajaran</a>
+                    <a href="{{ route('nilaiakademik.mapel.index') }}" class="item {{ request()->routeIs('nilaiakademik.mapel.*') ? 'active' : '' }}">Nilai Akademik</a>
+                    <a href="{{ route('nilaikesantrian.index') }}" class="item {{ request()->routeIs('nilaikesantrian.*') ? 'active' : '' }}">Nilai Kesantrian</a>
+                
+                @elseif(auth()->user()->role == 'musyrif')
+                    <!-- Musyrif - Tahfidz Focus -->
+                    <a href="{{ route('halaqah.index') }}" class="item {{ request()->routeIs('halaqah.*') ? 'active' : '' }}">Setoran Harian</a>
+                    <a href="{{ route('nilaiTahfidz.index') }}" class="item {{ request()->routeIs('nilaiTahfidz.*') ? 'active' : '' }}"Ujian Tahfidz"</a>
+                @endif
+            </div>
             <div class="footer">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

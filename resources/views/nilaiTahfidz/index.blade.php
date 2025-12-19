@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('page_title', 'Nilai Tahfidz')
+@section('page_title', auth()->user()->role == 'musyrif' ? 'Halaman Tahfidz' : 'Nilai Tahfidz')
 
 @section('content')
 
@@ -13,9 +13,11 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white" class="me-2">
                             <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
                         </svg>
-                        Nilai Tahfidz
+                        {{ auth()->user()->role == 'musyrif' ? 'Halaman Tahfidz' : 'Nilai Tahfidz' }}
                     </h4>
-                    <p class="mb-0 text-white-50 small">Manajemen nilai ujian tahfidz santri</p>
+                    <p class="mb-0 text-white-50 small">
+                        {{ auth()->user()->role == 'musyrif' ? 'Manajemen tahfidz dan ujian santri' : 'Manajemen nilai ujian tahfidz santri' }}
+                    </p>
                 </div>
                 <a href="{{ route('nilaiTahfidz.createUjianBaru') }}" class="btn btn-light shadow-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="me-1">
