@@ -8,6 +8,7 @@ use App\Models\UjianTahfidz;
 use App\Models\Pendidik;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\QueryException;
 
 class UjianTahfidzController extends Controller
 {
@@ -16,12 +17,12 @@ class UjianTahfidzController extends Controller
         // Query ujian tahfidz dengan eager loading relasi
         $query = UjianTahfidz::with(['santri', 'tahunAjaran', 'penguji']);
 
-        // Filter berdasarkan search (nama santri)
+        // Filter berdasarkan search (nama santri atau NIS) - PREFIX MATCH ONLY
         if ($request->filled('search')) {
             $search = $request->search;
             $query->whereHas('santri', function($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('nis', 'like', "%{$search}%");
+                $q->where('nama', 'like', "{$search}%")
+                  ->orWhere('nis', 'like', "{$search}%");
             });
         }
 
@@ -185,7 +186,17 @@ class UjianTahfidzController extends Controller
             $data['id_penguji'] = $request->id_penguji;
         }
 
-        UjianTahfidz::create($data);
+        try {
+            UjianTahfidz::create($data);
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with('error', 'Nilai juz ini sudah pernah diinput untuk kombinasi ujian yang sama.');
+            }
+            throw $e;
+        }
 
         return redirect()
             ->route('nilaiTahfidz.show', $request->nis)
@@ -199,28 +210,46 @@ class UjianTahfidzController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'tahun_ajaran_id' => 'required|exists:tahunajaran,id_tahunAjaran',
             'jenis_ujian' => 'required|string|in:UTS,UAS',
-            'sekali_duduk' => 'required|in:ya,tidak',
-            'nis' => 'required|exists:santri,nis',
-            'id_penguji' => 'required|exists:pendidik,id_pendidik',
+            'juz' => 'required|integer|min:1|max:30',
+            'tajwid' => 'required|integer|min:0',
+            'itqan' => 'required|integer|min:0',
         ]);
 
         // Cari data ujian berdasarkan ID
         $ujianTahfidz = UjianTahfidz::findOrFail($id);
 
+        // Cek duplikat juz untuk ujian yang sama (kecuali record yang sedang diedit)
+        $duplicate = UjianTahfidz::where('nis', $ujianTahfidz->nis)
+            ->where('tahun_ajaran_id', $ujianTahfidz->tahun_ajaran_id)
+            ->where('jenis_ujian', $validated['jenis_ujian'])
+            ->where('sekali_duduk', $ujianTahfidz->sekali_duduk)
+            ->where('id_penguji', $ujianTahfidz->id_penguji)
+            ->where('juz', $validated['juz'])
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($duplicate) {
+            return redirect()
+                ->route('nilaiTahfidz.show', $ujianTahfidz->nis)
+                ->with('error', 'Juz ' . $validated['juz'] . ' sudah ada untuk ujian ini.');
+        }
+
+        // Hitung total kesalahan
+        $totalKesalahan = $validated['tajwid'] + $validated['itqan'];
+
         // Update data
         $ujianTahfidz->update([
-            'tahun_ajaran_id' => $validated['tahun_ajaran_id'],
             'jenis_ujian' => $validated['jenis_ujian'],
-            'sekali_duduk' => $validated['sekali_duduk'],
-            'nis' => $validated['nis'],
-            'id_penguji' => $validated['id_penguji'],
+            'juz' => $validated['juz'],
+            'tajwid' => $validated['tajwid'],
+            'itqan' => $validated['itqan'],
+            'total_kesalahan' => $totalKesalahan,
         ]);
 
-        // Redirect kembali ke index
+        // Redirect kembali ke halaman detail santri
         return redirect()
-            ->route('nilaiTahfidz.index')
+            ->route('nilaiTahfidz.show', $ujianTahfidz->nis)
             ->with('success', 'Data ujian berhasil diupdate');
     }
 
@@ -240,16 +269,18 @@ class UjianTahfidzController extends Controller
      */
     public function destroy($id)
     {
-        // Cari data ujian berdasarkan ID
+        // Cari data ujian berdasarkan ID untuk mendapatkan kombinasi group
         $ujianTahfidz = UjianTahfidz::findOrFail($id);
         
-        // Hapus data
-        $ujianTahfidz->delete();
+        // Hapus semua ujian dengan kombinasi yang sama (nis, tahun_ajaran, jenis_ujian, sekali_duduk, penguji)
+        $deletedCount = UjianTahfidz::where('nis', $ujianTahfidz->nis)
+            ->where('tahun_ajaran_id', $ujianTahfidz->tahun_ajaran_id)
+            ->where('jenis_ujian', $ujianTahfidz->jenis_ujian)
+            ->where('sekali_duduk', $ujianTahfidz->sekali_duduk)
+            ->where('id_penguji', $ujianTahfidz->id_penguji)
+            ->delete();
 
-        // Redirect kembali ke index
-        return redirect()
-            ->route('nilaiTahfidz.index')
-            ->with('success', 'Data nilai tahfidz berhasil dihapus');
+        return redirect()->back()->with('success', "Data ujian tahfidz berhasil dihapus ({$deletedCount} juz)");
     }
 
     /**
@@ -277,30 +308,41 @@ class UjianTahfidzController extends Controller
             'nis' => 'required|exists:santri,nis',
         ]);
 
-        // Prevent duplicate ujian records for same santri + tahun ajaran + jenis ujian
-        $exists = UjianTahfidz::where('nis', $request->nis)
+        $duplicate = UjianTahfidz::where('nis', $request->nis)
             ->where('tahun_ajaran_id', $request->tahun_ajaran_id)
             ->where('jenis_ujian', $request->jenis_ujian)
+            ->where('sekali_duduk', $request->sekali_duduk)
+            ->where('id_penguji', $request->id_penguji)
             ->exists();
 
-        if ($exists) {
+        if ($duplicate) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Ujian untuk santri ini pada tahun ajaran dan semester yang sama sudah ada.');
+                ->with('error', 'Ujian ini sudah pernah dibuat untuk santri, penguji, dan semester yang sama.');
         }
 
-        UjianTahfidz::create([
-            'nis' => $request->nis,
-            'tahun_ajaran_id' => $request->tahun_ajaran_id,
-            'jenis_ujian' => $request->jenis_ujian,
-            'sekali_duduk' => $request->sekali_duduk,
-            'id_penguji' => $request->id_penguji,
-            'juz' => null,
-            'tajwid' => null,
-            'itqan' => null,
-            'total_kesalahan' => 0,
-        ]);
+        try {
+            UjianTahfidz::create([
+                'nis' => $request->nis,
+                'tahun_ajaran_id' => $request->tahun_ajaran_id,
+                'jenis_ujian' => $request->jenis_ujian,
+                'sekali_duduk' => $request->sekali_duduk,
+                'id_penguji' => $request->id_penguji,
+                'juz' => null,
+                'tajwid' => null,
+                'itqan' => null,
+                'total_kesalahan' => 0,
+            ]);
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with('error', 'Ujian ini sudah ada.');
+            }
+            throw $e;
+        }
 
         return redirect()
             ->route('nilaiTahfidz.index')
@@ -317,11 +359,14 @@ class UjianTahfidzController extends Controller
             'jenis_ujian' => 'required|in:UTS,UAS',
             'sekali_duduk' => 'required|in:ya,tidak',
             'nis' => 'required|exists:santri,nis',
+            'id_penguji' => 'required|exists:pendidik,id_pendidik',
         ]);
 
         $exists = UjianTahfidz::where('nis', $data['nis'])
             ->where('tahun_ajaran_id', $data['tahun_ajaran_id'])
             ->where('jenis_ujian', $data['jenis_ujian'])
+            ->where('sekali_duduk', $data['sekali_duduk'])
+            ->where('id_penguji', $data['id_penguji'])
             ->exists();
 
         return response()->json(['exists' => $exists]);
@@ -383,17 +428,26 @@ class UjianTahfidzController extends Controller
         $totalKesalahan = $request->tajwid + $request->itqan;
 
         // Buat record baru untuk juz ini
-        UjianTahfidz::create([
-            'nis' => $ujian->nis,
-            'tahun_ajaran_id' => $ujian->tahun_ajaran_id,
-            'jenis_ujian' => $ujian->jenis_ujian,
-            'sekali_duduk' => $ujian->sekali_duduk,
-            'id_penguji' => $ujian->id_penguji,
-            'juz' => $request->juz,
-            'tajwid' => $request->tajwid,
-            'itqan' => $request->itqan,
-            'total_kesalahan' => $totalKesalahan,
-        ]);
+        try {
+            UjianTahfidz::create([
+                'nis' => $ujian->nis,
+                'tahun_ajaran_id' => $ujian->tahun_ajaran_id,
+                'jenis_ujian' => $ujian->jenis_ujian,
+                'sekali_duduk' => $ujian->sekali_duduk,
+                'id_penguji' => $ujian->id_penguji,
+                'juz' => $request->juz,
+                'tajwid' => $request->tajwid,
+                'itqan' => $request->itqan,
+                'total_kesalahan' => $totalKesalahan,
+            ]);
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                return redirect()
+                    ->route('nilaiTahfidz.inputNilai', $id)
+                    ->with('error', 'Juz ' . $request->juz . ' sudah pernah diinput untuk kombinasi ujian ini.');
+            }
+            throw $e;
+        }
 
         return redirect()
             ->route('nilaiTahfidz.inputNilai', $id)

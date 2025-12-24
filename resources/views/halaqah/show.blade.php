@@ -431,7 +431,7 @@
                     <thead>
                         <tr>
                             <th scope="col" style="width: 10%;">NO</th>
-                            <th scope="col" style="width: 25%;">ID SANTRI</th>
+                            <th scope="col" style="width: 25%;">NIS</th>
                             <th scope="col" style="width: 45%;">NAMA SANTRI</th>
                             <th scope="col" style="width: 20%;" class="text-center">AKSI</th>
                         </tr>
@@ -440,7 +440,7 @@
                         @forelse ($santri as $s)
                             <tr role="row">
                                 <td data-label="NO" role="cell">{{ ($santri->currentPage() - 1) * $santri->perPage() + $loop->iteration }}</td>
-                                <td data-label="ID SANTRI" role="cell">{{ $s->nis }}</td>
+                                <td data-label="NIS" role="cell">{{ $s->nis }}</td>
                                 <td data-label="NAMA SANTRI" role="cell">{{ $s->nama }}</td>
                                 <td data-label="AKSI" role="cell">
                                     <div class="action-btns">

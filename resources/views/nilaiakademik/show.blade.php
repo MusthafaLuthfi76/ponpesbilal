@@ -254,10 +254,174 @@
         box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
     }
 
+    .nilai-input:invalid {
+        border-color: var(--delete-color);
+    }
+
     .rata-input {
         background-color: var(--bg-light);
         font-weight: 600;
         color: var(--primary-color);
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+        display: none;
+        background: var(--bg-light);
+        border-bottom: 2px solid var(--border-color);
+        padding: 0;
+        margin: 0;
+        flex-wrap: wrap;
+    }
+
+    .tab-nav.show {
+        display: flex;
+    }
+
+    .tab-btn {
+        flex: 1;
+        padding: 12px 8px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 11px;
+        color: #666;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+        min-width: 60px;
+    }
+
+    .tab-btn.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+        background: white;
+    }
+
+    .tab-btn:hover {
+        color: var(--primary-color);
+        background: white;
+    }
+
+    /* Mobile Card Layout */
+    .mobile-card {
+        display: none;
+    }
+
+    .mobile-card.show {
+        display: block;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .mobile-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .mobile-card-no {
+        font-weight: 600;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .mobile-card-name {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 15px;
+    }
+
+    .mobile-card-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .badge-dinilai {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .badge-belum {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+
+    .mobile-card-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .mobile-card-input-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mobile-card-input-label {
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .mobile-card-input {
+        width: 100%;
+        padding: 8px;
+        border: 2px solid var(--border-color);
+        border-radius: 5px;
+        text-align: center;
+        font-weight: 500;
+        font-size: 13px;
+    }
+
+    .mobile-card-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    }
+
+    .mobile-card-footer {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .mobile-card-stat {
+        flex: 1;
+        text-align: center;
+    }
+
+    .mobile-card-stat-label {
+        font-size: 11px;
+        color: #666;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .mobile-card-stat-value {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--primary-color);
+    }
+
+    .mobile-card-predikat {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
     }
 
     /* Predikat Badges */
@@ -373,6 +537,7 @@
 
         .nilai-header {
             padding: 15px;
+            display: none;
         }
 
         .nilai-header h5 {
@@ -390,19 +555,52 @@
         }
 
         .nilai-input {
-            width: 50px;
-            font-size: 12px;
-            padding: 4px;
+            width: 100%;
+            font-size: 14px;
+            padding: 8px;
+            margin-bottom: 5px;
+        }
+
+        .tab-nav {
+            display: flex !important;
         }
 
         thead th {
-            font-size: 10px;
+            font-size: 11px;
             padding: 8px 4px;
         }
 
         tbody td {
             padding: 8px 4px;
             font-size: 12px;
+        }
+
+        /* Mobile View - Hide Table */
+        table {
+            display: none;
+        }
+
+        table.show {
+            display: table;
+        }
+
+        .mobile-card {
+            display: none;
+        }
+
+        .mobile-card.show {
+            display: block;
+        }
+
+        /* Hide nilai columns by default on mobile */
+        tbody td:nth-child(3),
+        tbody td:nth-child(4),
+        tbody td:nth-child(5),
+        tbody td:nth-child(6),
+        tbody td:nth-child(7),
+        tbody td:nth-child(8),
+        tbody td:nth-child(9) {
+            display: none;
         }
     }
 </style>
@@ -420,7 +618,7 @@
         </div>
         <div>
             <a href="{{ route('nilaiakademik.mapel.assign.form', $mapel->id_matapelajaran) }}" class="assign-btn">
-                <i class="fas fa-user-plus"></i> Assign Santri
+                <i class="fas fa-user-plus"></i> Tambah Santri
             </a>
             <a href="{{ route('nilaiakademik.mapel.index') }}" class="back-btn">
                 <i class="fas fa-arrow-left"></i> Kembali
@@ -467,7 +665,10 @@
             @csrf
             @method('PUT')
 
-            <div class="table-responsive">
+            <!-- Tab Navigation for Mobile -->
+            <div class="tab-nav" id="mobileTabNav"></div>
+
+            <div class="table-responsive" id="desktopView">
                 <table class="table">
                     <thead>
                         <tr>
@@ -476,6 +677,7 @@
                             <th>UTS</th>
                             <th>UAS</th>
                             <th>Praktik</th>
+                            <th>Keaktifan</th>
                             <th>Izin</th>
                             <th>Sakit</th>
                             <th>Ghaib</th>
@@ -488,25 +690,49 @@
                     @foreach($nilai as $n)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $n->santri->nama }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span>{{ $n->santri->nama }}</span>
+                                    @if($n->nilai_rata_rata !== null)
+                                        <span class="badge bg-success">Sudah dinilai</span>
+                                    @else
+                                        <span class="badge bg-secondary">Belum dinilai</span>
+                                    @endif
+                                </div>
+                            </td>
 
                             <td>
-                                <input oninput="updateRow(this)" type="number" 
+                                <input oninput="validateInput(this); updateRow(this)" type="number" 
                                        name="nilai[{{ $n->id_nilai_akademik }}][uts]" 
                                        value="{{ $n->nilai_UTS }}" 
-                                       class="nilai-input">
+                                       min="0" max="100"
+                                       class="nilai-input" 
+                                       placeholder="0-100">
                             </td>
                             <td>
-                                <input oninput="updateRow(this)" type="number" 
+                                <input oninput="validateInput(this); updateRow(this)" type="number" 
                                        name="nilai[{{ $n->id_nilai_akademik }}][uas]" 
                                        value="{{ $n->nilai_UAS }}" 
-                                       class="nilai-input">
+                                       min="0" max="100"
+                                       class="nilai-input" 
+                                       placeholder="0-100">
                             </td>
                             <td>
-                                <input oninput="updateRow(this)" type="number" 
+                                <input oninput="validateInput(this); updateRow(this)" type="number" 
                                        name="nilai[{{ $n->id_nilai_akademik }}][praktik]" 
                                        value="{{ $n->nilai_praktik }}" 
-                                       class="nilai-input">
+                                       min="0" max="100"
+                                       class="nilai-input" 
+                                       placeholder="0-100">
+                            </td>
+
+                            <td>
+                                <input oninput="validateInput(this); updateRow(this)" type="number" 
+                                       name="nilai[{{ $n->id_nilai_akademik }}][keaktifan]" 
+                                       value="{{ $n->nilai_keaktifan }}" 
+                                       min="0" max="100"
+                                       class="nilai-input" 
+                                       placeholder="0-100">
                             </td>
 
                             <td>
@@ -556,6 +782,9 @@
                 </table>
             </div>
 
+            <!-- Mobile Cards View -->
+            <div id="mobileView"></div>
+
             <div class="save-btn-wrapper">
                 <button type="submit" class="save-btn">
                     <i class="fas fa-save"></i> Simpan Semua
@@ -572,6 +801,20 @@
 </form>
 
 <script>
+// Validasi input 0-100
+function validateInput(el) {
+    let value = Number(el.value);
+    if (isNaN(value)) {
+        el.value = '';
+        return;
+    }
+    if (value < 0) {
+        el.value = 0;
+    } else if (value > 100) {
+        el.value = 100;
+    }
+}
+
 function deleteNilai(id) {
     if(confirm('Hapus data nilai ini?')) {
         const form = document.getElementById('deleteForm');
@@ -586,8 +829,9 @@ function updateRow(el) {
     const uts = Number(row.querySelector('[name*="uts"]').value) || 0;
     const uas = Number(row.querySelector('[name*="uas"]').value) || 0;
     const praktik = Number(row.querySelector('[name*="praktik"]').value) || 0;
+    const keaktifan = Number(row.querySelector('[name*="keaktifan"]').value) || 0;
 
-    const rata = ((uts + uas + praktik) / 3).toFixed(2);
+    const rata = ((uts + uas + praktik + keaktifan) / 4).toFixed(2);
     const rataEl = row.querySelector('.rata');
     rataEl.value = rata;
 
@@ -601,6 +845,164 @@ function updateRow(el) {
     predEl.textContent = predikat;
     predEl.className = 'predikat predikat-' + predikat;
 }
+
+// Mobile Tab Navigation
+function initMobileTab() {
+    if (window.innerWidth <= 768) {
+        const mobileView = document.getElementById('mobileView');
+        const tabNav = document.getElementById('mobileTabNav');
+        
+        if (!mobileView || !tabNav) return;
+
+        // Clear previous content
+        mobileView.innerHTML = '';
+        
+        // Create tab buttons if not exists
+        if (tabNav.innerHTML === '') {
+            const nilaiColumns = [
+                { name: 'UTS', idx: 2 },
+                { name: 'UAS', idx: 3 },
+                { name: 'Praktik', idx: 4 },
+                { name: 'Keaktifan', idx: 5 },
+                { name: 'Izin', idx: 6 },
+                { name: 'Sakit', idx: 7 },
+                { name: 'Ghaib', idx: 8 }
+            ];
+            
+            nilaiColumns.forEach((col, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn ' + (i === 0 ? 'active' : '');
+                btn.textContent = col.name;
+                btn.type = 'button';
+                btn.dataset.column = col.name;
+                btn.dataset.idx = col.idx;
+                btn.onclick = (e) => switchMobileTab(e);
+                tabNav.appendChild(btn);
+            });
+        }
+
+        // Generate mobile cards
+        const rows = document.querySelectorAll('table tbody tr');
+        rows.forEach((row, idx) => {
+            const cells = row.querySelectorAll('td');
+            const no = cells[0].textContent.trim();
+            const santriText = cells[1].textContent.trim();
+            const santriName = santriText.split('\n')[0];
+            const badge = cells[1].querySelector('.badge');
+            
+            const card = document.createElement('div');
+            card.className = 'mobile-card show';
+            card.dataset.idx = idx;
+            
+            let cardHTML = `
+                <div class="mobile-card-header">
+                    <div>
+                        <span class="mobile-card-no">#${no}</span>
+                        <div class="mobile-card-name">${santriName}</div>
+                        ${badge ? '<span class="mobile-card-badge ' + (badge.classList.contains('bg-success') ? 'badge-dinilai' : 'badge-belum') + '">' + badge.textContent.trim() + '</span>' : ''}
+                    </div>
+                </div>
+                <div class="mobile-card-body" data-row-idx="${idx}"></div>
+                <div class="mobile-card-footer">
+                    <div class="mobile-card-stat">
+                        <span class="mobile-card-stat-label">Rata-rata</span>
+                        <span class="mobile-card-stat-value rata-val">${cells[9].querySelector('input').value}</span>
+                    </div>
+                    <div class="mobile-card-stat">
+                        <span class="mobile-card-stat-label">Predikat</span>
+                        <div class="mobile-card-predikat predikat-${cells[10].querySelector('.predikat').className.split('-')[1]}">${cells[10].querySelector('.predikat').textContent.trim()}</div>
+                    </div>
+                    <div class="mobile-card-stat">
+                        <button type="button" class="action-btn" onclick="deleteNilai('${row.querySelector('.action-btn').getAttribute('onclick').match(/'([^']+)'/)[1]}')" title="Hapus">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                <path d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            card.innerHTML = cardHTML;
+            mobileView.appendChild(card);
+        });
+        
+        updateMobileTab();
+    }
+}
+
+function switchMobileTab(e) {
+    e.preventDefault();
+    const btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(btn => btn.classList.remove('active'));
+    e.target.classList.add('active');
+    updateMobileTab();
+}
+
+function updateMobileTab() {
+    if (window.innerWidth <= 768) {
+        const activeTab = document.querySelector('.tab-btn.active');
+        if (!activeTab) return;
+
+        const tabName = activeTab.textContent;
+        const rows = document.querySelectorAll('table tbody tr');
+        const cards = document.querySelectorAll('.mobile-card');
+
+        // Column mapping
+        const columnMap = { 
+            'UTS': 2, 'UAS': 3, 'Praktik': 4, 'Keaktifan': 5,
+            'Izin': 6, 'Sakit': 7, 'Ghaib': 8 
+        };
+        const colIdx = columnMap[tabName];
+        const colLabel = tabName;
+
+        cards.forEach((card, idx) => {
+            const row = rows[idx];
+            const cells = row.querySelectorAll('td');
+            const inputCell = cells[colIdx];
+            const input = inputCell.querySelector('input');
+            
+            const bodyDiv = card.querySelector('.mobile-card-body');
+            bodyDiv.innerHTML = `
+                <div class="mobile-card-input-group" style="grid-column: 1 / 3;">
+                    <label class="mobile-card-input-label">${colLabel}</label>
+                    <input type="number" class="mobile-card-input" 
+                           value="${input.value}" 
+                           min="0" max="100"
+                           placeholder="0-100"
+                           onchange="updateTableInput(this, ${idx}, ${colIdx})"
+                           oninput="validateInput(this); updateTableInput(this, ${idx}, ${colIdx})">
+                </div>
+            `;
+        });
+    }
+}
+
+function updateTableInput(inputEl, rowIdx, colIdx) {
+    const tableRows = document.querySelectorAll('table tbody tr');
+    const tableInput = tableRows[rowIdx].querySelectorAll('td')[colIdx].querySelector('input');
+    tableInput.value = inputEl.value;
+    // Trigger updateRow jika ada
+    if (typeof updateRow === 'function') {
+        updateRow(tableInput);
+    }
+}
+
+// Initialize on load and resize
+window.addEventListener('load', () => {
+    initMobileTab();
+});
+
+window.addEventListener('resize', () => {
+    setTimeout(() => {
+        if (window.innerWidth <= 768) {
+            initMobileTab();
+        } else {
+            // Desktop view
+            document.getElementById('mobileView').innerHTML = '';
+            document.getElementById('mobileTabNav').innerHTML = '';
+        }
+    }, 100);
+});
 </script>
 
 @endsection

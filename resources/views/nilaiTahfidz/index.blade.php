@@ -119,7 +119,15 @@
                                 </svg>
                             </div>
                             <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-1">{{ $ujian->santri->nama ?? '-' }}</h6>
+                                @php
+                                    $sudahDinilai = $ujian->juz !== null && $ujian->tajwid !== null && $ujian->itqan !== null;
+                                @endphp
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <h6 class="fw-bold mb-0">{{ $ujian->santri->nama ?? '-' }}</h6>
+                                    <span class="badge {{ $sudahDinilai ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ $sudahDinilai ? 'Sudah dinilai' : 'Belum dinilai' }}
+                                    </span>
+                                </div>
                                 <small class="text-muted">NIS: {{ $ujian->santri->nis ?? '-' }}</small>
                             </div>
                         </div>
@@ -151,12 +159,10 @@
                             </div>
                             @endif
 
-                            @if($ujian->tajwid !== null && $ujian->itqan !== null)
                             <div class="info-item">
                                 <span class="info-label">Total Kesalahan</span>
-                                <span class="badge badge-custom badge-danger">{{ $ujian->total_kesalahan }}</span>
+                                <span class="badge badge-custom badge-danger">{{ $ujian->total_kesalahan ?? 0 }}</span>
                             </div>
-                            @endif
 
                             <div class="info-item">
                                 <span class="info-label">Periode</span>
@@ -174,7 +180,7 @@
                         </div>
 
                         <div class="d-flex gap-2 flex-wrap">
-                            <button type="button" class="btn btn-sm btn-warning text-white flex-fill" onclick="editUjian({{ $ujian->id }}, '{{ $ujian->jenis_ujian }}', '{{ $ujian->sekali_duduk }}', '{{ $ujian->nis }}', {{ $ujian->tahun_ajaran_id ?? 'null' }}, {{ $ujian->id_penguji ?? 'null' }})">
+                            <button type="button" class="btn btn-sm btn-warning text-white flex-fill" onclick="editUjian({{ $ujian->id }}, '{{ $ujian->jenis_ujian }}', '{{ $ujian->nis }}', {{ $ujian->tahun_ajaran_id ?? 'null' }}, {{ $ujian->id_penguji ?? 'null' }})">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="white">
                                     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                                 </svg>
@@ -211,7 +217,15 @@
                             </div>
 
                             <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-2">{{ $ujian->santri->nama ?? '-' }}</h6>
+                                @php
+                                    $sudahDinilai = $ujian->juz !== null && $ujian->tajwid !== null && $ujian->itqan !== null;
+                                @endphp
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <h6 class="fw-bold mb-0">{{ $ujian->santri->nama ?? '-' }}</h6>
+                                    <span class="badge {{ $sudahDinilai ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ $sudahDinilai ? 'Sudah dinilai' : 'Belum dinilai' }}
+                                    </span>
+                                </div>
 
                                 <div class="row g-3">
                                     <div class="col-auto">
@@ -252,14 +266,12 @@
                                     </div>
                                     @endif
 
-                                    @if($ujian->tajwid !== null && $ujian->itqan !== null)
                                     <div class="col-auto">
                                         <small class="text-muted">
                                             <span class="fw-bold">Total Kesalahan:</span>
-                                            <span class="badge badge-custom badge-danger ms-1">{{ $ujian->total_kesalahan }}</span>
+                                            <span class="badge badge-custom badge-danger ms-1">{{ $ujian->total_kesalahan ?? 0 }}</span>
                                         </small>
                                     </div>
-                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -277,7 +289,7 @@
                             </div>
 
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-warning btn-sm text-white" onclick="editUjian({{ $ujian->id }}, '{{ $ujian->jenis_ujian }}', '{{ $ujian->sekali_duduk }}', '{{ $ujian->nis }}', {{ $ujian->tahun_ajaran_id ?? 'null' }}, {{ $ujian->id_penguji ?? 'null' }})" title="Edit">
+                                <button type="button" class="btn btn-warning btn-sm text-white" onclick="editUjian({{ $ujian->id }}, '{{ $ujian->jenis_ujian }}', '{{ $ujian->nis }}', {{ $ujian->tahun_ajaran_id ?? 'null' }}, {{ $ujian->id_penguji ?? 'null' }})" title="Edit">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
                                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                                     </svg>
@@ -383,18 +395,6 @@
                                     <option value="{{ $pendidik->id_pendidik }}">{{ $pendidik->nama }}</option>
                                 @endforeach
                             </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold d-block">Sekali Duduk <span class="text-danger">*</span></label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="sekali_duduk" id="edit_sekali_duduk_ya" value="ya" required>
-                                <label class="form-check-label" for="edit_sekali_duduk_ya">Ya</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="sekali_duduk" id="edit_sekali_duduk_tidak" value="tidak">
-                                <label class="form-check-label" for="edit_sekali_duduk_tidak">Tidak</label>
-                            </div>
                         </div>
                     </div>
 
@@ -634,9 +634,8 @@
     </style>
 
     <script>
-        function editUjian(id, jenisUjian, sekaliDuduk, nis, tahunAjaranId, idPenguji) {
+        function editUjian(id, jenisUjian, nis, tahunAjaranId, idPenguji) {
             jenisUjian = jenisUjian === 'null' ? '' : jenisUjian;
-            sekaliDuduk = sekaliDuduk || 'tidak';
             nis = nis === 'null' ? '' : nis;
             tahunAjaranId = (tahunAjaranId === 'null' || tahunAjaranId === null) ? '' : tahunAjaranId;
             idPenguji = (idPenguji === 'null' || idPenguji === null) ? '' : idPenguji;
@@ -645,12 +644,6 @@
             document.getElementById('edit_nis').value = nis || '';
             document.getElementById('edit_tahun_ajaran_id').value = tahunAjaranId || '';
             document.getElementById('edit_id_penguji').value = idPenguji || '';
-            
-            if (sekaliDuduk === 'ya') {
-                document.getElementById('edit_sekali_duduk_ya').checked = true;
-            } else {
-                document.getElementById('edit_sekali_duduk_tidak').checked = true;
-            }
 
             const baseUrl = "{{ url('nilaiTahfidz') }}";
             document.getElementById('formEditUjian').action = `${baseUrl}/${id}`;

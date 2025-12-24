@@ -6,6 +6,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
 
 <style>
     :root {
@@ -62,6 +63,25 @@
         border: 1px solid var(--primary-color);
         border-radius: 5px;
         background: white;
+    }
+
+    .assign-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+        padding: 10px 16px;
+        border: 1px solid var(--primary-color);
+        border-radius: 8px;
+        background: var(--primary-color);
+    }
+
+    .assign-btn-primary:hover {
+        background-color: #1e7e34;
+        color: white;
     }
 
     .back-btn:hover {
@@ -440,9 +460,14 @@
                 <i class="fas fa-edit"></i> Input Nilai Kesantrian
             </h4>
         </div>
-        <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $mapel->id_tahunAjaran]) }}" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Kembali
-        </a>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $mapel->id_tahunAjaran]) }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </a>
+            <button type="button" class="assign-btn-primary" id="openAssignTab">
+                <i class="bi bi-person-plus"></i> Tambah Santri
+            </button>
+        </div>
     </div>
 
     <!-- Mapel Info Card -->
@@ -573,7 +598,15 @@
                         <td>{{ $loop->iteration }}</td>
                         <td class="d-none d-md-table-cell"><small>{{ $nilai->santri->nis ?? 'N/A' }}</small></td>
                         <td style="text-align: left;">
-                            <strong>{{ $nilai->santri->nama ?? 'N/A' }}</strong>
+                            <div class="d-flex align-items-center gap-2">
+                                <strong>{{ $nilai->santri->nama ?? 'N/A' }}</strong>
+                                @php
+                                    $sudahDinilai = !empty($nilai->{'nilai_' . $key});
+                                @endphp
+                                <span class="badge {{ $sudahDinilai ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $sudahDinilai ? 'Sudah dinilai' : 'Belum dinilai' }}
+                                </span>
+                            </div>
                             <small class="text-muted d-block d-md-none">NIS: {{ $nilai->santri->nis ?? 'N/A' }}</small>
                         </td>
                         <td>
@@ -582,7 +615,8 @@
                                    value="{{ old('nilai.' . $nilai->id_nilai_kesantrian . '.nilai_' . $key, $nilai->{'nilai_' . $key}) }}" 
                                    class="nilai-input-kesantrian" 
                                    maxlength="1"
-                                   placeholder="A/B/C">
+                                   placeholder="A/B/C"
+                                   oninput="validateNilaiKesantrian(this)">
                         </td>
                         <td>
                             <button type="button" class="action-btn" 
@@ -615,65 +649,29 @@
             <div class="assign-section">
                 <h5 class="mb-3"><i class="bi bi-person-plus"></i> Pilih Santri yang Belum Di-assign</h5>
 
-                {{-- Form Filter --}}
-                <div class="filter-section">
-                    <form method="GET" action="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}" class="row g-2">
-                        <input type="hidden" name="tab" value="assign">
-                        
-                        <div class="col-md-3">
-                            <label class="form-label">Angkatan:</label>
-                            <select name="angkatan" class="form-select" onchange="this.form.submit()">
-                                <option value="">Semua</option>
-                                @foreach($angkatanList as $angkatan)
-                                    <option value="{{ $angkatan }}" {{ request('angkatan') == $angkatan ? 'selected' : '' }}>{{ $angkatan }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Cari Nama:</label>
-                            <div class="input-group">
-                                <input type="text" name="search_nama" value="{{ request('search_nama') }}" class="form-control" placeholder="Cari nama santri...">
-                                <button type="submit" class="btn btn-outline-success">
-                                    <i class="bi bi-search"></i> Cari
-                                </button>
-                            </div>
-                        </div>
-                        
-                        @if(request('angkatan') || request('search_nama'))
-                            <div class="col-md-3 d-flex align-items-end">
-                                <a href="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}?tab=assign" 
-                                   class="btn btn-outline-danger w-100">
-                                    <i class="bi bi-x-circle"></i> Reset
-                                </a>
-                            </div>
-                        @endif
-                    </form>
-                </div>
-
-                {{-- Form Assign Santri --}}
+                {{-- Form Assign Santri - Single searchable multi-select --}}
                 <form action="{{ route('nilaikesantrian.assign.store', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}" method="POST">
                     @csrf
-                    
-                    <div class="santri-assign-list">
-                        @forelse($santriBelumAssign as $santri)
-                            <label class="santri-assign-item d-flex align-items-center" for="santri-{{ $santri->nis }}">
-                                <input class="form-check-input me-3" type="checkbox" name="nis[]" value="{{ $santri->nis }}" id="santri-{{ $santri->nis }}">
-                                <div class="flex-grow-1">
-                                    <strong class="text-success">{{ $santri->nama }}</strong>
-                                    <small class="text-muted d-block">NIS: {{ $santri->nis }} • Angkatan: {{ $santri->angkatan }}</small>
-                                </div>
-                            </label>
-                        @empty
-                            <div class="alert alert-success m-3">
-                                <i class="bi bi-check-circle"></i> Semua santri sudah di-assign ke mata pelajaran ini.
-                            </div>
-                        @endforelse
-                    </div>
 
-                    @if($santriBelumAssign->isNotEmpty())
-                        <button type="submit" class="btn btn-success mt-3 w-100">
-                            <i class="bi bi-plus-circle"></i> Assign Santri  ({{ $santriBelumAssign->count() }})
+                    @if($santriBelumAssign->isEmpty())
+                        <div class="alert alert-success m-0">
+                            <i class="bi bi-check-circle"></i> Semua santri sudah di-assign ke mata pelajaran ini.
+                        </div>
+                    @else
+                        <div class="mb-3">
+                            <label for="santri_select" class="form-label fw-semibold">Pilih Santri (search untuk memfilter)</label>
+                            <select id="santri_select" name="nis[]" multiple class="form-select" placeholder="Ketik nama/NIS untuk mencari...">
+                                @foreach($santriBelumAssign as $santri)
+                                    <option value="{{ $santri->nis }}">
+                                        {{ $santri->nama }} ({{ $santri->nis }}) • Angkatan {{ $santri->angkatan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="form-text">Anda dapat memilih lebih dari satu santri.</div>
+                        </div>
+
+                        <button type="submit" id="btnTambahSantri" class="btn btn-success w-100">
+                            Tambah Santri
                         </button>
                     @endif
                 </form>
@@ -689,6 +687,18 @@
 </form>
 
 <script>
+    // ===== VALIDASI NILAI KESANTRIAN A-E UPPERCASE =====
+    function validateNilaiKesantrian(el) {
+        let val = el.value.toUpperCase();
+        // Hanya terima A, B, C, D, E
+        if (val && !/^[A-E]$/.test(val)) {
+            el.value = '';
+            alert('Hanya nilai A, B, C, D, atau E yang diperbolehkan');
+            return;
+        }
+        el.value = val;
+    }
+
     function confirmDelete(nama, id_nilai_kesantrian) {
         if (confirm(`Yakin ingin MENGHAPUS (Un-assign) santri atas nama ${nama} dari mata pelajaran ini?`)) {
             const form = document.getElementById('delete-form');
@@ -699,6 +709,21 @@
     
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
+
+        // Shortcut button to open assign tab
+        const openAssignBtn = document.getElementById('openAssignTab');
+        if (openAssignBtn) {
+            openAssignBtn.addEventListener('click', function() {
+                const assignTabEl = document.getElementById('assign-tab');
+                if (assignTabEl) {
+                    new bootstrap.Tab(assignTabEl).show();
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.set('tab', 'assign');
+                    window.history.pushState({path: newUrl.href}, '', newUrl.href);
+                }
+                document.getElementById('assignSantri')?.scrollIntoView({behavior: 'smooth'});
+            });
+        }
         
         // Tab utama
         const activeTabParam = urlParams.get('tab');
@@ -754,6 +779,55 @@
                 window.history.pushState({path: newUrl.href}, '', newUrl.href);
             });
         });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectEl = document.getElementById('santri_select');
+        if (selectEl && window.TomSelect) {
+            const ts = new TomSelect('#santri_select', {
+                plugins: ['remove_button'],
+                maxItems: null,
+                create: false,
+                persist: false,
+                closeAfterSelect: false,
+                placeholder: 'Ketik nama/NIS untuk mencari...',
+                // Custom scoring untuk prefix match saja
+                score: function(search) {
+                    if (!search) return 0;
+                    search = search.toLowerCase();
+                    return function(option) {
+                        let text = option.text.toLowerCase();
+                        // Hanya match jika dimulai dengan search string (prefix match)
+                        if (text.startsWith(search)) {
+                            // Prioritas lebih tinggi jika match di awal nama
+                            let nameMatch = text.match(/^([^(]+)/);
+                            if (nameMatch && nameMatch[1].toLowerCase().trim().startsWith(search)) {
+                                return 2; // Score lebih tinggi untuk nama
+                            }
+                            return 1; // Score untuk NIS atau angkatan
+                        }
+                        return 0; // Tidak match
+                    };
+                },
+                render: {
+                    option: function(data, escape) {
+                        return `<div>${escape(data.text)}</div>`;
+                    }
+                }
+            });
+
+            const btn = document.getElementById('btnTambahSantri');
+            const updateBtnText = () => {
+                if (!btn) return;
+                const count = ts.items.length;
+                btn.textContent = count > 0 ? `Tambah Santri (${count})` : 'Tambah Santri';
+            };
+            selectEl.addEventListener('change', updateBtnText);
+            updateBtnText();
+        }
     });
 </script>
 

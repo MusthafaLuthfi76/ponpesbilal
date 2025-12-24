@@ -108,16 +108,21 @@ class NilaiMapelController extends Controller
     ]);
 
     foreach ($request->nis as $nis) {
-        NilaiAkademik::create([
-            'id_matapelajaran' => $id_matapelajaran,
-            'nis' => $nis,
-            'nilai_UTS' => 0,
-            'nilai_UAS' => 0,
-            'nilai_praktik' => 0,
-            'jumlah_izin' => 0,
-            'jumlah_sakit' => 0,
-            'jumlah_ghaib' => 0
-        ]);
+        NilaiAkademik::firstOrCreate(
+            [
+                'id_matapelajaran' => $id_matapelajaran,
+                'nis' => $nis,
+            ],
+            [
+                'nilai_UTS' => 0,
+                'nilai_UAS' => 0,
+                'nilai_praktik' => 0,
+                'nilai_keaktifan' => 0,
+                'jumlah_izin' => 0,
+                'jumlah_sakit' => 0,
+                'jumlah_ghaib' => 0
+            ]
+        );
     }
 
     return redirect()->route('nilaiakademik.mapel.show', $id_matapelajaran)
@@ -136,6 +141,7 @@ class NilaiMapelController extends Controller
             'nilai_UTS' => 'nullable|numeric|min:0|max:100',
             'nilai_UAS' => 'nullable|numeric|min:0|max:100',
             'nilai_praktik' => 'nullable|numeric|min:0|max:100',
+            'nilai_keaktifan' => 'nullable|numeric|min:0|max:100',
             'jumlah_izin' => 'required|integer|min:0',
             'jumlah_sakit' => 'required|integer|min:0',
             'jumlah_ghaib' => 'required|integer|min:0',
@@ -144,15 +150,14 @@ class NilaiMapelController extends Controller
         $uts = $request->nilai_UTS;
         $uas = $request->nilai_UAS;
         $prak = $request->nilai_praktik;
+        $aktif = $request->nilai_keaktifan;
 
         // Hitung nilai rata-rata berbobot
         $rata = null;
         if ($uts !== null || $uas !== null || $prak !== null) {
             $rata = round(
-                (($uts ?? 0) * 0.30) +
-                (($uas ?? 0) * 0.40) +
-                (($prak ?? 0) * 0.30)
-            , 2);
+                (($uts ?? 0) + ($uas ?? 0) + ($prak ?? 0) + ($aktif ?? 0)) / 4,
+            2);
         }
 
         // Predikat + keterangan
@@ -172,6 +177,7 @@ class NilaiMapelController extends Controller
             'nilai_UTS' => $uts,
             'nilai_UAS' => $uas,
             'nilai_praktik' => $prak,
+            'nilai_keaktifan' => $aktif,
             'jumlah_izin' => $request->jumlah_izin,
             'jumlah_sakit' => $request->jumlah_sakit,
             'jumlah_ghaib' => $request->jumlah_ghaib,
@@ -209,13 +215,14 @@ class NilaiMapelController extends Controller
         $uts     = $data['uts'] ?? 0;
         $uas     = $data['uas'] ?? 0;
         $praktik = $data['praktik'] ?? 0;
+        $keaktifan = $data['keaktifan'] ?? 0;
 
         $izin  = $data['izin'] ?? 0;
         $sakit = $data['sakit'] ?? 0;
         $ghaib = $data['ghaib'] ?? 0;
 
         // Hitung rata-rata
-        $rata = ($uts + $uas + $praktik) / 3;
+        $rata = ($uts + $uas + $praktik + $keaktifan) / 4;
 
         // Tentukan predikat
         if ($rata >= 90)       $predikat = 'A';
@@ -237,6 +244,7 @@ class NilaiMapelController extends Controller
                 'jumlah_izin'    => $izin,
                 'jumlah_sakit'   => $sakit,
                 'jumlah_ghaib'   => $ghaib,
+                'nilai_keaktifan'=> $keaktifan,
                 'nilai_rata_rata'=> $rata,
                 'predikat'       => $predikat,
                 'keterangan'     => $keterangan,

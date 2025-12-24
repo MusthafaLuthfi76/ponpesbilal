@@ -34,14 +34,15 @@ class NilaiAkademikController extends Controller
             'nilai_UTS' => 'nullable|numeric|min:0|max:100',
             'nilai_UAS' => 'nullable|numeric|min:0|max:100',
             'nilai_praktik' => 'nullable|numeric|min:0|max:100',
+            'nilai_keaktifan' => 'nullable|numeric|min:0|max:100',
         ]);
 
-        $data = $request->only('nis','id_matapelajaran','nilai_UTS','nilai_UAS','nilai_praktik');
+        $data = $request->only('nis','id_matapelajaran','nilai_UTS','nilai_UAS','nilai_praktik','nilai_keaktifan');
         // Hitung rata-rata
-        $nilaiCount = collect([$data['nilai_UTS'],$data['nilai_UAS'],$data['nilai_praktik']])->filter()->count();
+        $nilaiCount = collect([$data['nilai_UTS'],$data['nilai_UAS'],$data['nilai_praktik'],$data['nilai_keaktifan']])->filter()->count();
         if($nilaiCount > 0){
             $data['nilai_rata_rata'] = round(
-                (array_sum(array_filter([$data['nilai_UTS'],$data['nilai_UAS'],$data['nilai_praktik']])) / $nilaiCount),2
+                (array_sum(array_filter([$data['nilai_UTS'],$data['nilai_UAS'],$data['nilai_praktik'],$data['nilai_keaktifan']])) / $nilaiCount),2
             );
             $avg = $data['nilai_rata_rata'];
             if($avg >= 85) $data['predikat']='A';
@@ -68,16 +69,17 @@ class NilaiAkademikController extends Controller
             'nilai_UTS' => 'nullable|numeric|min:0|max:100',
             'nilai_UAS' => 'nullable|numeric|min:0|max:100',
             'nilai_praktik' => 'nullable|numeric|min:0|max:100',
+            'nilai_keaktifan' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $nilai = NilaiAkademik::findOrFail($id);
-        $data = $request->only('nis','id_matapelajaran','nilai_UTS','nilai_UAS','nilai_praktik');
+        $data = $request->only('nis','id_matapelajaran','nilai_UTS','nilai_UAS','nilai_praktik','nilai_keaktifan');
 
         // Hitung rata-rata lagi
-        $nilaiCount = collect([$data['nilai_UTS'],$data['nilai_UAS'],$data['nilai_praktik']])->filter()->count();
+        $nilaiCount = collect([$data['nilai_UTS'],$data['nilai_UAS'],$data['nilai_praktik'],$data['nilai_keaktifan']])->filter()->count();
         if($nilaiCount > 0){
             $data['nilai_rata_rata'] = round(
-                (array_sum(array_filter([$data['nilai_UTS'],$data['nilai_UAS'],$data['nilai_praktik']])) / $nilaiCount),2
+                (array_sum(array_filter([$data['nilai_UTS'],$data['nilai_UAS'],$data['nilai_praktik'],$data['nilai_keaktifan']])) / $nilaiCount),2
             );
             $avg = $data['nilai_rata_rata'];
             if($avg >= 85) $data['predikat']='A';

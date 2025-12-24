@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Santri;
 use App\Models\Pendidik;
+use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 use App\Models\KelompokHalaqah;
 
@@ -12,9 +13,10 @@ class HalaqahController extends Controller
     public function index()
     {
         $pendidik = Pendidik::all();
+        $tahunAjaran = TahunAjaran::all();
         $kelompok = KelompokHalaqah::with('pendidik')->paginate(10);
 
-        return view('halaqah.index', compact('kelompok', 'pendidik'));
+        return view('halaqah.index', compact('kelompok', 'pendidik', 'tahunAjaran'));
     }
 
 
@@ -23,9 +25,10 @@ class HalaqahController extends Controller
         $request->validate([
             'nama_kelompok' => 'required|max:100',
             'id_pendidik' => 'required|exists:pendidik,id_pendidik',
+            'id_tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
         ]);
 
-        KelompokHalaqah::create($request->only(['nama_kelompok', 'id_pendidik']));
+        KelompokHalaqah::create($request->only(['nama_kelompok', 'id_pendidik', 'id_tahunAjaran']));
         return redirect()->back()->with('success', 'Kelompok berhasil ditambahkan!');
     }
 
@@ -34,9 +37,10 @@ class HalaqahController extends Controller
         $request->validate([
             'nama_kelompok' => 'required|max:100',
             'id_pendidik' => 'required|exists:pendidik,id_pendidik',
+            'id_tahunAjaran' => 'nullable|exists:tahunajaran,id_tahunAjaran',
         ]);
 
-        KelompokHalaqah::findOrFail($id)->update($request->only(['nama_kelompok', 'id_pendidik']));
+        KelompokHalaqah::findOrFail($id)->update($request->only(['nama_kelompok', 'id_pendidik', 'id_tahunAjaran']));
         return redirect()->back()->with('success', 'Data berhasil diperbarui!');
     }
 

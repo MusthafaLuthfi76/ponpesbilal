@@ -26,6 +26,7 @@ class NilaiAkademik extends Model
         'nilai_UTS',
         'nilai_UAS',
         'nilai_praktik',
+        'nilai_keaktifan',
         'jumlah_izin',
         'jumlah_sakit',
         'jumlah_ghaib',

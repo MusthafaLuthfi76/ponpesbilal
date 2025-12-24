@@ -273,15 +273,14 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
+        padding: 8px 14px;
+        border-radius: 8px;
         border: none;
         color: #fff;
         transition: opacity 0.2s, transform 0.2s;
-        padding: 0;
         flex-shrink: 0;
         text-decoration: none; 
+        font-weight: 600;
     }
 
     .action-btn-link:hover {
@@ -406,7 +405,11 @@
                     @forelse ($mapel as $m)
                         <tr role="row" aria-label="Data mata pelajaran {{ $m->nama_matapelajaran }}">
                             <td role="cell">{{ $loop->iteration }}</td>
-                            <td role="cell">{{ $m->nama_matapelajaran }}</td>
+                            <td role="cell">
+                                <a href="{{ route('nilaiakademik.mapel.show', $m->id_matapelajaran) }}" class="text-decoration-none text-dark fw-semibold">
+                                    {{ $m->nama_matapelajaran }}
+                                </a>
+                            </td>
                             <td role="cell">
                                 @if($m->tahunAjaran)
                                     {{ $m->tahunAjaran->tahun }}
@@ -421,13 +424,9 @@
                             <td role="cell">
                                 <div class="action-btns">
                                     <a href="{{ route('nilaiakademik.mapel.show', $m->id_matapelajaran) }}" 
-                                       title="Lihat Detail"
                                        class="action-btn-link btn-view" 
                                        aria-label="Lihat detail mata pelajaran {{ $m->nama_matapelajaran }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="white">
-                                            <path d="M11.5 18c4 0 7.46-2.22 9.24-5.5C18.96 9.22 15.5 7 11.5 7S4.04 9.22 2.26 12.5C4.04 15.78 7.5 18 11.5 18m0-12c4.56 0 8.5 2.65 10.36 6.5C20 16.35 16.06 19 11.5 19S3 16.35 1.14 12.5C3 8.65 6.94 6 11.5 6m0 2C14 8 16 10 16 12.5S14 17 11.5 17 7 15 7 12.5 9 8 11.5 8m0 1A3.5 3.5 0 0 0 8 12.5a3.5 3.5 0 0 0 3.5 3.5a3.5 3.5 0 0 0 3.5-3.5A3.5 3.5 0 0 0 11.5 9" />
-                                        </svg>
+                                        Lihat Detail
                                     </a>
                                 </div>
                             </td>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('page_title', 'Assign Santri')
+@section('page_title', 'Tambah Santri')
 
 {{-- Bootstrap & Font Awesome --}}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -549,7 +549,7 @@
     <div class="container-wrapper">
         {{-- Page Header --}}
         <div class="page-header">
-            <h4><i class="fas fa-user-plus"></i> Assign Santri ke Mata Pelajaran</h4>
+            <h4><i class="fas fa-user-plus"></i> Tambah Santri ke Mata Pelajaran</h4>
             <a href="{{ route('nilaiakademik.mapel.show', $mapel->id_matapelajaran) }}" class="back-btn">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
@@ -637,7 +637,7 @@
                 <i class="fas fa-search"></i>
             </div>
             <button type="button" class="select-all-btn" id="selectAllBtn">
-                <i class="fas fa-check-double"></i> Pilih Semua
+                    <i class="fas fa-check-double"></i> Pilih Semua
             </button>
         </div>
 
@@ -712,7 +712,7 @@
                     <i class="fas fa-times"></i> Batal
                 </a>
                 <button type="submit" class="btn-submit" id="submitBtn" disabled>
-                    <i class="fas fa-save"></i> Assign Santri
+                    <i class="fas fa-save"></i> Tambah Santri
                 </button>
             </div>
         </div>

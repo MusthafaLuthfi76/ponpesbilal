@@ -36,9 +36,14 @@
                                 <span class="text-muted small">NIS: {{ $santri->nis ?? '-' }}</span>
                             </div>
                             <div class="mt-2 mt-sm-0">
-                                @if ($santri->tahunAjaran)
-                                    <span class="badge badge-semester">
-                                        Semester {{ $santri->tahunAjaran->semester }}
+                                @if (isset($ujianPertama) && $ujianPertama->tahunAjaran)
+                                    <span class="badge badge-custom {{ strtoupper($ujianPertama->tahunAjaran->semester) == 'GANJIL' ? 'semester-ganjil' : 'semester-genap' }} px-3 py-2">
+                                        Semester {{ strtoupper($ujianPertama->tahunAjaran->semester) }}
+                                    </span>
+                                    <div class="text-muted small mt-1 text-center">{{ $ujianPertama->tahunAjaran->tahun }}</div>
+                                @elseif ($santri->tahunAjaran)
+                                    <span class="badge badge-custom {{ strtoupper($santri->tahunAjaran->semester) == 'GANJIL' ? 'semester-ganjil' : 'semester-genap' }} px-3 py-2">
+                                        Semester {{ strtoupper($santri->tahunAjaran->semester) }}
                                     </span>
                                     <div class="text-muted small mt-1 text-center">{{ $santri->tahunAjaran->tahun }}</div>
                                 @else
@@ -90,28 +95,19 @@
                     <!-- Filter & Action Buttons -->
                     <div class="col-12">
                         <div class="d-flex flex-wrap gap-2 align-items-center">
-                            @if(isset($ujianGroups) && $ujianGroups->count() > 1)
-                            <form method="GET" action="{{ route('nilaiTahfidz.show', $santri->nis) }}" class="flex-grow-1" style="max-width: 300px;">
-                                <select class="form-select form-select-sm" name="group" onchange="this.form.submit()">
-                                    <option value="">Pilih Sesi Ujian</option>
-                                    @foreach($ujianGroups as $groupKey => $groupUjian)
-                                        @php
-                                            $firstUjian = $groupUjian->first();
-                                            $tanggal = $firstUjian->created_at ? $firstUjian->created_at->format('d/m/Y') : '-';
-                                            $label = $firstUjian->jenis_ujian . ' - ' . ucfirst($firstUjian->sekali_duduk) . ' (' . $tanggal . ')';
-                                        @endphp
-                                        <option value="{{ $groupKey }}" {{ $selectedGroupKey == $groupKey ? 'selected' : '' }}>
-                                            {{ $label }} ({{ $groupUjian->count() }} juz)
+                            <!-- Filter Tahun Ajaran -->
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="filterTahunAjaran" class="form-label mb-0 text-muted small fw-semibold d-none d-sm-inline">Tahun Ajaran:</label>
+                                <select class="form-select form-select-sm" id="filterTahunAjaran" style="width: auto; min-width: 200px;" onchange="applyFilter()">
+                                    <option value="">Semua Tahun Ajaran</option>
+                                    @foreach($tahunAjaranList as $ta)
+                                        <option value="{{ $ta->id_tahun_ajaran }}">
+                                            {{ $ta->tahun }} - Semester {{ strtoupper($ta->semester) }}
                                         </option>
                                     @endforeach
                                 </select>
-                            </form>
-                            @endif
-                            <select class="form-select form-select-sm" style="max-width: 150px;" id="filterUjian" onchange="filterData()">
-                                <option value="">Semua</option>
-                                <option value="UTS">UTS</option>
-                                <option value="UAS">UAS</option>
-                            </select>
+                            </div>
+                            
                             <button class="btn btn-primary btn-sm d-flex align-items-center gap-2 ms-auto" data-bs-toggle="modal" data-bs-target="#modalTambahUjian">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
                                     <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -145,7 +141,7 @@
                         </thead>
                         <tbody>
                             @forelse ($ujianList as $index => $ujian)
-                                <tr class="ujian-row" data-jenis="{{ $ujian->jenis_ujian }}">
+                                <tr data-tahun-ajaran="{{ $ujian->tahun_ajaran_id ?? '' }}">
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td class="text-center">
                                         <span class="badge {{ $ujian->jenis_ujian == 'UTS' ? 'badge-uts' : 'badge-uas' }}">
@@ -198,7 +194,7 @@
                 <!-- Mobile Cards -->
                 <div class="d-lg-none">
                     @forelse ($ujianList as $index => $ujian)
-                        <div class="mobile-card ujian-row" data-jenis="{{ $ujian->jenis_ujian }}">
+                        <div class="mobile-card" data-tahun-ajaran="{{ $ujian->tahun_ajaran_id ?? '' }}">
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <span class="badge {{ $ujian->jenis_ujian == 'UTS' ? 'badge-uts' : 'badge-uas' }} me-2">
@@ -428,8 +424,6 @@
                 <form id="formEditUjian" method="POST">
                     @csrf
                     @method('PUT')
-                    <input type="hidden" name="nis" value="{{ $santri->nis }}">
-                    <input type="hidden" name="tahun_ajaran_id" value="{{ $santri->id_tahunAjaran }}">
 
                     <div class="modal-body">
                         <div class="mb-3">
@@ -469,18 +463,6 @@
                         <div class="mb-3">
                             <label for="edit_total_kesalahan" class="form-label fw-semibold">Total Kesalahan</label>
                             <input type="number" class="form-control bg-light" id="edit_total_kesalahan" name="total_kesalahan" readonly>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold d-block">Sekali Duduk <span class="text-danger">*</span></label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="sekali_duduk" id="edit_sekali_duduk_ya" value="ya" required>
-                                <label class="form-check-label" for="edit_sekali_duduk_ya">Ya</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="sekali_duduk" id="edit_sekali_duduk_tidak" value="tidak">
-                                <label class="form-check-label" for="edit_sekali_duduk_tidak">Tidak</label>
-                            </div>
                         </div>
                     </div>
 
@@ -583,11 +565,15 @@
             box-shadow: var(--shadow-sm);
         }
 
-        .badge-semester {
+        .semester-ganjil {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .semester-genap {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
             font-weight: 600;
         }
 
@@ -759,7 +745,8 @@
                 height: 28px;
             }
 
-            .badge-semester {
+            .semester-ganjil,
+            .semester-genap {
                 padding: 0.35rem 0.75rem;
                 font-size: 0.8rem;
             }
@@ -805,11 +792,45 @@
     </style>
 
     <script>
-        function filterData() {
-            const filter = document.getElementById('filterUjian').value;
-            const rows = document.querySelectorAll('.ujian-row');
+        // Load saved filter on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedFilter = sessionStorage.getItem('nilaiTahfidz_detail_tahunAjaran');
+            if (savedFilter) {
+                document.getElementById('filterTahunAjaran').value = savedFilter;
+                applyFilter();
+            }
+        });
+
+        function applyFilter() {
+            const filterValue = document.getElementById('filterTahunAjaran').value;
+            
+            // Save to sessionStorage
+            if (filterValue) {
+                sessionStorage.setItem('nilaiTahfidz_detail_tahunAjaran', filterValue);
+            } else {
+                sessionStorage.removeItem('nilaiTahfidz_detail_tahunAjaran');
+            }
+            
+            // Filter desktop table rows
+            const rows = document.querySelectorAll('tbody tr[data-tahun-ajaran]');
             rows.forEach(row => {
-                row.style.display = (filter === '' || row.dataset.jenis === filter) ? '' : 'none';
+                const tahunAjaran = row.getAttribute('data-tahun-ajaran');
+                if (!filterValue || tahunAjaran === filterValue) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Filter mobile cards
+            const cards = document.querySelectorAll('.mobile-card[data-tahun-ajaran]');
+            cards.forEach(card => {
+                const tahunAjaran = card.getAttribute('data-tahun-ajaran');
+                if (!filterValue || tahunAjaran === filterValue) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
             });
         }
 
