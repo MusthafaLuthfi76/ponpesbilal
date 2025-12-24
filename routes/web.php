@@ -21,6 +21,7 @@ use App\Http\Controllers\UserController;
 | PUBLIC PAGE (Landing Page)
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return view('landing.index');   // halaman landing page
 })->name('landing');
@@ -86,10 +87,49 @@ Route::middleware('auth')->group(function () {
         Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
         Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
-        // Rapor
-        Route::get('/rapor', [RaporController::class, 'index'])->name('rapor.index');
-        Route::get('/rapor/cetak/{nis}', [RaporController::class, 'cetak'])->name('rapor.cetak');
-        Route::post('/rapor/cetak-bulk', [RaporController::class, 'cetakBulk'])->name('rapor.cetak.bulk');
+        // =======================
+        // RAPOR (ADMIN)
+        // =======================
+        Route::prefix('rapor')->name('rapor.')->group(function () {
+
+            // List santri rapor
+            Route::get('/', [RaporController::class, 'index'])
+                ->name('index');
+
+            // API: daftar rapor per santri
+            Route::get('{nis}/list', [RaporController::class, 'getRaporList'])
+                ->name('list');
+
+            // Cetak rapor detail (per tahun ajaran & jenis ujian)
+            Route::get('{nis}/{tahun_ajaran_id}/{jenis_ujian}', [RaporController::class, 'cetak'])
+                ->whereNumber('tahun_ajaran_id')
+                ->whereIn('jenis_ujian', ['uts', 'uas'])
+                ->name('cetak');
+
+            // Cetak rapor massal
+            Route::post('cetak-bulk', [RaporController::class, 'cetakBulk'])
+                ->name('cetak.bulk');
+        });
+
+        // =======================
+        // RAPOR ALUMNI (ADMIN)
+        // =======================
+        Route::prefix('rapor/alumni')->name('rapor.alumni.')->group(function () {
+
+            Route::get('/', [RaporController::class, 'indexAlumni'])
+                ->name('index');
+
+            Route::get('{nis}/list', [RaporController::class, 'getRaporList'])
+                ->name('list');
+
+            Route::get('{nis}/{tahun_ajaran_id}/{jenis_ujian}', [RaporController::class, 'cetak'])
+                ->whereNumber('tahun_ajaran_id')
+                ->whereIn('jenis_ujian', ['uts', 'uas'])
+                ->name('cetak');
+
+            Route::post('cetak-bulk', [RaporController::class, 'cetakBulk'])
+                ->name('cetak.bulk');
+        });
     });
 
     /*
@@ -111,6 +151,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/nilaiakademik/mapel/{id_mapel}/assign', [NilaiMapelController::class, 'assignStore'])->name('nilaiakademik.mapel.assign.store');
         Route::put('/nilaiakademik/mapel/{id}/update-all', [NilaiMapelController::class, 'updateAll'])->name('nilaiakademik.mapel.updateAll');
         Route::put('/nilaiakademik/nilai/{id_nilai}', [NilaiMapelController::class, 'update'])->name('nilaiakademik.mapel.update');
+        
         Route::delete('/nilaiakademik/nilai/{id_nilai}', [NilaiMapelController::class, 'destroy'])->name('nilaiakademik.mapel.destroy');
 
         // Nilai Kesantrian
@@ -161,5 +202,4 @@ Route::middleware('auth')->group(function () {
         Route::delete('/nilaiTahfidz/{id}', [UjianTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
         Route::get('/nilai-tahfidz/{nis}/create', [UjianTahfidzController::class, 'create'])->name('nilaiTahfidz.create');
     });
-
 });

@@ -499,17 +499,9 @@
         <header class="header" role="banner">
             <h3>{{ auth()->user()->role == 'musyrif' ? 'Setoran Harian' : 'Kelompok Halaqoh' }}</h3>
             <div class="header-actions">
-                <div style="display: flex; gap: 10px; width: 100%; flex-wrap: wrap; align-items: stretch;">
-                    <div class="search-box" role="search" style="flex: 1; min-width: 200px;">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                        <input type="text" placeholder="Cari nama kelompok atau ustadz..." id="searchInput" aria-label="Kolom Pencarian Kelompok atau Ustadz">
-                    </div>
-                    <select id="filterTahun" class="form-select" style="flex: 0 1 250px; padding: 12px; border-radius: 10px; border: 1px solid #ddd;" aria-label="Filter Tahun Ajaran">
-                        <option value="">Semua Tahun Ajaran</option>
-                        @foreach ($tahunAjaran as $ta)
-                            <option value="{{ $ta->id_tahunAjaran }}">{{ $ta->tahun }} ({{ $ta->semester }})</option>
-                        @endforeach
-                    </select>
+                <div class="search-box" role="search">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" placeholder="Cari kelompok..." id="searchInput" aria-label="Kolom Pencarian Kelompok">
                 </div>
                 <button class="add-button" data-bs-toggle="modal" data-bs-target="#createModal" aria-label="Tambah Kelompok Halaqoh">
                     <i class="fas fa-plus" aria-hidden="true"></i> 
@@ -524,19 +516,17 @@
                 <thead>
                     <tr>
                         <th scope="col" style="width: 8%;">NO</th>
-                        <th scope="col" style="width: 35%;">NAMA KELOMPOK</th>
+                        <th scope="col" style="width: 45%;">NAMA KELOMPOK</th>
                         <th scope="col" style="width: 20%;">NAMA USTADZ</th>
-                        <th scope="col" style="width: 15%;">TAHUN AJARAN</th>
-                        <th scope="col" style="width: 22%;">AKSI</th>
+                        <th scope="col" style="width: 27%;">AKSI</th>
                     </tr>
                 </thead>
                 <tbody id="halaqahTable">
                     @forelse ($kelompok as $group)
-                        <tr role="row" data-href="{{ route('halaqah.show', $group->id_halaqah) }}" data-tahun="{{ $group->id_tahunAjaran }}" aria-label="Kelompok {{ $group->nama_kelompok }}">
+                        <tr role="row" data-href="{{ route('halaqah.show', $group->id_halaqah) }}" aria-label="Kelompok {{ $group->nama_kelompok }}">
                             <td data-label="NO">{{ $loop->iteration }}</td>
                             <td data-label="Nama Kelompok">{{ $group->nama_kelompok }}</td>
                             <td data-label="Nama Ustadz">{{ $group->pendidik?->nama ?? '-' }}</td>
-                            <td data-label="Tahun Ajaran">{{ $group->tahunAjaran?->tahun . ' (' . $group->tahunAjaran?->semester . ')' ?? '-' }}</td>
                             <td data-label="Aksi" class="action-cell">
                                 <div class="action-btns">
                                     <a href="{{ route('halaqah.show', $group->id_halaqah) }}" 
@@ -616,17 +606,6 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-4">
-                            <label for="createTahunAjaran" class="form-label fw-semibold">
-                                <i class="fas fa-calendar me-2"></i>Tahun Ajaran
-                            </label>
-                            <select name="id_tahunAjaran" id="createTahunAjaran" class="form-select" style="padding: 12px;">
-                                <option value="">-- Pilih Tahun Ajaran --</option>
-                                @foreach ($tahunAjaran as $ta)
-                                    <option value="{{ $ta->id_tahunAjaran }}">{{ $ta->tahun }} ({{ $ta->semester }})</option>
-                                @endforeach
-                            </select>
-                        </div>
                         <div class="mb-3">
                             <label for="createNamaKelompok" class="form-label fw-semibold">
                                 <i class="fas fa-users me-2"></i>Nama Kelompok
@@ -669,17 +648,6 @@
                                 <option value="">-- Pilih Ustadz --</option>
                                 @foreach ($pendidik as $p)
                                     <option value="{{ $p->id_pendidik }}">{{ $p->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="editTahunAjaran" class="form-label fw-semibold">
-                                <i class="fas fa-calendar me-2"></i>Tahun Ajaran
-                            </label>
-                            <select name="id_tahunAjaran" id="editTahunAjaran" class="form-select" style="padding: 12px;">
-                                <option value="">-- Pilih Tahun Ajaran --</option>
-                                @foreach ($tahunAjaran as $ta)
-                                    <option value="{{ $ta->id_tahunAjaran }}">{{ $ta->tahun }} ({{ $ta->semester }})</option>
                                 @endforeach
                             </select>
                         </div>
@@ -743,16 +711,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
-            const filterTahun = document.getElementById('filterTahun');
             const tableBody = document.getElementById('halaqahTable');
             const rows = tableBody.getElementsByTagName('tr');
             const loadingOverlay = document.getElementById('loadingOverlay');
-
-            // ===== RESTORE FILTER STATE =====
-            const savedTahun = sessionStorage.getItem('halaqahFilterTahun');
-            if (savedTahun !== null) {
-                filterTahun.value = savedTahun;
-            }
 
             // Fitur klik baris untuk redirect (kecuali tombol aksi)
             document.querySelectorAll('tbody tr[data-href]').forEach(row => {
@@ -764,23 +725,15 @@
                 });
             });
 
-            // Fungsi filter kombinasi
-            function applyFilters() {
-                const searchFilter = searchInput.value.toLowerCase();
-                const tahunFilter = filterTahun.value;
+            // Fitur pencarian baris tabel
+            searchInput.addEventListener('keyup', function() {
+                const filter = this.value.toLowerCase();
                 let found = false;
 
                 for (let row of rows) {
-                    if (row.children.length > 1) {
+                    if (row.children.length > 1) { 
                         const text = row.textContent.toLowerCase();
-                        const tahunData = row.getAttribute('data-tahun');
-                        
-                        // Match search (nama kelompok atau ustadz)
-                        const matchSearch = text.includes(searchFilter);
-                        // Match filter tahun (jika filter kosong, tampilkan semua)
-                        const matchTahun = !tahunFilter || tahunData === tahunFilter;
-                        
-                        if (matchSearch && matchTahun) {
+                        if (text.includes(filter)) {
                             row.style.display = '';
                             found = true;
                         } else {
@@ -791,30 +744,20 @@
                     }
                 }
                 
-                // Update pesan pencarian
-                const noDataRow = document.querySelector('td[colspan="4"]');
+                // Logika pesan pencarian
+                const noDataRow = document.querySelector('td[colspan="5"]');
                 if (noDataRow) {
-                    if (found) { 
+                    if (found || (rows.length > 1 && filter === "")) { 
                         noDataRow.parentNode.style.display = 'none';
-                    } else {
+                    } else if (filter !== "") { 
                         noDataRow.innerHTML = '<i class="fas fa-search fa-2x mb-3" style="color: #ccc;"></i><p style="margin: 0;">Tidak ada kelompok yang cocok dengan kriteria pencarian.</p>';
+                        noDataRow.parentNode.style.display = '';
+                    } else if (rows.length === 1 && filter === "") {
+                        noDataRow.innerHTML = '<i class="fas fa-inbox fa-3x mb-3" style="color: #ccc;"></i><p style="margin: 0; font-size: 16px;">Belum ada data kelompok.</p>';
                         noDataRow.parentNode.style.display = '';
                     }
                 }
-            }
-
-            // Event listener untuk search
-            searchInput.addEventListener('keyup', applyFilters);
-            
-            // Event listener untuk filter tahun
-            filterTahun.addEventListener('change', function() {
-                // Simpan filter ke sessionStorage
-                sessionStorage.setItem('halaqahFilterTahun', this.value);
-                applyFilters();
             });
-
-            // Jalankan filter saat halaman dimuat
-            applyFilters();
 
             // Modal Edit
             const editModal = document.getElementById('editModal');

@@ -15,19 +15,12 @@ class KelompokHalaqah extends Model
     protected $fillable = [
         'nama_kelompok',
         'id_pendidik',
-        'id_tahunAjaran',
     ];
 
     // Relasi ke tabel pendidik
     public function pendidik()
     {
         return $this->belongsTo(Pendidik::class, 'id_pendidik', 'id_pendidik');
-    }
-
-    // Relasi ke tabel tahun_ajaran
-    public function tahunAjaran()
-    {
-        return $this->belongsTo(TahunAjaran::class, 'id_tahunAjaran', 'id_tahunAjaran');
     }
 
     public function santri()

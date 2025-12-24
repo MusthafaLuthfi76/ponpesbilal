@@ -250,9 +250,9 @@
     <header class="header" role="banner">
         <h3>📚 Daftar Penilaian Kesantrian</h3>
         <div class="header-right">
-            <form method="GET" action="{{ route('nilaikesantrian.index') }}" class="filter-box" id="filterForm">
+            <form method="GET" action="{{ route('nilaikesantrian.index') }}" class="filter-box">
                 <i class="fas fa-filter" aria-hidden="true"></i>
-                <select name="id_tahunAjaran" class="form-select-custom" onchange="saveFilterAndSubmit()" aria-label="Filter Tahun Ajaran" id="filterSelect">
+                <select name="id_tahunAjaran" class="form-select-custom" onchange="this.form.submit()" aria-label="Filter Tahun Ajaran">
                     <option value="">Semua Tahun Ajaran</option>
                     @foreach($tahunAjaran as $ta)
                         <option value="{{ $ta->id_tahunAjaran }}" {{ request('id_tahunAjaran') == $ta->id_tahunAjaran ? 'selected' : '' }}>
@@ -283,9 +283,7 @@
                 <tr role="row" aria-label="Data kesantrian {{ $item->mataPelajaran->nama_matapelajaran }}">
                     <td role="cell">{{ $loop->iteration }}</td>
                     <td role="cell" style="text-align: left;">
-                        <a href="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $item->id_matapelajaran, 'id_tahunAjaran' => $item->id_tahunAjaran]) }}" class="text-decoration-none text-dark fw-semibold">
-                            {{ $item->mataPelajaran->nama_matapelajaran ?? '-' }}
-                        </a>
+                        <strong>{{ $item->mataPelajaran->nama_matapelajaran ?? '-' }}</strong>
                     </td>
                     <td role="cell">
                         {{ $item->tahunAjaran->tahun ?? '-' }}
@@ -296,8 +294,9 @@
                         <div style="display: flex; gap: 6px; justify-content: center;">
                             <a href="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $item->id_matapelajaran, 'id_tahunAjaran' => $item->id_tahunAjaran]) }}" 
                                class="btn btn-sm btn-info"
-                               aria-label="Lihat detail nilai kesantrian">
-                                Lihat Detail
+                               title="Input Nilai"
+                               aria-label="Input nilai kesantrian">
+                                <i class="bi bi-pencil-fill"></i> Input Nilai
                             </a>
                             <button class="btn btn-sm btn-warning" 
                                     data-bs-toggle="modal" 
@@ -459,21 +458,6 @@
 </div>
 
 <script>
-    // ===== FILTER STATE MANAGEMENT =====
-    function saveFilterAndSubmit() {
-        const selectedFilter = document.getElementById('filterSelect').value;
-        sessionStorage.setItem('nilaiKesantrianFilter', selectedFilter);
-        document.getElementById('filterForm').submit();
-    }
-
-    // Restore filter on page load
-    window.addEventListener('load', function() {
-        const savedFilter = sessionStorage.getItem('nilaiKesantrianFilter');
-        if (savedFilter !== null) {
-            document.getElementById('filterSelect').value = savedFilter;
-        }
-    });
-
     // ===== EDIT MATA PELAJARAN MODAL =====
     const editMapelModal = document.getElementById('editMapelKesantrianModal');
     editMapelModal.addEventListener('show.bs.modal', event => {

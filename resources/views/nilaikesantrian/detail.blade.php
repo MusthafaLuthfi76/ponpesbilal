@@ -6,7 +6,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
 
 <style>
     :root {
@@ -16,6 +15,13 @@
         --border-color: #dee2e6;
         --text-color: #212529;
         --bg-light: #f8f9fa;
+        --uts-color: #0d6efd;
+        --uas-color: #6f42c1;
+        --grade-a: #28a745;
+        --grade-b: #ffc107;
+        --grade-c: #dc3545;
+        --grade-d: #0d6efd;
+        --grade-e: #6c757d;
     }
 
     body {
@@ -63,25 +69,6 @@
         border: 1px solid var(--primary-color);
         border-radius: 5px;
         background: white;
-    }
-
-    .assign-btn-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.2s;
-        padding: 10px 16px;
-        border: 1px solid var(--primary-color);
-        border-radius: 8px;
-        background: var(--primary-color);
-    }
-
-    .assign-btn-primary:hover {
-        background-color: #1e7e34;
-        color: white;
     }
 
     .back-btn:hover {
@@ -167,6 +154,37 @@
         padding: 0;
     }
 
+    /* Periode Banner */
+    .periode-banner {
+        background: linear-gradient(135deg, var(--uts-color) 0%, #0b5ed7 100%);
+        color: white;
+        padding: 15px 20px;
+        margin: 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .periode-banner.uas-banner {
+        background: linear-gradient(135deg, var(--uas-color) 0%, #5a32a3 100%);
+    }
+
+    .periode-banner i {
+        font-size: 1.8rem;
+    }
+
+    .periode-banner h5 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .periode-banner p {
+        margin: 5px 0 0 0;
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
     /* Sub Pills Navigation */
     .nav-pills {
         padding: 15px 15px 0;
@@ -192,6 +210,58 @@
     .nav-pills .nav-link.active {
         background-color: var(--primary-color);
         color: white;
+    }
+
+    /* Grade Legend */
+    .grade-legend {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 10px 15px;
+        padding: 10px;
+        background-color: var(--bg-light);
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+    }
+
+    .grade-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .grade-badge {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 12px;
+    }
+
+    .grade-a-badge {
+        background-color: var(--grade-a);
+    }
+
+    .grade-b-badge {
+        background-color: var(--grade-b);
+    }
+
+    .grade-c-badge {
+        background-color: var(--grade-c);
+    }
+
+    .grade-d-badge {
+        background-color: var(--grade-d);
+    }
+
+    .grade-e-badge {
+        background-color: var(--grade-e);
     }
 
     /* Table Styling */
@@ -236,21 +306,74 @@
     }
 
     .nilai-input-kesantrian {
-        width: 80px;
-        padding: 8px;
+        width: 70px;
+        padding: 10px;
         border: 2px solid var(--border-color);
-        border-radius: 5px;
+        border-radius: 8px;
         text-align: center;
         text-transform: uppercase;
-        font-weight: 600;
-        font-size: 14px;
+        font-weight: bold;
+        font-size: 16px;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.2s;
     }
 
     .nilai-input-kesantrian:focus {
-        border-color: var(--primary-color);
         outline: none;
         box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
-        background-color: #fff;
+        transform: scale(1.05);
+    }
+
+    /* Style untuk nilai A */
+    .nilai-a {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: var(--grade-a);
+        border-color: var(--grade-a);
+    }
+
+    /* Style untuk nilai B */
+    .nilai-b {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: var(--grade-b);
+        border-color: var(--grade-b);
+    }
+
+    /* Style untuk nilai C */
+    .nilai-c {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: var(--grade-c);
+        border-color: var(--grade-c);
+    }
+
+    /* Style untuk nilai D */
+    .nilai-d {
+        background-color: rgba(13, 110, 253, 0.1);
+        color: var(--grade-d);
+        border-color: var(--grade-d);
+    }
+
+    /* Style untuk nilai E */
+    .nilai-e {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: var(--grade-e);
+        border-color: var(--grade-e);
+    }
+
+    /* Placeholder style */
+    .nilai-input-kesantrian::placeholder {
+        color: #adb5bd;
+        font-weight: normal;
+        text-transform: none;
+        font-size: 14px;
+    }
+
+    .uts-input {
+        border-left: 4px solid var(--uts-color);
+    }
+
+    .uas-input {
+        border-left: 4px solid var(--uas-color);
     }
 
     .action-btn {
@@ -299,6 +422,22 @@
         transform: translateY(-1px);
     }
 
+    .uts-btn {
+        background-color: var(--uts-color);
+    }
+
+    .uts-btn:hover {
+        background-color: #0b5ed7;
+    }
+
+    .uas-btn {
+        background-color: var(--uas-color);
+    }
+
+    .uas-btn:hover {
+        background-color: #5a32a3;
+    }
+
     /* Assign Santri Section */
     .assign-section {
         padding: 20px;
@@ -331,6 +470,20 @@
 
     .santri-assign-item:last-child {
         border-bottom: none;
+    }
+
+    /* Nilai Guide */
+    .nilai-guide {
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 12px;
+        color: #6c757d;
+        text-align: center;
+    }
+
+    .nilai-guide span {
+        margin: 0 10px;
     }
 
     /* Mobile Responsive */
@@ -395,6 +548,15 @@
             border-radius: 0;
         }
 
+        .periode-banner {
+            margin: 10px;
+            padding: 12px 15px;
+        }
+
+        .periode-banner i {
+            font-size: 1.5rem;
+        }
+
         .nav-pills {
             padding: 10px;
             flex-wrap: nowrap;
@@ -405,6 +567,13 @@
             font-size: 12px;
             padding: 6px 12px;
             white-space: nowrap;
+        }
+
+        .grade-legend {
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px;
+            padding: 8px;
         }
 
         .table-responsive-nilai {
@@ -423,9 +592,9 @@
         }
 
         .nilai-input-kesantrian {
-            width: 45px;
-            font-size: 12px;
-            padding: 4px;
+            width: 50px;
+            font-size: 14px;
+            padding: 6px;
         }
 
         .action-btn {
@@ -439,7 +608,7 @@
             right: 12px;
             z-index: 200;
             border-radius: 30px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
             padding: 12px 20px;
         }
 
@@ -451,384 +620,688 @@
 
 @section('content')
 
-<div class="container-wrapper">
-    
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-header-left">
-            <h4>
-                <i class="fas fa-edit"></i> Input Nilai Kesantrian
-            </h4>
-        </div>
-        <div class="d-flex flex-wrap gap-2">
-            <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $mapel->id_tahunAjaran]) }}" class="back-btn">
+    <div class="container-wrapper">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-left">
+                <h4>
+                    <i class="fas fa-edit"></i> Input Nilai Kesantrian
+                </h4>
+            </div>
+            <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}"
+                class="back-btn">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
-            <button type="button" class="assign-btn-primary" id="openAssignTab">
-                <i class="bi bi-person-plus"></i> Tambah Santri
-            </button>
         </div>
-    </div>
 
-    <!-- Mapel Info Card -->
-    <div class="mapel-info-card">
-        <div class="mapel-info-header">
-            <div class="mapel-icon">
-                <i class="fas fa-mosque"></i>
-            </div>
-            <div class="mapel-details">
-                <h5>{{ $mapel->nama_matapelajaran }}</h5>
-                <p><i class="fas fa-calendar-alt me-2"></i>Tahun Ajaran: {{ $tahunAjaran->tahun }} - Semester {{ strtoupper($tahunAjaran->semester) }}</p>
-                <p><i class="fas fa-chalkboard-teacher me-2"></i>Pendidik: {{ $mapel->pendidik->nama ?? '-' }}</p>
-            </div>
-        </div>
-    </div>
-
-    {{-- Notifikasi --}}
-    @if(session('success'))
-        <div class="alert alert-success mx-3">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger mx-3">{{ session('error') }}</div>
-    @endif
-    @if ($errors->any())
-        <div class="alert alert-danger mx-3">
-            <h6>Terdapat Kesalahan Input:</h6>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    {{-- Tabs Navigasi Utama --}}
-    <ul class="nav nav-tabs" id="nilaiTabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="input-tab" data-bs-toggle="tab" href="#inputNilai" role="tab">
-                <i class="bi bi-pencil-square"></i> Input Nilai ({{ $nilaiSantri->count() }})
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="assign-tab" data-bs-toggle="tab" href="#assignSantri" role="tab">
-                <i class="bi bi-person-plus"></i> Assign Santri ({{ $santriBelumAssign->count() }})
-            </a>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        
-        {{-- TAB 1: INPUT NILAI --}}
-        <div class="tab-pane fade show active" id="inputNilai" role="tabpanel">
-            
-            {{-- SUB-TAB NAVIGATION --}}
-            <ul class="nav nav-pills nav-fill" id="subNilaiTabs" role="tablist">
-                <li class="nav-item">
-                    <button class="nav-link active" id="akhlak-tab" data-bs-toggle="pill" data-bs-target="#akhlak" type="button">
-                        <i class="bi bi-heart-fill"></i> Akhlak
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="ibadah-tab" data-bs-toggle="pill" data-bs-target="#ibadah" type="button">
-                        <i class="bi bi-book"></i> Ibadah
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="kerapian-tab" data-bs-toggle="pill" data-bs-target="#kerapian" type="button">
-                        <i class="bi bi-scissors"></i> Kerapian
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="kedisiplinan-tab" data-bs-toggle="pill" data-bs-target="#kedisiplinan" type="button">
-                        <i class="bi bi-clock"></i> Kedisiplinan
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="ekstrakulikuler-tab" data-bs-toggle="pill" data-bs-target="#ekstrakulikuler" type="button">
-                        <i class="bi bi-activity"></i> Ekstra
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="buku_pegangan-tab" data-bs-toggle="pill" data-bs-target="#buku_pegangan" type="button">
-                        <i class="bi bi-journal-check"></i> Buku Pegangan
-                    </button>
-                </li>
-            </ul>
-
-            @if($nilaiSantri->isEmpty())
-                <div class="alert alert-warning m-3">
-                    Belum ada santri yang di-assign untuk mata pelajaran ini. Silakan pindah ke tab "Assign Santri".
+        <!-- Mapel Info Card -->
+        <div class="mapel-info-card">
+            <div class="mapel-info-header">
+                <div class="mapel-icon">
+                    <i class="fas fa-mosque"></i>
                 </div>
-            @else
-                <form action="{{ route('nilaikesantrian.update.massal') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="id_matapelajaran" value="{{ $mapel->id_matapelajaran }}">
-                    <input type="hidden" name="id_tahunAjaran" value="{{ $tahunAjaran->id_tahunAjaran }}">
-                    
-                    {{-- SUB-TAB CONTENT --}}
-                    <div class="tab-content" id="subNilaiTabsContent">
-                        
-@php
-    $categories = [
-        'akhlak' => ['title' => 'Akhlak', 'icon' => 'bi bi-heart-fill'],
-        'ibadah' => ['title' => 'Ibadah', 'icon' => 'bi bi-book'],
-        'kerapian' => ['title' => 'Kerapian', 'icon' => 'bi bi-scissors'],
-        'kedisiplinan' => ['title' => 'Kedisiplinan', 'icon' => 'bi bi-clock'],
-        'ekstrakulikuler' => ['title' => 'Ekstra', 'icon' => 'bi bi-activity'],
-        'buku_pegangan' => ['title' => 'Buku Pegangan', 'icon' => 'bi bi-journal-check']
-    ];
-@endphp
-
-@foreach($categories as $key => $category)
-<div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $key }}" role="tabpanel">
-    <div class="table-responsive-nilai">
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th style="width: 20px;">#</th>
-                    <th class="d-none d-md-table-cell" style="width: 75px;">NIS</th>
-                    <th style="text-align: left;">Nama Santri</th>
-                    <th style="width: 120px;">Nilai {{ $category['title'] }}</th>
-                    <th style="width: 50px;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($nilaiSantri as $nilai)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td class="d-none d-md-table-cell"><small>{{ $nilai->santri->nis ?? 'N/A' }}</small></td>
-                        <td style="text-align: left;">
-                            <div class="d-flex align-items-center gap-2">
-                                <strong>{{ $nilai->santri->nama ?? 'N/A' }}</strong>
-                                @php
-                                    $sudahDinilai = !empty($nilai->{'nilai_' . $key});
-                                @endphp
-                                <span class="badge {{ $sudahDinilai ? 'bg-success' : 'bg-secondary' }}">
-                                    {{ $sudahDinilai ? 'Sudah dinilai' : 'Belum dinilai' }}
-                                </span>
-                            </div>
-                            <small class="text-muted d-block d-md-none">NIS: {{ $nilai->santri->nis ?? 'N/A' }}</small>
-                        </td>
-                        <td>
-                            <input type="text" 
-                                   name="nilai[{{ $nilai->id_nilai_kesantrian }}][nilai_{{ $key }}]" 
-                                   value="{{ old('nilai.' . $nilai->id_nilai_kesantrian . '.nilai_' . $key, $nilai->{'nilai_' . $key}) }}" 
-                                   class="nilai-input-kesantrian" 
-                                   maxlength="1"
-                                   placeholder="A/B/C"
-                                   oninput="validateNilaiKesantrian(this)">
-                        </td>
-                        <td>
-                            <button type="button" class="action-btn" 
-                                    title="Un-assign Santri"
-                                    onclick="confirmDelete('{{ $nilai->santri->nama ?? $nilai->nis }}', '{{ $nilai->id_nilai_kesantrian }}')">
-                                <i class="bi bi-x"></i>
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-@endforeach
-                        
-                    </div>
-                    
-                    <div class="save-btn-wrapper">
-                        <button type="submit" class="save-btn">
-                            <i class="fas fa-save"></i> Simpan Semua Nilai
-                        </button>
-                    </div>
-                </form>
-            @endif
+                <div class="mapel-details">
+                    <h5>{{ $mapel->nama_matapelajaran }}</h5>
+                    <p><i class="fas fa-calendar-alt me-2"></i>Tahun Ajaran: {{ $tahunAjaran->tahun }} - Semester
+                        {{ strtoupper($tahunAjaran->semester) }}</p>
+                    <p><i class="fas fa-chalkboard-teacher me-2"></i>Pendidik: {{ $mapel->pendidik->nama ?? '-' }}</p>
+                </div>
+            </div>
         </div>
 
-        {{-- TAB 2: ASSIGN SANTRI --}}
-        <div class="tab-pane fade" id="assignSantri" role="tabpanel">
-            <div class="assign-section">
-                <h5 class="mb-3"><i class="bi bi-person-plus"></i> Pilih Santri yang Belum Di-assign</h5>
+        {{-- Notifikasi --}}
+        @if (session('success'))
+            <div class="alert alert-success mx-3">{{ session('success') }}</div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger mx-3">{{ session('error') }}</div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger mx-3">
+                <h6>Terdapat Kesalahan Input:</h6>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-                {{-- Form Assign Santri - Single searchable multi-select --}}
-                <form action="{{ route('nilaikesantrian.assign.store', ['id_matapelajaran' => $mapel->id_matapelajaran, 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}" method="POST">
-                    @csrf
+        {{-- Tabs Navigasi Utama --}}
+        <ul class="nav nav-tabs" id="nilaiTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link {{ $activeTab == 'uts' ? 'active' : '' }}" id="uts-tab" data-bs-toggle="tab"
+                    href="#utsNilai" role="tab">
+                    <i class="bi bi-file-earmark-text"></i> Input Nilai UTS
+                    <span class="badge bg-primary">{{ $nilaiSantri->count() }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ $activeTab == 'uas' ? 'active' : '' }}" id="uas-tab" data-bs-toggle="tab"
+                    href="#uasNilai" role="tab">
+                    <i class="bi bi-file-earmark-text-fill"></i> Input Nilai UAS
+                    <span class="badge bg-purple">{{ $nilaiSantri->count() }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ $activeTab == 'assign' ? 'active' : '' }}" id="assign-tab" data-bs-toggle="tab"
+                    href="#assignSantri" role="tab">
+                    <i class="bi bi-person-plus"></i> Assign Santri
+                    <span class="badge bg-success">{{ $santriBelumAssign->count() }}</span>
+                </a>
+            </li>
+        </ul>
 
-                    @if($santriBelumAssign->isEmpty())
-                        <div class="alert alert-success m-0">
-                            <i class="bi bi-check-circle"></i> Semua santri sudah di-assign ke mata pelajaran ini.
+        <div class="tab-content">
+
+            {{-- TAB 1: INPUT NILAI UTS --}}
+            <div class="tab-pane fade {{ $activeTab == 'uts' ? 'show active' : '' }}" id="utsNilai" role="tabpanel">
+                @if ($nilaiSantri->isEmpty())
+                    <div class="alert alert-warning m-3">
+                        Belum ada santri yang di-assign untuk mata pelajaran ini. Silakan pindah ke tab "Assign Santri".
+                    </div>
+                @else
+                    <form action="{{ route('nilaikesantrian.update.massal') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="periode" value="uts">
+
+                        <div class="periode-banner">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <div>
+                                <h5>Input Nilai UTS</h5>
+                                <p>Silakan input nilai untuk setiap komponen kesantrian</p>
+                            </div>
                         </div>
-                    @else
-                        <div class="mb-3">
-                            <label for="santri_select" class="form-label fw-semibold">Pilih Santri (search untuk memfilter)</label>
-                            <select id="santri_select" name="nis[]" multiple class="form-select" placeholder="Ketik nama/NIS untuk mencari...">
-                                @foreach($santriBelumAssign as $santri)
-                                    <option value="{{ $santri->nis }}">
-                                        {{ $santri->nama }} ({{ $santri->nis }}) • Angkatan {{ $santri->angkatan }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="form-text">Anda dapat memilih lebih dari satu santri.</div>
+
+                        {{-- Legend Nilai --}}
+                        <div class="grade-legend">
+                            <div class="grade-item">
+                                <span class="grade-badge grade-a-badge">A</span>
+                                <span>Mumtaz</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-badge grade-b-badge">B</span>
+                                <span>Jayyid Jiddan</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-badge grade-c-badge">C</span>
+                                <span>Jayyid</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-badge grade-d-badge">D</span>
+                                <span>Maqbul</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-badge grade-e-badge">E</span>
+                                <span>Dha'if</span>
+                            </div>
                         </div>
 
-                        <button type="submit" id="btnTambahSantri" class="btn btn-success w-100">
-                            Tambah Santri
-                        </button>
-                    @endif
-                </form>
+                        {{-- Nilai Guide --}}
+                        <div class="nilai-guide">
+                            <strong>Petunjuk:</strong> Masukkan nilai <span class="text-success"><strong>A,
+                                    A-</strong></span>,
+                            <span class="text-warning"><strong>B+, B, B-</strong></span>,
+                            <span class="text-danger"><strong>C+, C, C-</strong></span>,
+                            <span class="text-primary"><strong>D</strong></span>, atau
+                            <span class="text-secondary"><strong>E</strong></span>
+                        </div>
+
+                        {{-- SUB-TAB NAVIGATION untuk komponen nilai --}}
+                        <ul class="nav nav-pills nav-fill" id="utsNilaiTabs" role="tablist">
+                            @php
+                                $komponenNilai = [
+                                    'akhlak' => ['icon' => 'bi-heart-fill', 'title' => 'Akhlak'],
+                                    'ibadah' => ['icon' => 'bi-book', 'title' => 'Ibadah'],
+                                    'kerapian' => ['icon' => 'bi-scissors', 'title' => 'Kerapian'],
+                                    'kedisiplinan' => ['icon' => 'bi-clock', 'title' => 'Kedisiplinan'],
+                                    'ekstrakulikuler' => ['icon' => 'bi-activity', 'title' => 'Ekstrakulikuler'],
+                                    'buku_pegangan' => ['icon' => 'bi-journal-check', 'title' => 'Buku Pegangan'],
+                                ];
+                            @endphp
+
+                            @foreach ($komponenNilai as $key => $komponen)
+                                <li class="nav-item">
+                                    <button class="nav-link {{ $loop->first ? 'active' : '' }}"
+                                        id="{{ $key }}-uts-tab" data-bs-toggle="pill"
+                                        data-bs-target="#{{ $key }}-uts" type="button">
+                                        <i class="bi {{ $komponen['icon'] }}"></i> {{ $komponen['title'] }}
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        {{-- SUB-TAB CONTENT untuk komponen nilai --}}
+                        <div class="tab-content" id="utsNilaiTabsContent">
+                            @foreach ($komponenNilai as $key => $komponen)
+                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                    id="{{ $key }}-uts" role="tabpanel">
+
+                                    <div class="table-responsive-nilai">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 20px;">#</th>
+                                                    <th class="d-none d-md-table-cell" style="width: 75px;">NIS</th>
+                                                    <th style="text-align: left;">Nama Santri</th>
+                                                    <th style="width: 120px;">
+                                                        Nilai {{ $komponen['title'] }}
+                                                        <small class="d-block text-muted">(A/B/C/D/E)</small>
+                                                    </th>
+                                                    <th style="width: 50px;">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($nilaiSantri as $nilai)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td class="d-none d-md-table-cell">
+                                                            <small>{{ $nilai->santri->nis ?? 'N/A' }}</small>
+                                                        </td>
+                                                        <td style="text-align: left;">
+                                                            <strong>{{ $nilai->santri->nama ?? 'N/A' }}</strong>
+                                                            <small class="text-muted d-block d-md-none">NIS:
+                                                                {{ $nilai->santri->nis ?? 'N/A' }}</small>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text"
+                                                                name="nilai[{{ $nilai->id_nilai_kesantrian }}][{{ $key }}]"
+                                                                value="{{ old('nilai.' . $nilai->id_nilai_kesantrian . '.' . $key, $nilai->{$key . '_uts'}) }}"
+                                                                class="nilai-input-kesantrian uts-input nilai-input-{{ $nilai->id_nilai_kesantrian }}-{{ $key }}-uts"
+                                                                data-id="{{ $nilai->id_nilai_kesantrian }}"
+                                                                data-komponen="{{ $key }}" data-periode="uts"
+                                                                maxlength="2" placeholder="A/B/C/D/E"
+                                                                onkeyup="validateNilaiInput(this)"
+                                                                onchange="updateNilaiStyle(this)">
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="action-btn"
+                                                                title="Un-assign Santri"
+                                                                onclick="confirmDelete('{{ $nilai->santri->nama ?? $nilai->nis }}', '{{ $nilai->id_nilai_kesantrian }}')">
+                                                                <i class="bi bi-x"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="save-btn-wrapper">
+                            <button type="submit" class="save-btn uts-btn">
+                                <i class="fas fa-save"></i> Simpan Semua Nilai UTS
+                            </button>
+                        </div>
+                    </form>
+                @endif
+            </div>
+
+            {{-- TAB 2: INPUT NILAI UAS --}}
+            <div class="tab-pane fade {{ $activeTab == 'uas' ? 'show active' : '' }}" id="uasNilai" role="tabpanel">
+                @if ($nilaiSantri->isEmpty())
+                    <div class="alert alert-warning m-3">
+                        Belum ada santri yang di-assign untuk mata pelajaran ini. Silakan pindah ke tab "Assign Santri".
+                    </div>
+                @else
+                    <form action="{{ route('nilaikesantrian.update.massal') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="periode" value="uas">
+
+                        <div class="periode-banner uas-banner">
+                            <i class="bi bi-file-earmark-text-fill"></i>
+                            <div>
+                                <h5>Input Nilai UAS</h5>
+                                <p>Silakan input nilai untuk setiap komponen kesantrian</p>
+                            </div>
+                        </div>
+
+                        {{-- Legend Nilai --}}
+                        <div class="grade-legend">
+                            <div class="grade-item">
+                                <span class="grade-badge grade-a-badge">A</span>
+                                <span>Mumtaz</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-badge grade-b-badge">B</span>
+                                <span>Jayyid Jiddan</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-badge grade-c-badge">C</span>
+                                <span>Jayyid</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-badge grade-d-badge">D</span>
+                                <span>Maqbul</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-badge grade-e-badge">E</span>
+                                <span>Dha'if</span>
+                            </div>
+                        </div>
+
+                        {{-- Nilai Guide --}}
+                        <div class="nilai-guide">
+                            <strong>Petunjuk:</strong> Masukkan nilai <span class="text-success"><strong>A,
+                                    A-</strong></span>,
+                            <span class="text-warning"><strong>B+, B, B-</strong></span>,
+                            <span class="text-danger"><strong>C+, C, C-</strong></span>,
+                            <span class="text-primary"><strong>D</strong></span>, atau
+                            <span class="text-secondary"><strong>E</strong></span>
+                        </div>
+
+                        {{-- SUB-TAB NAVIGATION untuk komponen nilai --}}
+                        <ul class="nav nav-pills nav-fill" id="uasNilaiTabs" role="tablist">
+                            @php
+                                $komponenNilai = [
+                                    'akhlak' => ['icon' => 'bi-heart-fill', 'title' => 'Akhlak'],
+                                    'ibadah' => ['icon' => 'bi-book', 'title' => 'Ibadah'],
+                                    'kerapian' => ['icon' => 'bi-scissors', 'title' => 'Kerapian'],
+                                    'kedisiplinan' => ['icon' => 'bi-clock', 'title' => 'Kedisiplinan'],
+                                    'ekstrakulikuler' => ['icon' => 'bi-activity', 'title' => 'Ekstrakulikuler'],
+                                    'buku_pegangan' => ['icon' => 'bi-journal-check', 'title' => 'Buku Pegangan'],
+                                ];
+                            @endphp
+
+                            @foreach ($komponenNilai as $key => $komponen)
+                                <li class="nav-item">
+                                    <button class="nav-link {{ $loop->first ? 'active' : '' }}"
+                                        id="{{ $key }}-uas-tab" data-bs-toggle="pill"
+                                        data-bs-target="#{{ $key }}-uas" type="button">
+                                        <i class="bi {{ $komponen['icon'] }}"></i> {{ $komponen['title'] }}
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        {{-- SUB-TAB CONTENT untuk komponen nilai --}}
+                        <div class="tab-content" id="uasNilaiTabsContent">
+                            @foreach ($komponenNilai as $key => $komponen)
+                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                    id="{{ $key }}-uas" role="tabpanel">
+
+                                    <div class="table-responsive-nilai">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 20px;">#</th>
+                                                    <th class="d-none d-md-table-cell" style="width: 75px;">NIS</th>
+                                                    <th style="text-align: left;">Nama Santri</th>
+                                                    <th style="width: 120px;">
+                                                        Nilai {{ $komponen['title'] }}
+                                                        <small class="d-block text-muted">(A/B/C/D/E)</small>
+                                                    </th>
+                                                    <th style="width: 50px;">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($nilaiSantri as $nilai)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td class="d-none d-md-table-cell">
+                                                            <small>{{ $nilai->santri->nis ?? 'N/A' }}</small>
+                                                        </td>
+                                                        <td style="text-align: left;">
+                                                            <strong>{{ $nilai->santri->nama ?? 'N/A' }}</strong>
+                                                            <small class="text-muted d-block d-md-none">NIS:
+                                                                {{ $nilai->santri->nis ?? 'N/A' }}</small>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text"
+                                                                name="nilai[{{ $nilai->id_nilai_kesantrian }}][{{ $key }}]"
+                                                                value="{{ old('nilai.' . $nilai->id_nilai_kesantrian . '.' . $key, $nilai->{$key . '_uas'}) }}"
+                                                                class="nilai-input-kesantrian uas-input nilai-input-{{ $nilai->id_nilai_kesantrian }}-{{ $key }}-uas"
+                                                                data-id="{{ $nilai->id_nilai_kesantrian }}"
+                                                                data-komponen="{{ $key }}" data-periode="uas"
+                                                                maxlength="2" placeholder="A/B/C/D/E"
+                                                                onkeyup="validateNilaiInput(this)"
+                                                                onchange="updateNilaiStyle(this)">
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="action-btn"
+                                                                title="Un-assign Santri"
+                                                                onclick="confirmDelete('{{ $nilai->santri->nama ?? $nilai->nis }}', '{{ $nilai->id_nilai_kesantrian }}')">
+                                                                <i class="bi bi-x"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="save-btn-wrapper">
+                            <button type="submit" class="save-btn uas-btn">
+                                <i class="fas fa-save"></i> Simpan Semua Nilai UAS
+                            </button>
+                        </div>
+                    </form>
+                @endif
+            </div>
+
+            {{-- TAB 3: ASSIGN SANTRI --}}
+            <div class="tab-pane fade {{ $activeTab == 'assign' ? 'show active' : '' }}" id="assignSantri"
+                role="tabpanel">
+                <div class="assign-section">
+                    <h5 class="mb-3"><i class="bi bi-person-plus"></i> Pilih Santri yang Belum Di-assign</h5>
+
+                    {{-- Form Filter --}}
+                    <div class="filter-section">
+                        <form method="GET"
+                            action="{{ route('nilaikesantrian.show', [
+                                'id_matapelajaran' => $mapel->id_matapelajaran,
+                                'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran,
+                            ]) }}"
+                            class="row g-2">
+                            <input type="hidden" name="tab" value="assign">
+
+                            <div class="col-md-3">
+                                <label class="form-label">Angkatan:</label>
+                                <select name="angkatan" class="form-select" onchange="this.form.submit()">
+                                    <option value="">Semua</option>
+                                    @foreach ($angkatanList as $angkatan)
+                                        <option value="{{ $angkatan }}"
+                                            {{ request('angkatan') == $angkatan ? 'selected' : '' }}>{{ $angkatan }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cari Nama:</label>
+                                <div class="input-group">
+                                    <input type="text" name="search_nama" value="{{ request('search_nama') }}"
+                                        class="form-control" placeholder="Cari nama santri...">
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="bi bi-search"></i> Cari
+                                    </button>
+                                </div>
+                            </div>
+
+                            @if (request('angkatan') || request('search_nama'))
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <a href="{{ route('nilaikesantrian.show', [
+                                        'id_matapelajaran' => $mapel->id_matapelajaran,
+                                        'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran,
+                                        'tab' => 'assign',
+                                    ]) }}"
+                                        class="btn btn-outline-danger w-100">
+                                        <i class="bi bi-x-circle"></i> Reset
+                                    </a>
+                                </div>
+                            @endif
+                        </form>
+                    </div>
+
+                    {{-- Form Assign Santri --}}
+                    <form
+                        action="{{ route('nilaikesantrian.assign.store', [
+                            'id_matapelajaran' => $mapel->id_matapelajaran,
+                            'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran,
+                        ]) }}"
+                        method="POST">
+                        @csrf
+
+                        <div class="santri-assign-list">
+                            @forelse($santriBelumAssign as $santri)
+                                <label class="santri-assign-item d-flex align-items-center"
+                                    for="santri-{{ $santri->nis }}">
+                                    <input class="form-check-input me-3" type="checkbox" name="nis[]"
+                                        value="{{ $santri->nis }}" id="santri-{{ $santri->nis }}">
+                                    <div class="flex-grow-1">
+                                        <strong class="text-success">{{ $santri->nama }}</strong>
+                                        <small class="text-muted d-block">NIS: {{ $santri->nis }} • Angkatan:
+                                            {{ $santri->angkatan }}</small>
+                                    </div>
+                                </label>
+                            @empty
+                                <div class="alert alert-success m-3">
+                                    <i class="bi bi-check-circle"></i> Semua santri sudah di-assign ke mata pelajaran ini.
+                                </div>
+                            @endforelse
+                        </div>
+
+                        @if ($santriBelumAssign->isNotEmpty())
+                            <button type="submit" class="btn btn-success mt-3 w-100">
+                                <i class="bi bi-plus-circle"></i> Assign Santri Terpilih
+                                ({{ $santriBelumAssign->count() }})
+                            </button>
+                        @endif
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-{{-- HIDDEN FORM UNTUK DELETE (UN-ASSIGN) SANTRI --}}
-<form id="delete-form" method="POST" style="display: none;">
-    @csrf
-    @method('DELETE')
-</form>
+    {{-- HIDDEN FORM UNTUK DELETE (UN-ASSIGN) SANTRI --}}
+    <form id="delete-form" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
 
-<script>
-    // ===== VALIDASI NILAI KESANTRIAN A-E UPPERCASE =====
-    function validateNilaiKesantrian(el) {
-        let val = el.value.toUpperCase();
-        // Hanya terima A, B, C, D, E
-        if (val && !/^[A-E]$/.test(val)) {
-            el.value = '';
-            alert('Hanya nilai A, B, C, D, atau E yang diperbolehkan');
-            return;
-        }
-        el.value = val;
-    }
+    <script>
+        function validateNilaiInput(input) {
+            // Mengonversi input ke huruf besar
+            input.value = input.value.toUpperCase();
 
-    function confirmDelete(nama, id_nilai_kesantrian) {
-        if (confirm(`Yakin ingin MENGHAPUS (Un-assign) santri atas nama ${nama} dari mata pelajaran ini?`)) {
-            const form = document.getElementById('delete-form');
-            form.action = `/nilai-kesantrian/unassign/${id_nilai_kesantrian}`; 
-            form.submit();
-        }
-    }
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
+            // Pola validasi yang lebih fleksibel untuk nilai kesantrian
+            // Format yang valid: A, A-, A+, B, B-, B+, C, C-, C+, D, E
+            // Juga menerima input kosong
+            const nilai = input.value;
 
-        // Shortcut button to open assign tab
-        const openAssignBtn = document.getElementById('openAssignTab');
-        if (openAssignBtn) {
-            openAssignBtn.addEventListener('click', function() {
-                const assignTabEl = document.getElementById('assign-tab');
-                if (assignTabEl) {
-                    new bootstrap.Tab(assignTabEl).show();
-                    const newUrl = new URL(window.location.href);
-                    newUrl.searchParams.set('tab', 'assign');
-                    window.history.pushState({path: newUrl.href}, '', newUrl.href);
-                }
-                document.getElementById('assignSantri')?.scrollIntoView({behavior: 'smooth'});
-            });
-        }
-        
-        // Tab utama
-        const activeTabParam = urlParams.get('tab');
-        if (activeTabParam === 'assign') {
-            const assignTabEl = document.getElementById('assign-tab');
-            if (assignTabEl) {
-                const assignTab = new bootstrap.Tab(assignTabEl);
-                assignTab.show();
-            }
-        }
-
-        const tabTriggers = document.querySelectorAll('#nilaiTabs a[data-bs-toggle="tab"]');
-        tabTriggers.forEach(function(trigger) {
-            trigger.addEventListener('shown.bs.tab', function (event) {
-                const newUrl = new URL(window.location.href);
-                const tabId = event.target.getAttribute('href').substring(1);
-
-                if (tabId === 'assignSantri') {
-                    newUrl.searchParams.set('tab', 'assign');
-                } else {
-                    newUrl.searchParams.delete('tab');
-                }
-                if (tabId !== 'inputNilai') {
-                     newUrl.searchParams.delete('sub_tab');
-                }
-                window.history.pushState({path: newUrl.href}, '', newUrl.href);
-            });
-        });
-        
-        // Sub-tabs
-        const activeSubTabParam = urlParams.get('sub_tab');
-        if (activeSubTabParam) {
-            const subTabEl = document.getElementById(activeSubTabParam + '-tab');
-            if (subTabEl) {
-                const inputTabEl = document.getElementById('input-tab');
-                if (inputTabEl && !inputTabEl.classList.contains('active')) {
-                    new bootstrap.Tab(inputTabEl).show();
-                }
-                const subTab = new bootstrap.Tab(subTabEl);
-                subTab.show();
-            }
-        }
-        
-        const subTabTriggers = document.querySelectorAll('#subNilaiTabs button[data-bs-toggle="pill"]');
-        subTabTriggers.forEach(function(trigger) {
-            trigger.addEventListener('shown.bs.tab', function (event) {
-                const newUrl = new URL(window.location.href);
-                const tabId = event.target.getAttribute('data-bs-target').substring(1); 
-                
-                newUrl.searchParams.set('sub_tab', tabId);
-                newUrl.searchParams.delete('tab');
-                
-                window.history.pushState({path: newUrl.href}, '', newUrl.href);
-            });
-        });
-    });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const selectEl = document.getElementById('santri_select');
-        if (selectEl && window.TomSelect) {
-            const ts = new TomSelect('#santri_select', {
-                plugins: ['remove_button'],
-                maxItems: null,
-                create: false,
-                persist: false,
-                closeAfterSelect: false,
-                placeholder: 'Ketik nama/NIS untuk mencari...',
-                // Custom scoring untuk prefix match saja
-                score: function(search) {
-                    if (!search) return 0;
-                    search = search.toLowerCase();
-                    return function(option) {
-                        let text = option.text.toLowerCase();
-                        // Hanya match jika dimulai dengan search string (prefix match)
-                        if (text.startsWith(search)) {
-                            // Prioritas lebih tinggi jika match di awal nama
-                            let nameMatch = text.match(/^([^(]+)/);
-                            if (nameMatch && nameMatch[1].toLowerCase().trim().startsWith(search)) {
-                                return 2; // Score lebih tinggi untuk nama
-                            }
-                            return 1; // Score untuk NIS atau angkatan
+            // Cek jika input tidak kosong
+            if (nilai !== '') {
+                // Validasi pola
+                if (!/^[A-E][+-]?$/.test(nilai)) {
+                    // Jika tidak valid, reset ke nilai sebelumnya yang valid
+                    // Atau hapus karakter yang tidak valid
+                    const validNilai = nilai.match(/^[A-E][+-]?/);
+                    if (validNilai) {
+                        input.value = validNilai[0];
+                    } else {
+                        // Jika hanya karakter pertama yang valid (A-E), pertahankan
+                        if (/^[A-E]$/.test(nilai.charAt(0))) {
+                            input.value = nilai.charAt(0);
+                        } else {
+                            // Jika tidak valid sama sekali, kosongkan
+                            input.value = '';
                         }
-                        return 0; // Tidak match
-                    };
-                },
-                render: {
-                    option: function(data, escape) {
-                        return `<div>${escape(data.text)}</div>`;
                     }
                 }
+            }
+
+            // Update style berdasarkan nilai
+            updateNilaiStyle(input);
+            return true;
+        }
+
+        function updateNilaiStyle(input) {
+            // Hapus semua kelas nilai sebelumnya
+            input.classList.remove('nilai-a', 'nilai-b', 'nilai-c', 'nilai-d', 'nilai-e');
+
+            // Ambil nilai dan ambil hanya huruf pertama untuk menentukan kategori
+            const nilai = input.value.toUpperCase();
+            const kategori = nilai.charAt(0);
+
+            // Tambahkan kelas sesuai kategori nilai
+            if (kategori === 'A') {
+                input.classList.add('nilai-a');
+            } else if (kategori === 'B') {
+                input.classList.add('nilai-b');
+            } else if (kategori === 'C') {
+                input.classList.add('nilai-c');
+            } else if (kategori === 'D') {
+                input.classList.add('nilai-d');
+            } else if (kategori === 'E') {
+                input.classList.add('nilai-e');
+            }
+        }
+
+        function confirmDelete(nama, id_nilai_kesantrian) {
+            if (confirm(`Yakin ingin MENGHAPUS (Un-assign) santri atas nama ${nama} dari mata pelajaran ini?`)) {
+                const form = document.getElementById('delete-form');
+                form.action = `/nilai-kesantrian/unassign/${id_nilai_kesantrian}`;
+                form.submit();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Handle tab utama switching based on URL parameter
+            const tabParam = urlParams.get('tab');
+            if (tabParam) {
+                const tabEl = document.getElementById(`${tabParam}-tab`);
+                if (tabEl) {
+                    const tab = new bootstrap.Tab(tabEl);
+                    tab.show();
+                }
+            }
+
+            // Update URL when main tab changes
+            const tabTriggers = document.querySelectorAll('#nilaiTabs a[data-bs-toggle="tab"]');
+            tabTriggers.forEach(function(trigger) {
+                trigger.addEventListener('shown.bs.tab', function(event) {
+                    const newUrl = new URL(window.location.href);
+                    const tabId = event.target.getAttribute('id').replace('-tab', '');
+
+                    if (tabId) {
+                        newUrl.searchParams.set('tab', tabId);
+                    } else {
+                        newUrl.searchParams.delete('tab');
+                    }
+
+                    window.history.pushState({
+                        path: newUrl.href
+                    }, '', newUrl.href);
+                });
             });
 
-            const btn = document.getElementById('btnTambahSantri');
-            const updateBtnText = () => {
-                if (!btn) return;
-                const count = ts.items.length;
-                btn.textContent = count > 0 ? `Tambah Santri (${count})` : 'Tambah Santri';
-            };
-            selectEl.addEventListener('change', updateBtnText);
-            updateBtnText();
-        }
-    });
-</script>
+            // Handle sub-tabs untuk UTS
+            const activeSubTabUts = urlParams.get('sub_tab_uts');
+            if (activeSubTabUts) {
+                const subTabEl = document.getElementById(activeSubTabUts + '-uts-tab');
+                if (subTabEl) {
+                    const subTab = new bootstrap.Tab(subTabEl);
+                    subTab.show();
+                }
+            }
+
+            // Handle sub-tabs untuk UAS
+            const activeSubTabUas = urlParams.get('sub_tab_uas');
+            if (activeSubTabUas) {
+                const subTabEl = document.getElementById(activeSubTabUas + '-uas-tab');
+                if (subTabEl) {
+                    const subTab = new bootstrap.Tab(subTabEl);
+                    subTab.show();
+                }
+            }
+
+            // Update URL when sub-tab changes for UTS
+            const utsSubTabTriggers = document.querySelectorAll('#utsNilaiTabs button[data-bs-toggle="pill"]');
+            utsSubTabTriggers.forEach(function(trigger) {
+                trigger.addEventListener('shown.bs.tab', function(event) {
+                    const newUrl = new URL(window.location.href);
+                    const tabId = event.target.getAttribute('id').replace('-uts-tab', '');
+
+                    newUrl.searchParams.set('sub_tab_uts', tabId);
+                    newUrl.searchParams.delete('sub_tab_uas');
+                    newUrl.searchParams.set('tab', 'uts');
+
+                    window.history.pushState({
+                        path: newUrl.href
+                    }, '', newUrl.href);
+                });
+            });
+
+            // Update URL when sub-tab changes for UAS
+            const uasSubTabTriggers = document.querySelectorAll('#uasNilaiTabs button[data-bs-toggle="pill"]');
+            uasSubTabTriggers.forEach(function(trigger) {
+                trigger.addEventListener('shown.bs.tab', function(event) {
+                    const newUrl = new URL(window.location.href);
+                    const tabId = event.target.getAttribute('id').replace('-uas-tab', '');
+
+                    newUrl.searchParams.set('sub_tab_uas', tabId);
+                    newUrl.searchParams.delete('sub_tab_uts');
+                    newUrl.searchParams.set('tab', 'uas');
+
+                    window.history.pushState({
+                        path: newUrl.href
+                    }, '', newUrl.href);
+                });
+            });
+
+            // Apply initial styles to all nilai inputs
+            document.querySelectorAll('.nilai-input-kesantrian').forEach(input => {
+                updateNilaiStyle(input);
+            });
+
+            // Add event listener for Enter key to move to next input
+            document.querySelectorAll('.nilai-input-kesantrian').forEach((input, index, inputs) => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+
+                        // Find the next input in the same table cell column
+                        const currentRow = this.closest('tr');
+                        const currentColumnIndex = Array.from(this.parentNode.parentNode.children)
+                            .indexOf(this.parentNode);
+                        const allRows = currentRow.parentNode.querySelectorAll('tr');
+                        const currentRowIndex = Array.from(allRows).indexOf(currentRow);
+
+                        if (currentRowIndex < allRows.length - 1) {
+                            const nextRow = allRows[currentRowIndex + 1];
+                            const nextInput = nextRow.children[currentColumnIndex].querySelector(
+                                '.nilai-input-kesantrian');
+                            if (nextInput) {
+                                nextInput.focus();
+                                nextInput.select();
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Focus and select text when input is clicked
+            document.querySelectorAll('.nilai-input-kesantrian').forEach(input => {
+                input.addEventListener('click', function() {
+                    this.select();
+                });
+            });
+
+            // Auto-uppercase and validate on input
+            // Auto-uppercase and validate on input
+            document.querySelectorAll('.nilai-input-kesantrian').forEach(input => {
+                input.addEventListener('input', function() {
+                    // Simpan posisi kursor sebelum perubahan
+                    const start = this.selectionStart;
+                    const end = this.selectionEnd;
+
+                    // Konversi ke huruf besar
+                    this.value = this.value.toUpperCase();
+
+                    // Batasi panjang maksimal 2 karakter
+                    if (this.value.length > 2) {
+                        this.value = this.value.slice(0, 2);
+                    }
+
+                    // Validasi input (fungsi yang sudah diperbaiki)
+                    validateNilaiInput(this);
+
+                    // Kembalikan posisi kursor (dengan penyesuaian)
+                    const newLength = this.value.length;
+                    const newStart = Math.min(start, newLength);
+                    const newEnd = Math.min(end, newLength);
+                    this.setSelectionRange(newStart, newEnd);
+                });
+            });
+        });
+    </script>
 
 @endsection

@@ -26,13 +26,17 @@ class NilaiAkademik extends Model
         'nilai_UTS',
         'nilai_UAS',
         'nilai_praktik',
-        'nilai_keaktifan',
-        'jumlah_izin',
-        'jumlah_sakit',
-        'jumlah_ghaib',
         'nilai_rata_rata',
         'predikat',
         'keterangan',
+        // Kolom baru untuk absensi UTS
+        'izin_uts',
+        'sakit_uts',
+        'ghaib_uts',
+        // Kolom baru untuk absensi UAS
+        'izin_uas',
+        'sakit_uas',
+        'ghaib_uas',
     ];
 
     // ============================
@@ -55,5 +59,41 @@ class NilaiAkademik extends Model
     public function tahunAjaran()
     {
         return $this->belongsTo(TahunAjaran::class, 'id_tahunAjaran', 'id_tahunAjaran');
+    }
+
+    // ============================
+    // ⚡ ACCESSOR/MUTATOR
+    // ============================
+
+    /**
+     * Hitung total izin (UTS + UAS)
+     */
+    public function getTotalIzinAttribute()
+    {
+        return ($this->izin_uts ?? 0) + ($this->izin_uas ?? 0);
+    }
+
+    /**
+     * Hitung total sakit (UTS + UAS)
+     */
+    public function getTotalSakitAttribute()
+    {
+        return ($this->sakit_uts ?? 0) + ($this->sakit_uas ?? 0);
+    }
+
+    /**
+     * Hitung total ghaib (UTS + UAS)
+     */
+    public function getTotalGhaibAttribute()
+    {
+        return ($this->ghaib_uts ?? 0) + ($this->ghaib_uas ?? 0);
+    }
+
+    /**
+     * Hitung total absensi (semua jenis)
+     */
+    public function getTotalAbsensiAttribute()
+    {
+        return $this->total_izin + $this->total_sakit + $this->total_ghaib;
     }
 }

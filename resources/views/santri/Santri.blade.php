@@ -41,28 +41,28 @@
 
     /* Search dan Filter */
     .search-filter {
-        display: block; 
-        gap: 10px; 
-        margin-bottom: 15px; 
+        display: block;
+        gap: 10px;
+        margin-bottom: 15px;
     }
-    
+
     .filter-and-add-group {
-        display: flex; 
+        display: flex;
         align-items: center;
         gap: 10px;
-        margin-top: 10px; 
+        margin-top: 10px;
     }
 
     input[type="search"] {
         width: 100%;
-        max-width: none; 
+        max-width: none;
         border: 1px solid #ccc;
         border-radius: 8px;
         padding: 8px 12px;
     }
 
     select.filter {
-        max-width: none; 
+        max-width: none;
         border: 1px solid #ccc;
         border-radius: 8px;
         padding: 8px 12px;
@@ -70,8 +70,8 @@
 
     /* Tombol Tambah Data */
     .btn-add {
-        padding: 8px 10px; 
-        flex-shrink: 0; 
+        padding: 8px 10px;
+        flex-shrink: 0;
         background: var(--btn-green);
         color: white;
         border: none;
@@ -229,14 +229,14 @@
 
     @media (max-width: 900px) {
         .layout { grid-template-columns: 1fr; }
-        
-        .sidebar.toggled { 
+
+        .sidebar.toggled {
             display: block !important; /* Menimpa display: none */
-            position: fixed; 
-            z-index: 1050; 
+            position: fixed;
+            z-index: 1050;
             width: 250px;
             height: 100vh;
-            background-color: white; 
+            background-color: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
     }
@@ -249,7 +249,7 @@
     <input type="search" id="searchInput" placeholder="Search...">
 
     {{-- BARIS 2: Filter & Button (Berdampingan) --}}
-    <div class="filter-and-add-group"> 
+    <div class="filter-and-add-group">
         <select id="filterAngkatan" class="filter">
             <option value="">Semua Angkatan</option>
             @foreach($santri->pluck('angkatan')->unique()->filter() as $angkatan)
@@ -311,13 +311,13 @@
             <form action="{{ route('santri.update', $s->nis) }}" method="POST">
                 @csrf
                 @method('PUT')
-                
+
                 {{-- HEADER KUNING: Sesuai Modal Edit --}}
-                <div class="modal-header bg-warning text-white"> 
+                <div class="modal-header bg-warning text-white">
                     <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Edit Data Santri</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button> 
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                
+
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">NIS</label>
@@ -352,7 +352,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="modal-footer">
                     {{-- Tombol Batal Abu-abu --}}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -372,13 +372,13 @@
     <div class="modal-content border-0 shadow-sm">
       <form action="{{ route('santri.store') }}" method="POST">
         @csrf
-        
+
         {{-- HEADER HIJAU: Sesuai Modal Tambah --}}
         <div class="modal-header bg-success text-white">
           <h5 class="modal-title" id="modalTambahSantriLabel"><i class="bi bi-plus-circle"></i> Tambah Santri</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        
+
         <div class="modal-body">
             <div class="mb-3">
                 <label for="nis" class="form-label">NIS</label>
@@ -411,7 +411,7 @@
                 </select>
             </div>
         </div>
-        
+
         <div class="modal-footer">
           {{-- Tombol Batal Abu-abu --}}
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -422,7 +422,7 @@
     </div>
   </div>
 </div>
-        
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -466,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Pastikan pesan 'Belum ada data santri' tetap terlihat jika tidak ada hasil
         const visibleRows = Array.from(rows).filter(row => row.style.display !== "none" && row.children.length > 1);
         const noDataRow = document.querySelector('td[colspan="7"]');
-        
+
         if (noDataRow) {
             // Sembunyikan pesan 'Belum ada data' jika ada data yang terlihat
             if (visibleRows.length > 0) {
@@ -480,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             } else {
                 // Tampilkan pesan bahwa tidak ada hasil
-                noDataRow.parentNode.style.display = ""; 
+                noDataRow.parentNode.style.display = "";
                 noDataRow.textContent = "Tidak ada santri yang cocok dengan kriteria.";
             }
         }

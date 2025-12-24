@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Rapor Santri - {{ $santri->nama ?? '' }}</title>
 
     <style>
+        /* RESET & BASE */
         * {
             margin: 0;
             padding: 0;
@@ -15,17 +17,20 @@
         body {
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 11px;
-            margin: 20px;
             line-height: 1.3;
-            page-break-inside: avoid;
+            margin: 0;
+            padding: 20px;
         }
 
-        /* Header Section dengan Logo */
+        @page {
+            margin: 15mm 10mm;
+        }
+
+        /* HEADER SECTION */
         .header-section {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding: 15px 0;
-            border-bottom: 3px solid #2d5016;
         }
 
         .logo-container {
@@ -54,15 +59,19 @@
         }
 
         .header-title h4 {
-            font-size: 11px;
-            font-weight: normal;
-            color: #333;
+            font-size: 12px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 3px;
         }
 
-        /* Identitas Santri */
-        .identity-section {
-            margin: 20px 0;
-            border: 2px solid #333;
+        /* IDENTITAS SANTRI */
+        .identity-wrapper {
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 8px 0;
+            margin-bottom: 15px;
+            font-size: 13px;
         }
 
         .identity-table {
@@ -71,25 +80,34 @@
         }
 
         .identity-table td {
-            padding: 6px 10px;
-            font-size: 11px;
+            padding: 4px 0;
+            vertical-align: top;
         }
 
-        .identity-table tr:first-child td {
-            border-bottom: 1px solid #333;
+        .identity-table .left {
+            width: 50%;
         }
 
-        .identity-table td:nth-child(2),
-        .identity-table td:nth-child(4) {
-            border-left: 1px solid #333;
+        .identity-table .right {
+            width: 50%;
+            text-align: left;
         }
 
-        .identity-label {
+        .label {
             display: inline-block;
-            width: 130px;
+            width: 120px;
         }
 
-        /* Section Title */
+        .colon {
+            display: inline-block;
+            width: 10px;
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        /* SECTION TITLE */
         .section-title {
             font-weight: bold;
             background: white;
@@ -99,16 +117,21 @@
             font-size: 12px;
         }
 
-        /* Tables */
+        /* TABEL UTAMA - TAHFIZH & AKADEMIK */
         table.data-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
             border: 2px solid #000;
+            page-break-inside: auto;
+        }
+
+        table.data-table thead {
+            display: table-header-group;
         }
 
         table.data-table th {
-            background: #2d5016;
+            background: #056400;
             color: white;
             padding: 8px 6px;
             font-size: 11px;
@@ -122,6 +145,19 @@
             padding: 8px 6px;
             font-size: 10px;
             vertical-align: top;
+            page-break-inside: avoid;
+            page-break-before: auto;
+        }
+
+        /* ROW STYLING */
+        table.data-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        table.data-table tr.parent-row {
+            page-break-inside: avoid;
+            page-break-after: avoid;
         }
 
         table.data-table td.no-cell {
@@ -132,42 +168,92 @@
 
         table.data-table td.subject-cell {
             font-weight: bold;
+            text-align: left;
+            vertical-align: middle;
             padding-left: 10px;
         }
 
         table.data-table td.text-center {
             text-align: center;
             font-weight: bold;
+            vertical-align: middle;
         }
 
-        /* Sub rows untuk sub-item */
-        table.data-table tr.sub-row td:first-child {
-            text-align: center;
-            font-weight: normal;
+        /* Kolom Mata Pelajaran (kolom ke-2) - center vertikal saja */
+        table.data-table td:nth-child(2),
+        table.data-table th:nth-child(2) {
+            text-align: left;
+            vertical-align: middle;
         }
-        
+
+        /* Kolom Nilai Angka (kolom ke-3) */
+        table.data-table td:nth-child(3),
+        table.data-table th:nth-child(3) {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Kolom Nilai Huruf (kolom ke-4) */
+        table.data-table td:nth-child(4),
+        table.data-table th:nth-child(4) {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* SUB ROWS */
+        table.data-table tr.sub-row td:first-child {
+            border-top: none;
+            border-bottom: none;
+        }
+
         table.data-table tr.sub-row td:nth-child(2) {
+            text-align: left;
+            vertical-align: middle;
             padding-left: 30px;
         }
 
-        /* Highlight row */
-        table.data-table tr.highlight-row {
-            background: #e8f5e9;
+        /* KOLOM KETERANGAN */
+        table.data-table td.keterangan-cell {
+            width: 50%;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            padding: 8px 6px;
+            font-size: 10px;
+            line-height: 1.3;
+            vertical-align: top;
         }
 
-        /* Keterangan dalam tabel */
+        .keterangan-cell .detail-text {
+            margin: 0;
+            padding: 0;
+            font-size: inherit;
+            line-height: inherit;
+        }
+
         .detail-text {
             font-size: 9px;
             line-height: 1.5;
         }
 
-        .detail-text ul {
-            margin: 3px 0 3px 15px;
-            padding: 0;
+        /* BULLET LIST */
+        .bullet-list {
+            padding-left: 20px;
+            margin: 5px 0;
+            list-style-type: none;
         }
 
-        .detail-text li {
-            margin-bottom: 2px;
+        .bullet-list li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 3px;
+        }
+
+        .bullet-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
         }
 
         .detail-header {
@@ -176,17 +262,39 @@
             margin-bottom: 3px;
         }
 
-        /* Kehadiran Section */
-        .attendance-wrapper {
-            border: 2px solid #000;
-            margin-bottom: 20px;
+        .centered-text {
+            text-align: center;
+            margin: 4px 0;
+            font-weight: bold;
+            line-height: 1.3;
         }
 
-        .attendance-title {
-            background: #c8e6c9;
-            padding: 8px 10px;
+        /* KEHADIRAN */
+        .attendance-box {
+            width: 100%;
+            border: 2px solid #000;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+            page-break-inside: avoid;
+        }
+
+        .attendance-box td {
+            border: 1px solid #000;
+            vertical-align: middle;
+        }
+
+        .attendance-label {
+            width: 25%;
+            background-color: #dbe7c3;
+            text-align: center;
             font-weight: bold;
-            border-bottom: 1px solid #000;
+            padding: 10px;
+        }
+
+        .attendance-content {
+            width: 75%;
+            padding: 5px 10px;
         }
 
         .attendance-table {
@@ -195,47 +303,114 @@
         }
 
         .attendance-table td {
-            padding: 8px 10px;
-            font-size: 10px;
-            border: 1px solid #000;
+            border: none !important;
+            padding: 2px 6px;
         }
 
-        /* Kesantrian Table */
+        /* TABEL KESANTRIAN */
         .kesantrian-table {
             width: 100%;
             border-collapse: collapse;
             border: 2px solid #000;
+            font-size: 10px;
+            page-break-inside: auto;
         }
 
-        .kesantrian-table th {
-            background: #2d5016;
-            color: white;
-            padding: 8px;
-            border: 1px solid #000;
+        .kesantrian-table thead {
+            display: table-header-group;
+        }
+
+        .kesantrian-table tfoot {
+            display: table-footer-group;
+        }
+
+        .kesantrian-table thead th {
+            background: #0b6b1a;
+            color: #fff;
+            text-align: center;
             font-weight: bold;
+            padding: 6px;
+            border: 1px solid #000;
         }
 
         .kesantrian-table td {
-            border: 1px solid #000;
-            padding: 8px;
-            font-size: 10px;
+            padding: 5px 8px;
+            vertical-align: middle;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            page-break-inside: avoid;
         }
 
+        .kesantrian-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        /* SECTION ROW (1,2,3) */
         .kesantrian-table tr.section-row td {
-            background: #c8e6c9;
+            background: #c1d59a;
             font-weight: bold;
-            border-bottom: 2px solid #000;
+            border-top: 2px solid #000;
+            border-bottom: 1px solid #000;
+            page-break-inside: avoid;
+        }
+
+        /* KOLOM NO */
+        .kesantrian-table th:first-child,
+        .kesantrian-table td:first-child {
+            width: 5%;
+            text-align: center;
+            vertical-align: middle;
         }
 
         .kesantrian-table tr.sub-item td:first-child {
-            padding-left: 30px;
+            border-top: none;
+            border-bottom: none;
         }
 
-        /* Signature Section */
+        .kesantrian-table tr.section-row td:first-child {
+            border-top: 2px solid #000;
+        }
+
+        .kesantrian-table tr.sub-item:last-of-type td:first-child {
+            border-bottom: 2px solid #000;
+        }
+
+        /* KOLOM NILAI */
+        .kesantrian-table td:nth-child(3) {
+            text-align: center;
+            font-weight: bold;
+            width: 12%;
+        }
+
+        /* SUB ITEM (a,b,c,d) */
+        .kesantrian-table tr.sub-item td {
+            background: #fff;
+            font-weight: normal;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+
+        .kesantrian-table tr.sub-item td:nth-child(2) {
+            padding-left: 18px;
+        }
+
+        .kesantrian-table tr.sub-item:last-of-type td {
+            border-bottom: 2px solid #000;
+        }
+
+        /* PARENT ROW STYLING */
+        .parent-row td {
+            background-color: #c1d59a;
+            font-weight: bold;
+        }
+
+        /* SIGNATURE SECTION */
         .signature-wrapper {
             margin-top: 30px;
             display: table;
             width: 100%;
+            page-break-inside: avoid;
         }
 
         .signature-left {
@@ -277,34 +452,26 @@
             margin-top: 20px;
         }
 
-        /* Page break untuk bulk print */
-        @media print {
-            .page-break {
-                page-break-after: always;
-                page-break-inside: avoid;
-            }
-            
-            body {
-                page-break-inside: avoid;
-            }
+        /* PAGE BREAK CONTROL */
+        .page-break-control {
+            page-break-before: always;
         }
 
-        @page {
-            margin: 20px;
+        .keep-together {
+            page-break-inside: avoid;
+        }
+
+        .allow-break {
+            page-break-inside: auto;
         }
     </style>
 </head>
 
 <body>
-    <!-- HEADER dengan Logo -->
+    <!-- HEADER -->
     <div class="header-section">
         <div class="logo-container">
-            @php
-                $logoPath = public_path('images/logo-pesantren.png');
-            @endphp
-            @if(file_exists($logoPath))
-                <img src="{{ $logoPath }}" alt="Logo Pesantren" class="header-logo">
-            @endif
+            <img src="{{ public_path('img/logo.png') }}" class="header-logo">
         </div>
         <div class="header-title">
             <h2>LAPORAN PENILAIAN AKHIR TAHUN</h2>
@@ -314,22 +481,32 @@
     </div>
 
     <!-- IDENTITAS SANTRI -->
-    <div class="identity-section">
+    <div class="identity-wrapper">
         <table class="identity-table">
             <tr>
-                <td>
-                    <span class="identity-label">Nama</span>: {{ $santri->nama ?? '-' }}
+                <td class="left">
+                    <span class="label">Nama</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ $santri->nama ?? '-' }}</span>
                 </td>
-                <td>
-                    <span class="identity-label">Kelas / Semester</span>: {{ $santri->kelas ?? '-' }} / {{ $santri->tahunAjaran->semester ?? '-' }}
+                <td class="right">
+                    <span class="label">Kelas / Semester</span>
+                    <span class="colon">:</span>
+                    <span class="value">
+                        {{ $kelasTampil ?? '-' }} / {{ $semesterTampil ?? '-' }}
+                    </span>
                 </td>
             </tr>
             <tr>
-                <td>
-                    <span class="identity-label">No. Induk</span>: {{ $santri->nis ?? '-' }}
+                <td class="left">
+                    <span class="label">No. Induk</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ $santri->nis ?? '-' }}</span>
                 </td>
-                <td>
-                    <span class="identity-label">Tahun Pelajaran</span>: {{ $santri->tahunAjaran->tahun ?? '-' }}
+                <td class="right">
+                    <span class="label">Tahun Pelajaran</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ $santri->tahunAjaran->tahun ?? '-' }}</span>
                 </td>
             </tr>
         </table>
@@ -349,8 +526,8 @@
             </tr>
         </thead>
         <tbody>
-            <!-- 1. Al-Qur'an (PARENT - TANPA NILAI) -->
-            <tr>
+            <!-- 1. Al-Qur'an -->
+            <tr class="parent-row">
                 <td class="no-cell">1</td>
                 <td class="subject-cell">Al-Qur'an</td>
                 <td class="text-center"></td>
@@ -358,89 +535,76 @@
                 <td></td>
             </tr>
 
-            <!-- a. Tahfizh (SUB-ITEM) -->
+            <!-- a. Tahfizh -->
             <tr class="sub-row">
                 <td></td>
-                <td style="padding-left: 30px;">a. Tahfizh</td>
-
-                {{-- Nilai Angka Tahfidz --}}
-                <td class="text-center">
-                    {{ $nilaiTahfidz ?? '-' }}
-                </td>
-
-                {{-- Nilai Huruf Tahfidz --}}
-                <td class="text-center">
-                    {{ $nilaiHurufTahfidz ?? '-' }}
-                </td>
-
-                {{-- Keterangan Tahfidz --}}
-                <td>
+                <td>a. Tahfizh</td>
+                <td class="text-center">{{ $nilaiTahfidz ?? '-' }}</td>
+                <td class="text-center">{{ $nilaiHurufTahfidz ?? '-' }}</td>
+                <td class="keterangan-cell">
                     <div class="detail-text">
-                        {{-- Target & Pencapaian --}}
-                        <div class="detail-header">Target Hafalan:</div>
-                        <b>{{ $targetJuz ?? 0 }} Juz</b><br>
+                        <div class="detail-header">Jumlah Hafalan:</div>
+                        <b>{{ count(explode(',', $daftarJuz)) }} Juz - Halaman<br />(Juz {{ $daftarJuz }})</b>
 
                         <div class="detail-header">Jumlah Hafalan yang Diujikan:</div>
-                        <b>{{ $totalJuzDiuji ?? 0 }} Juz 
-                        @if(!empty($daftarJuzDiuji))
-                            ({{ $daftarJuzDiuji }})
-                        @endif
+                        <b>{{ $totalJuzDiuji ?? 0 }} Juz<br />
+                            @if (!empty($daftarJuzDiuji))
+                                (Juz {{ $daftarJuzDiuji }})
+                            @endif
                         </b><br>
-
-                        <div class="detail-header">Total Kesalahan:</div>
-                        <b>{{ $totalKesalahan ?? 0 }}</b><br>
-
-                        {{-- Setoran --}}
-                        <div class="detail-header" style="margin-top: 8px;">Setoran:</div>
-                        <ul>
-                            @forelse($santri->setoran as $s)
-                                <li>
-                                    {{ \Carbon\Carbon::parse($s->tanggal_setoran)->format('d F Y') }}
-                                    (Hal. {{ $s->halaman_awal }}–{{ $s->halaman_akhir }})
-                                </li>
-                            @empty
-                                <li>Belum ada setoran</li>
-                            @endforelse
-                        </ul>
-
-                        <div class="detail-header">Daftar Halaman:</div>
-                        <b>{{ $daftarHalaman ?: '-' }}</b><br>
-
-                        <div class="detail-header">Total Halaman:</div>
-                        <b>{{ $totalHalaman ?? 0 }} Halaman</b><br>
-
-                        <div class="detail-header">Juz yang Disetorkan:</div>
-                        <b>{{ $daftarJuz ?: '-' }}</b>
+                        <div class="centered-text">Sekali duduk: {{ $sekaliDuduk ?? '-' }}</div>
                     </div>
                 </td>
             </tr>
 
-            <!-- b. Tahsin (SUB-ITEM - NILAI DARI AKADEMIK) -->
+            <!-- b. Tahsin -->
             <tr class="sub-row">
                 <td></td>
-                <td style="padding-left: 30px;">b. Tahsin</td>
-                
-                {{-- Nilai Angka Tahsin dari Nilai Akademik --}}
-                <td class="text-center">
-                    @php
-                        // Cari nilai tahsin dari nilaiAkademik
-                        $nilaiTahsin = $santri->nilaiAkademik->first(function($nilai) {
-                            return stripos($nilai->mataPelajaran->nama_matapelajaran ?? '', 'tahsin') !== false;
-                        });
-                    @endphp
-                    {{ $nilaiTahsin->nilai_rata_rata ?? '-' }}
-                </td>
-                
-                {{-- Nilai Huruf Tahsin dari Nilai Akademik --}}
-                <td class="text-center">
-                    {{ $nilaiTahsin->predikat ?? '-' }}
-                </td>
-                
-                {{-- Keterangan Tahsin --}}
-                <td>
+                <td>b. Tahsin</td>
+
+                @php
+                    $nilaiTahsin = $nilaiAkademik->first(function ($item) {
+                        return $item->mataPelajaran &&
+                            stripos($item->mataPelajaran->nama_matapelajaran ?? '', 'tahsin') !== false;
+                    });
+                @endphp
+
+                <td class="text-center">{{ $nilaiTahsin->nilai ?? '-' }}</td>
+                <td class="text-center">{{ $nilaiTahsin->predikat ?? '-' }}</td>
+                <td class="keterangan-cell">
                     <div class="detail-text">
-                        @if($nilaiTahsin && $nilaiTahsin->keterangan)
-                            {!! nl2br(e($nilaiTahsin->keterangan)) !!}
+                        @if ($nilaiTahsin && $nilaiTahsin->materi_pelajaran)
+                            @php
+                                $predikat = strtoupper(trim($nilaiTahsin->predikat ?? ''));
+                                $keteranganMap = [
+                                    'A' => 'Mumtaz',
+                                    'A-' => 'Mumtaz',
+                                    'B+' => 'Jayyid Jiddan',
+                                    'B' => 'Jayyid Jiddan',
+                                    'B-' => 'Jayyid Jiddan',
+                                    'C+' => 'Jayyid',
+                                    'C' => 'Jayyid',
+                                    'C-' => 'Jayyid',
+                                    'D' => 'Maqbul',
+                                    'E' => 'Dha\'if',
+                                ];
+                                $predikatArab = $keteranganMap[$predikat] ?? '-';
+                            @endphp
+
+                            <!-- Tampilkan Predikat Arab di atas -->
+                            <div class="detail-header centered-text">{{ $predikatArab }}</div>
+
+                            <!-- Header "Materi Pelajaran:" -->
+                            <div class="detail-header">Materi Pelajaran:</div>
+
+                            <!-- Daftar materi dengan bullet -->
+                            <ul class="bullet-list">
+                                @foreach (explode("\n", trim($nilaiTahsin->materi_pelajaran)) as $materi)
+                                    @if (trim($materi))
+                                        <li>{{ trim($materi) }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
                         @else
                             -
                         @endif
@@ -448,25 +612,49 @@
                 </td>
             </tr>
 
-            <!-- 2. Dirasah Islamiyah (PARENT - TANPA NILAI) -->
-            <tr class="highlight-row">
+            <!-- 2. Dirasah Islamiyah -->
+            <tr class="parent-row">
                 <td class="no-cell">2</td>
                 <td class="subject-cell" colspan="4">Dirasah Islamiyah</td>
             </tr>
 
-            <!-- Sub-item Dirasah Islamiyah -->
-            @forelse ($santri->nilaiAkademik as $index => $a)
+            @php
+                // Filter nilai akademik kecuali Tahsin
+                $dirasahItems = $nilaiAkademik->filter(function ($item) {
+                    return !$item->mataPelajaran ||
+                        stripos($item->mataPelajaran->nama_matapelajaran ?? '', 'tahsin') === false;
+                });
+            @endphp
+
+            @forelse ($dirasahItems as $index => $a)
                 <tr class="sub-row">
                     <td></td>
-                    <td style="padding-left: 30px;">
+                    <td>
                         {{ chr(97 + $index) }}. {{ $a->mataPelajaran->nama_matapelajaran ?? '-' }}
                     </td>
-                    <td class="text-center">{{ $a->nilai_rata_rata ?? '-' }}</td>
+                    <td class="text-center">{{ $a->nilai ?? '-' }}</td>
                     <td class="text-center">{{ $a->predikat ?? '-' }}</td>
-                    <td>
+                    <td class="keterangan-cell">
                         <div class="detail-text">
-                            @if($a->keterangan)
-                                {!! nl2br(e($a->keterangan)) !!}
+                            @if ($a->materi_pelajaran)
+                                @php
+                                    $predikat = strtoupper(trim($a->predikat ?? ''));
+                                    $keteranganMap = [
+                                        'A' => 'Sangat memahami dengan baik materi yang dipelajari:',
+                                        'B' => 'Memahami dengan baik materi yang dipelajari:',
+                                        'C' => 'Cukup memahami materi yang dipelajari:',
+                                        'D' => 'Kurang memahami materi yang dipelajari:',
+                                    ];
+                                    $keterangan = $keteranganMap[$predikat] ?? 'Memahami materi yang dipelajari:';
+                                @endphp
+                                <div class="detail-header">{{ $keterangan }}</div>
+                                <ul class="bullet-list">
+                                    @foreach (explode("\n", trim($a->materi_pelajaran)) as $materi)
+                                        @if (trim($materi))
+                                            <li>{{ trim($materi) }}</li>
+                                        @endif
+                                    @endforeach
+                                </ul>
                             @else
                                 -
                             @endif
@@ -485,33 +673,35 @@
     </table>
 
     <!-- KEHADIRAN -->
-    <div class="section-title">Ketidakhadiran (Dirasah)</div>
-    <div class="attendance-wrapper">
-        <div class="attendance-title">Ketidakhadiran (Dirasah)</div>
-        <table class="attendance-table">
+    <div class="attendance-section keep-together">
+        <table class="attendance-box">
             <tr>
-                <td style="width: 20%;">1. Sakit</td>
-                <td style="width: 5%; text-align: center;">:</td>
-                <td style="width: 15%; text-align: center; font-weight: bold;">
-                    {{ $santri->nilaiAkademik->sum('jumlah_sakit') }}
+                <td class="attendance-label">Ketidakhadiran<br>(Dirasah)</td>
+                <td class="attendance-content">
+                    <table class="attendance-table">
+                        <tr>
+                            <td class="num">1.</td>
+                            <td class="item">Sakit</td>
+                            <td class="colon">:</td>
+                            <td class="value">{{ $totalSakit }}</td>
+                            <td class="unit">Hari</td>
+                        </tr>
+                        <tr>
+                            <td class="num">2.</td>
+                            <td class="item">Izin</td>
+                            <td class="colon">:</td>
+                            <td class="value">{{ $totalIzin }}</td>
+                            <td class="unit">Hari</td>
+                        </tr>
+                        <tr>
+                            <td class="num">3.</td>
+                            <td class="item">Ghaib</td>
+                            <td class="colon">:</td>
+                            <td class="value">{{ $totalGhaib }}</td>
+                            <td class="unit">Hari</td>
+                        </tr>
+                    </table>
                 </td>
-                <td style="width: 60%;">Hari</td>
-            </tr>
-            <tr>
-                <td>2. Izin</td>
-                <td style="text-align: center;">:</td>
-                <td style="text-align: center; font-weight: bold;">
-                    {{ $santri->nilaiAkademik->sum('jumlah_izin') }}
-                </td>
-                <td>Hari</td>
-            </tr>
-            <tr>
-                <td>3. Ghaib</td>
-                <td style="text-align: center;">:</td>
-                <td style="text-align: center; font-weight: bold;">
-                    {{ $santri->nilaiAkademik->sum('jumlah_ghaib') }}
-                </td>
-                <td>Hari</td>
             </tr>
         </table>
     </div>
@@ -522,139 +712,77 @@
     <table class="kesantrian-table">
         <thead>
             <tr>
-                <th style="width:5%">No</th>
-                <th style="width:35%">Mata Pelajaran</th>
-                <th style="width:12%">Nilai</th>
+                <th>No</th>
+                <th>Mata Pelajaran</th>
+                <th>Nilai</th>
                 <th>Keterangan</th>
             </tr>
         </thead>
         <tbody>
-            <tr class="section-row" style="border-top: 3px solid #000;">
-                <td style="width:5%">1</td>
-                <td style="width:35%"><b>Penilaian Akhlak Santri</b></td>
-                <td style="width:12%"></td>
+            <tr class="section-row">
+                <td>1</td>
+                <td><b>Penilaian Akhlak Santri</b></td>
+                <td></td>
                 <td></td>
             </tr>
 
-            {{-- BAGIAN NILAI KESANTRIAN --}}
-            @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                @foreach($nilaiKesantrian as $index => $item)
-                    <tr class="sub-item">
-                        <td></td>
-                        <td>{{ chr(97 + $index) }}. {{ $item['aspek'] ?? '-' }}</td>
-                        <td style="text-align: center; font-weight: bold;">{{ $item['nilai'] ?? '-' }}</td>
-                        <td>{{ $item['keterangan'] ?? '-' }}</td>
-                    </tr>
-                @endforeach
-            @else
+            @php
+                $nilaiKesantrianSub = $nilaiKesantrian
+                    ? $nilaiKesantrian->filter(function ($item) {
+                        return in_array($item['aspek'], ['Ibadah', 'Akhlak', 'Kerapian', 'Kedisiplinan']);
+                    })
+                    : collect();
+            @endphp
+
+            @foreach (range(0, 3) as $i)
+                @php
+                    $aspek = ['Ibadah', 'Akhlak', 'Kerapian', 'Kedisiplinan'][$i];
+                    $item = $nilaiKesantrianSub->firstWhere('aspek', $aspek);
+                @endphp
                 <tr class="sub-item">
                     <td></td>
-                    <td>a. Ibadah</td>
-                    <td style="text-align: center; font-weight: bold;">-</td>
-                    <td>-</td>
+                    <td>{{ chr(97 + $i) }}. {{ $aspek }}</td>
+                    <td style="text-align: center; font-weight: bold;">{{ $item['nilai'] ?? '-' }}</td>
+                    <td style="text-align: center;">
+                        {{ $item['keterangan'] ?? '-' }}
+                    </td>
+
                 </tr>
-                <tr class="sub-item">
-                    <td></td>
-                    <td>b. Akhlak</td>
-                    <td style="text-align: center; font-weight: bold;">-</td>
-                    <td>-</td>
-                </tr>
-                <tr class="sub-item">
-                    <td></td>
-                    <td>c. Kerapian</td>
-                    <td style="text-align: center; font-weight: bold;">-</td>
-                    <td>-</td>
-                </tr>
-                <tr class="sub-item">
-                    <td></td>
-                    <td>d. Kedisiplinan</td>
-                    <td style="text-align: center; font-weight: bold;">-</td>
-                    <td>-</td>
-                </tr>
-            @endif
-     
+            @endforeach
+
+            @php
+                $ekstra = $nilaiKesantrian ? $nilaiKesantrian->firstWhere('aspek', 'Ekstrakulikuler') : null;
+                $buku = $nilaiKesantrian ? $nilaiKesantrian->firstWhere('aspek', 'Buku Pegangan') : null;
+            @endphp
+
             <tr class="section-row">
                 <td>2</td>
                 <td><b>Ekstrakurikuler</b></td>
-                <td style="text-align: center; font-weight: bold;">
-                    @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                        {{ $santri->nilaiKesantrian->first()->nilai_ekstrakulikuler ?? '-' }}
-                    @else
-                        -
-                    @endif
-                </td>
-                <td>
-                    @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                        @php
-                            $nilaiEkskul = $santri->nilaiKesantrian->first()->nilai_ekstrakulikuler ?? null;
-                        @endphp
-                        @if($nilaiEkskul)
-                            @php
-                                $nilaiEkskulUpper = strtoupper(trim($nilaiEkskul));
-                                $keteranganEkskul = [
-                                    'A' => 'Mumtaz',
-                                    'B' => 'Jayyid Jiddan',
-                                    'C' => 'Jayyid',
-                                    'D' => 'Maqbul',
-                                    'E' => 'Rasib',
-                                ][$nilaiEkskulUpper] ?? $nilaiEkskul;
-                            @endphp
-                            {{ $keteranganEkskul }}
-                        @else
-                            -
-                        @endif
-                    @else
-                        -
-                    @endif
+                <td style="text-align: center; font-weight: bold;">{{ $ekstra['nilai'] ?? '-' }}</td>
+                <td style="text-align: center;">
+                    {{ $ekstra['keterangan'] ?? '-' }}
                 </td>
             </tr>
 
             <tr class="section-row">
                 <td>3</td>
                 <td><b>Buku Pegangan</b></td>
-                <td style="text-align: center; font-weight: bold;">
-                    @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                        {{ $santri->nilaiKesantrian->first()->nilai_buku_pegangan ?? '-' }}
-                    @else
-                        -
-                    @endif
-                </td>
-                <td>
-                    @if($nilaiKesantrian && $nilaiKesantrian->count() > 0)
-                        @php
-                            $nilaiBukuPegangan = $santri->nilaiKesantrian->first()->nilai_buku_pegangan ?? null;
-                        @endphp
-                        @if($nilaiBukuPegangan)
-                            @php
-                                $nilaiBukuUpper = strtoupper(trim($nilaiBukuPegangan));
-                                $keteranganBuku = [
-                                    'A' => 'Sangat memahami dengan baik buku pegangan santri',
-                                    'B' => 'Memahami dengan baik buku pegangan santri',
-                                    'C' => 'Cukup memahami buku pegangan santri',
-                                    'D' => 'Kurang memahami buku pegangan santri',
-                                    'E' => 'Tidak memahami buku pegangan santri',
-                                ][$nilaiBukuUpper] ?? 'Memahami buku pegangan santri';
-                            @endphp
-                            {{ $keteranganBuku }}
-                        @else
-                            -
-                        @endif
-                    @else
-                        -
-                    @endif
+                <td style="text-align: center; font-weight: bold;">{{ $buku['nilai'] ?? '-' }}</td>
+                <td style="text-align: center;">
+                    {{ $buku['keterangan'] ?? '-' }}
                 </td>
             </tr>
         </tbody>
     </table>
 
     <!-- TANDA TANGAN -->
-    <div class="signature-wrapper">
+    <div class="signature-wrapper keep-together">
         <div class="signature-left">
             @php
                 $stempelPath = public_path('images/stempel-pesantren.png');
             @endphp
-            @if(file_exists($stempelPath))
-                <img src="{{ $stempelPath }}" alt="Logo & Stempel" class="logo-stamp">
+            @if (file_exists($stempelPath))
+                <img src="{{ $stempelPath }}" alt="Stempel Pesantren" class="logo-stamp">
             @endif
             <div style="margin-top: 10px; font-size: 10px;">
                 <b>Direktur Pesantren</b><br><br><br><br>
@@ -663,11 +791,10 @@
         </div>
         <div class="signature-right">
             <div class="signature-content">
-                <div class="signature-place">
-                    Diberikan di &nbsp;&nbsp;&nbsp;: <b>Sukoharjo</b>
-                </div>
-                <div class="signature-place">
-                    Pada &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <b>{{ now()->format('d F Y') }}</b>
+                <div class="signature-place">Diberikan di &nbsp;&nbsp;&nbsp;: <b>Sukoharjo</b></div>
+                <div class="signature-place">Pada
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                    <b>{{ now()->format('d F Y') }}</b>
                 </div>
                 <div style="margin-top: 30px;">
                     <div class="signature-title">Musyrif</div>
@@ -677,4 +804,5 @@
         </div>
     </div>
 </body>
+
 </html>

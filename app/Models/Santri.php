@@ -18,6 +18,7 @@ class Santri extends Model
         'nis',
         'nama',
         'angkatan',
+        'kelas',
         'status',
         'id_tahunAjaran',
         'id_halaqah',

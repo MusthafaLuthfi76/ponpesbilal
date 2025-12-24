@@ -18,12 +18,20 @@ class NilaiKesantrian extends Model
         'nis',
         'id_matapelajaran',
         'id_tahunAjaran',
-        'nilai_akhlak',
-        'nilai_ibadah',
-        'nilai_kerapian',
-        'nilai_kedisiplinan',
-        'nilai_ekstrakulikuler',
-        'nilai_buku_pegangan',
+        // Kolom UTS
+        'akhlak_uts',
+        'ibadah_uts',
+        'kerapian_uts',
+        'kedisiplinan_uts',
+        'ekstrakulikuler_uts',
+        'buku_pegangan_uts',
+        // Kolom UAS
+        'akhlak_uas',
+        'ibadah_uas',
+        'kerapian_uas',
+        'kedisiplinan_uas',
+        'ekstrakulikuler_uas',
+        'buku_pegangan_uas',
     ];
 
     /**

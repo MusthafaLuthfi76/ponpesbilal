@@ -43,7 +43,7 @@ class MataPelajaranController extends Controller
             'nama_matapelajaran' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z0-9\s]+$/'],
 
             // kolom baru
-            'kelas' => ['required', 'in:7,8,9,10,11,12'],
+            'kelas' => ['required', 'in:1,2,3'],
             'materi_pelajaran' => ['nullable', 'string'],
 
             'kkm' => ['required', 'numeric', 'min:0', 'max:100'],
@@ -73,7 +73,7 @@ class MataPelajaranController extends Controller
             'nama_matapelajaran' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z0-9\s]+$/'],
 
             // kolom baru
-            'kelas' => ['required', 'in:7,8,9,10,11,12'],
+            'kelas' => ['required', 'in:1,2,3'],
             'materi_pelajaran' => ['nullable', 'string'],
 
             'kkm' => ['required', 'numeric', 'min:0', 'max:100'],
