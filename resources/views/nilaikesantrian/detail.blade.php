@@ -651,17 +651,16 @@
             </div>
         </div>
 
-        <!-- Mapel Info Card -->
+        <!-- Info Card -->
         <div class="mapel-info-card">
             <div class="mapel-info-header">
                 <div class="mapel-icon">
                     <i class="fas fa-mosque"></i>
                 </div>
                 <div class="mapel-details">
-                    <h5>{{ $mapel->nama_matapelajaran }}</h5>
+                    <h5>Kesantrian</h5>
                     <p><i class="fas fa-calendar-alt me-2"></i>Tahun Ajaran: {{ $tahunAjaran->tahun }} - Semester
                         {{ strtoupper($tahunAjaran->semester) }}</p>
-                    <p><i class="fas fa-chalkboard-teacher me-2"></i>Pendidik: {{ $mapel->pendidik->nama ?? '-' }}</p>
                 </div>
             </div>
         </div>
@@ -715,7 +714,7 @@
             <div class="tab-pane fade {{ $activeTab == 'uts' ? 'show active' : '' }}" id="utsNilai" role="tabpanel">
                 @if ($nilaiSantri->isEmpty())
                     <div class="alert alert-warning m-3">
-                        Belum ada santri yang di-assign untuk mata pelajaran ini. Silakan pindah ke tab "Assign Santri".
+                        Belum ada santri yang di-assign untuk penilaian kesantrian ini. Silakan pindah ke tab "Assign Santri".
                     </div>
                 @else
                     <form action="{{ route('nilaikesantrian.update.massal') }}" method="POST">
@@ -860,7 +859,7 @@
             <div class="tab-pane fade {{ $activeTab == 'uas' ? 'show active' : '' }}" id="uasNilai" role="tabpanel">
                 @if ($nilaiSantri->isEmpty())
                     <div class="alert alert-warning m-3">
-                        Belum ada santri yang di-assign untuk mata pelajaran ini. Silakan pindah ke tab "Assign Santri".
+                        Belum ada santri yang di-assign untuk penilaian kesantrian ini. Silakan pindah ke tab "Assign Santri".
                     </div>
                 @else
                     <form action="{{ route('nilaikesantrian.update.massal') }}" method="POST">
@@ -1011,7 +1010,6 @@
                     <div class="filter-section">
                         <form method="GET"
                             action="{{ route('nilaikesantrian.show', [
-                                'id_matapelajaran' => $mapel->id_matapelajaran,
                                 'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran,
                             ]) }}"
                             class="row g-2">
@@ -1043,7 +1041,6 @@
                             @if (request('angkatan') || request('search_nama'))
                                 <div class="col-md-3 d-flex align-items-end">
                                     <a href="{{ route('nilaikesantrian.show', [
-                                        'id_matapelajaran' => $mapel->id_matapelajaran,
                                         'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran,
                                         'tab' => 'assign',
                                     ]) }}"
@@ -1058,7 +1055,6 @@
                     {{-- Form Assign Santri --}}
                     <form
                         action="{{ route('nilaikesantrian.assign.store', [
-                            'id_matapelajaran' => $mapel->id_matapelajaran,
                             'id_tahunAjaran' => $tahunAjaran->id_tahunAjaran,
                         ]) }}"
                         method="POST">
@@ -1078,7 +1074,7 @@
                                 </label>
                             @empty
                                 <div class="alert alert-success m-3">
-                                    <i class="bi bi-check-circle"></i> Semua santri sudah di-assign ke mata pelajaran ini.
+                                    <i class="bi bi-check-circle"></i> Semua santri sudah di-assign ke penilaian kesantrian ini.
                                 </div>
                             @endforelse
                         </div>
@@ -1160,7 +1156,7 @@
         }
 
         function confirmDelete(nama, id_nilai_kesantrian) {
-            if (confirm(`Yakin ingin MENGHAPUS (Un-assign) santri atas nama ${nama} dari mata pelajaran ini?`)) {
+            if (confirm(`Yakin ingin MENGHAPUS (Un-assign) santri atas nama ${nama} dari penilaian kesantrian ini?`)) {
                 const form = document.getElementById('delete-form');
                 form.action = `/nilai-kesantrian/unassign/${id_nilai_kesantrian}`;
                 form.submit();

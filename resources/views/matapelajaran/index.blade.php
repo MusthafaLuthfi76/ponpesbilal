@@ -91,6 +91,12 @@
                                     data-praktik="{{ $mp->bobot_praktik }}" data-pendidik="{{ $mp->id_pendidik }}">
                                     <i class="bi bi-pencil-square"></i> Edit</button>
 
+                                <form action="{{ route('matapelajaran.duplicate', $mp->id_matapelajaran) }}" method="POST"
+                                    class="d-inline" onsubmit="return confirm('Duplikasi {{ $mp->nama_matapelajaran }}?')">
+                                    @csrf
+                                    <button class="btn btn-secondary"><i class="bi bi-files"></i> Duplikasi</button>
+                                </form>
+
                                 <form action="{{ route('matapelajaran.destroy', $mp->id_matapelajaran) }}" method="POST"
                                     class="d-inline" onsubmit="return confirm('Hapus {{ $mp->nama_matapelajaran }}?')">
                                     @csrf
@@ -125,14 +131,14 @@
                         <strong>Tahun:</strong> {{ $mp->tahunAjaran?->tahun ?? '-' }} -
                         {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}
                     </p>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-info flex-fill" data-bs-toggle="modal" data-bs-target="#viewModal"
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewModal"
                             data-id="{{ $mp->id_matapelajaran }}" data-nama="{{ $mp->nama_matapelajaran }}"
                             data-kelas="{{ $mp->kelas }}" data-materi="{{ $mp->materi_pelajaran }}"
                             data-tahun="{{ $mp->tahunAjaran?->tahun ?? '-' }} - Semester {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}"
                             data-kkm="{{ $mp->kkm }}" data-uts="{{ $mp->bobot_UTS }}"
                             data-uas="{{ $mp->bobot_UAS }}" data-praktik="{{ $mp->bobot_praktik }}"
-                            data-pendidik="{{ $mp->pendidik?->nama ?? '-' }}"><i class="bi bi-eye"></i> Detail</button>
+                            data-pendidik="{{ $mp->pendidik?->nama ?? '-' }}"><i class="bi bi-eye"></i></button>
 
                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal"
                             data-id="{{ $mp->id_matapelajaran }}" data-nama="{{ $mp->nama_matapelajaran }}"
@@ -140,13 +146,19 @@
                             data-tahun="{{ $mp->id_tahunAjaran }}" data-kkm="{{ $mp->kkm }}"
                             data-uts="{{ $mp->bobot_UTS }}" data-uas="{{ $mp->bobot_UAS }}"
                             data-praktik="{{ $mp->bobot_praktik }}" data-pendidik="{{ $mp->id_pendidik }}">
-                            <i class="bi bi-pencil-square"></i> Edit</button>
+                            <i class="bi bi-pencil-square"></i></button>
+
+                        <form action="{{ route('matapelajaran.duplicate', $mp->id_matapelajaran) }}" method="POST"
+                            class="d-inline" onsubmit="return confirm('Duplikasi {{ $mp->nama_matapelajaran }}?')">
+                            @csrf
+                            <button class="btn btn-sm btn-secondary"><i class="bi bi-files"></i></button>
+                        </form>
 
                         <form action="{{ route('matapelajaran.destroy', $mp->id_matapelajaran) }}" method="POST"
                             class="d-inline" onsubmit="return confirm('Hapus {{ $mp->nama_matapelajaran }}?')">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Hapus</button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
                         </form>
                     </div>
                 </div>

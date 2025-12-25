@@ -141,6 +141,7 @@ Route::middleware('auth')->group(function () {
         // Mata Pelajaran
         Route::get('/matapelajaran', [MataPelajaranController::class, 'index'])->name('matapelajaran.index');
         Route::post('/matapelajaran', [MataPelajaranController::class, 'store'])->name('matapelajaran.store');
+        Route::post('/matapelajaran/{id}/duplicate', [MataPelajaranController::class, 'duplicate'])->name('matapelajaran.duplicate');
         Route::put('/matapelajaran/{id}', [MataPelajaranController::class, 'update'])->name('matapelajaran.update');
         Route::delete('/matapelajaran/{id}', [MataPelajaranController::class, 'destroy'])->name('matapelajaran.destroy');
 
@@ -157,13 +158,11 @@ Route::middleware('auth')->group(function () {
         // Nilai Kesantrian
         Route::get('/nilai-kesantrian', [NilaiKesantrianController::class, 'index'])->name('nilaikesantrian.index');
         Route::post('/nilai-kesantrian', [NilaiKesantrianController::class, 'store'])->name('nilaikesantrian.store');
-        Route::put('/nilai-kesantrian/{id_matapelajaran}', [NilaiKesantrianController::class, 'update'])->name('nilaikesantrian.update');
-        Route::delete('/nilai-kesantrian/{id_matapelajaran}', [NilaiKesantrianController::class, 'destroy'])->name('nilaikesantrian.destroy');
         Route::put('/nilai-kesantrian/nilai/{id}', [NilaiKesantrianController::class, 'updateNilai'])->name('nilaikesantrian.nilai.update');
         Route::delete('/nilai-kesantrian/nilai/{id}', [NilaiKesantrianController::class, 'destroyNilai'])->name('nilaikesantrian.nilai.destroy');
-        Route::get('/nilai-kesantrian/{id_matapelajaran}/{id_tahunAjaran}', [NilaiKesantrianController::class, 'show'])->name('nilaikesantrian.show');
         Route::post('/nilai-kesantrian/update-massal', [NilaiKesantrianController::class, 'updateNilaiMassal'])->name('nilaikesantrian.update.massal');
-        Route::post('/nilai-kesantrian/assign/{id_matapelajaran}/{id_tahunAjaran}', [NilaiKesantrianController::class, 'assignStore'])->name('nilaikesantrian.assign.store');
+        Route::get('/nilai-kesantrian/{id_tahunAjaran}', [NilaiKesantrianController::class, 'show'])->name('nilaikesantrian.show');
+        Route::post('/nilai-kesantrian/assign/{id_tahunAjaran}', [NilaiKesantrianController::class, 'assignStore'])->name('nilaikesantrian.assign.store');
         Route::delete('/nilai-kesantrian/unassign/{id}', [NilaiKesantrianController::class, 'unassign'])->name('nilaikesantrian.unassign');
     });
 

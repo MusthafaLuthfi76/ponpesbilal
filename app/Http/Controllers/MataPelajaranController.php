@@ -95,6 +95,17 @@ class MataPelajaranController extends Controller
         return redirect()->route('matapelajaran.index')->with('success', 'Mata pelajaran berhasil diperbarui');
     }
 
+    public function duplicate(string $id)
+    {
+        $original = MataPelajaran::findOrFail($id);
+        
+        $duplicate = $original->replicate();
+        $duplicate->nama_matapelajaran = $original->nama_matapelajaran . ' (Copy)';
+        $duplicate->save();
+
+        return redirect()->route('matapelajaran.index')->with('success', 'Mata pelajaran berhasil diduplikasi');
+    }
+
     public function destroy(string $id)
     {
         $mataPelajaran = MataPelajaran::findOrFail($id);
