@@ -273,20 +273,22 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 6px;
         border: none;
         color: #fff;
         transition: opacity 0.2s, transform 0.2s;
-        padding: 0;
         flex-shrink: 0;
-        text-decoration: none; 
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        white-space: nowrap;
     }
 
     .action-btn-link:hover {
         opacity: 0.85;
-        transform: scale(1.05);
+        transform: translateY(-1px);
     }
 
     .btn-view { 
@@ -305,7 +307,18 @@
         vertical-align: middle;
     }
 
-    /* 📱 TAMPILAN SCROLLABLE TABLE MOBILE */
+    /* Desktop table */
+    .table-desktop {
+        display: table;
+        width: 100%;
+    }
+
+    /* Mobile cards */
+    .cards-mobile {
+        display: none;
+    }
+
+    /* 📱 TAMPILAN CARD VIEW MOBILE - seperti Mata Pelajaran */
     @media (max-width: 768px) {
         .container {
             margin: 0; 
@@ -314,45 +327,57 @@
         }
 
         .table-container {
-            padding: 15px 0;
-            overflow-x: auto; 
+            padding: 15px;
         }
         
-        table {
-            min-width: 700px;
-            margin: 0 15px;
-            border-radius: 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        /* Hide desktop table */
+        .table-desktop {
+            display: none !important;
         }
-        
-        thead {
-            display: table-header-group;
+
+        /* Show mobile cards */
+        .cards-mobile {
+            display: block !important;
         }
-        
-        tr {
-            display: table-row;
-            border: none;
-            margin-bottom: 0;
-            padding: 0;
-            box-shadow: none;
+
+        .mapel-card {
             background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        td {
-            display: table-cell;
-            padding: 12px;
-            border-bottom: 1px solid #f0f0f0; 
-            text-align: center;
+        .mapel-card h6 {
+            color: var(--green);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .mapel-card .info-text {
             font-size: 14px;
-            position: static;
+            color: #666;
+            margin-bottom: 10px;
         }
 
-        td:nth-child(2) {
-            text-align: left;
+        .mapel-card .badge-semester {
+            margin-left: 0;
+            margin-top: 5px;
         }
-        
-        td::before {
-            content: none;
+
+        .mapel-card .action-btns {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            justify-content: flex-start;
+        }
+
+        .mapel-card .action-btn-link {
+            width: auto;
+            padding: 8px 16px;
+            border-radius: 6px;
         }
     }
 </style>
@@ -392,7 +417,8 @@
 
         {{-- KONTEN DATA TABEL --}}
         <div class="table-container">
-            <table role="table" aria-label="Tabel Data Mata Pelajaran">
+            <!-- Desktop Table View -->
+            <table class="table-desktop" role="table" aria-label="Tabel Data Mata Pelajaran">
                 <thead>
                     <tr>
                         <th scope="col" style="width: 8%;">NO</th>
@@ -421,13 +447,10 @@
                             <td role="cell">
                                 <div class="action-btns">
                                     <a href="{{ route('nilaiakademik.mapel.show', $m->id_matapelajaran) }}" 
-                                       title="Lihat Detail"
+                                       title="Input Nilai"
                                        class="action-btn-link btn-view" 
-                                       aria-label="Lihat detail mata pelajaran {{ $m->nama_matapelajaran }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="white">
-                                            <path d="M11.5 18c4 0 7.46-2.22 9.24-5.5C18.96 9.22 15.5 7 11.5 7S4.04 9.22 2.26 12.5C4.04 15.78 7.5 18 11.5 18m0-12c4.56 0 8.5 2.65 10.36 6.5C20 16.35 16.06 19 11.5 19S3 16.35 1.14 12.5C3 8.65 6.94 6 11.5 6m0 2C14 8 16 10 16 12.5S14 17 11.5 17 7 15 7 12.5 9 8 11.5 8m0 1A3.5 3.5 0 0 0 8 12.5a3.5 3.5 0 0 0 3.5 3.5a3.5 3.5 0 0 0 3.5-3.5A3.5 3.5 0 0 0 11.5 9" />
-                                        </svg>
+                                       aria-label="Input nilai mata pelajaran {{ $m->nama_matapelajaran }}">
+                                        <i class="bi bi-pencil-fill"></i> Input Nilai
                                     </a>
                                 </div>
                             </td>
@@ -439,6 +462,39 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <!-- Mobile Card View -->
+            <div class="cards-mobile">
+                @forelse ($mapel as $m)
+                    <div class="mapel-card" onclick="window.location.href='{{ route('nilaiakademik.mapel.show', $m->id_matapelajaran) }}'">
+                        <h6>{{ $m->nama_matapelajaran }}</h6>
+                        <div class="mb-2">
+                            <span class="badge bg-secondary">{{ $m->pendidik->nama ?? '-' }}</span>
+                        </div>
+                        <p class="info-text mb-2">
+                            <strong>Tahun Ajaran:</strong> 
+                            @if($m->tahunAjaran)
+                                {{ $m->tahunAjaran->tahun }}
+                                <span class="badge-semester">
+                                    Semester {{ strtoupper($m->tahunAjaran->semester) }}
+                                </span>
+                            @else
+                                -
+                            @endif
+                        </p>
+                        <div class="action-btns" onclick="event.stopPropagation()">
+                            <a href="{{ route('nilaiakademik.mapel.show', $m->id_matapelajaran) }}" 
+                               title="Input Nilai"
+                               class="action-btn-link btn-view" 
+                               aria-label="Input nilai mata pelajaran {{ $m->nama_matapelajaran }}">
+                                <i class="bi bi-pencil-fill"></i> Input Nilai
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div class="alert alert-info text-center">Belum ada data mata pelajaran.</div>
+                @endforelse
+            </div>
         </div>
     </div>
 

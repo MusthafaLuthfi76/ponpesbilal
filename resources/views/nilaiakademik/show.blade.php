@@ -153,49 +153,49 @@
         font-weight: 600;
     }
 
+    /* Tabs Navigation */
+    .nav-tabs {
+        border-bottom: 2px solid var(--border-color);
+        background: white;
+        border-radius: 8px 8px 0 0;
+        padding: 10px 15px 0;
+        margin-bottom: 0;
+    }
+
+    .nav-tabs .nav-link {
+        border: none;
+        color: #666;
+        font-weight: 500;
+        padding: 12px 20px;
+        border-radius: 8px 8px 0 0;
+        transition: all 0.2s;
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: #f8fff9;
+        color: var(--primary-color);
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: white;
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--primary-color);
+        font-weight: 600;
+    }
+
+    /* Tab Content */
+    .tab-content {
+        background: white;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 0;
+    }
+
     .nilai-card {
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-    }
-
-    .nilai-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 25px;
-        background-color: var(--bg-light);
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .nilai-header h5 {
-        margin: 0;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .periode-selector {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .periode-selector label {
-        margin: 0;
-        font-weight: 500;
-        white-space: nowrap;
-    }
-
-    .periode-selector select {
-        padding: 6px 12px;
-        border-radius: 5px;
-        border: 1px solid var(--border-color);
-        font-size: 14px;
-        min-width: 100px;
-        width: auto;
     }
 
     .save-btn-wrapper {
@@ -320,16 +320,24 @@
 
     .action-btn {
         border: none;
-        border-radius: 50%;
-        width: 36px;
-        height: 36px;
+        border-radius: 6px;
+        width: auto;
+        height: auto;
+        padding: 8px 12px;
         color: #fff;
         cursor: pointer;
         transition: all 0.2s;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 6px;
         background: var(--delete-color);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .action-btn span {
+        display: block;
     }
 
     .action-btn:hover {
@@ -451,44 +459,51 @@
 
         <!-- Nilai Card -->
         <div class="nilai-card">
-            <div class="nilai-header">
-                <h5><i class="fas fa-clipboard-list"></i>Daftar Nilai</h5>
-                <div class="periode-selector">
-                    <label for="periodeSelect">Periode:</label>
-                    <select id="periodeSelect" class="form-select">
-                        <option value="uts">UTS</option>
-                        <option value="uas">UAS</option>
-                    </select>
-                </div>
-            </div>
+            {{-- Tabs Navigasi --}}
+            <ul class="nav nav-tabs" id="nilaiTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="uts-tab" data-bs-toggle="tab" href="#utsNilai" role="tab">
+                        <i class="bi bi-file-earmark-text"></i> UTS
+                        <span class="badge bg-primary">{{ $nilai->count() }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="uas-tab" data-bs-toggle="tab" href="#uasNilai" role="tab">
+                        <i class="bi bi-file-earmark-text-fill"></i> UAS
+                        <span class="badge bg-success">{{ $nilai->count() }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="praktik-tab" data-bs-toggle="tab" href="#praktikNilai" role="tab">
+                        <i class="bi bi-tools"></i> Praktik
+                        <span class="badge bg-warning">{{ $nilai->count() }}</span>
+                    </a>
+                </li>
+            </ul>
 
-            <form action="{{ route('nilaiakademik.mapel.updateAll', $mapel->id_matapelajaran) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="id_tahunAjaran" value="{{ $mapel->id_tahunAjaran }}">
-                <input type="hidden" name="periode" id="periodeHidden" value="uts">
+            <div class="tab-content">
+                <!-- UTS TAB -->
+                <div class="tab-pane fade show active" id="utsNilai" role="tabpanel">
+                    <form action="{{ route('nilaiakademik.mapel.updateAll', $mapel->id_matapelajaran) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="id_tahunAjaran" value="{{ $mapel->id_tahunAjaran }}">
+                        <input type="hidden" name="periode" value="uts">
 
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Santri</th>
-                                <th>Nilai</th>
-                                <th>Ketidakhadiran</th>
-                                <th>Nilai Akhir*</th>
-                                <th>Predikat</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-
-                        <!-- === UTS SECTION === -->
-                        <tbody id="section-uts" class="periode-section active">
-                            <tr>
-                                <th colspan="7" class="bg-light text-primary text-start">
-                                    📌 Periode UTS — Nilai yang ditampilkan di rapor: <strong>Nilai UTS</strong>
-                                </th>
-                            </tr>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Santri</th>
+                                        <th>Nilai UTS</th>
+                                        <th>Ketidakhadiran</th>
+                                        <th>Nilai Akhir</th>
+                                        <th>Predikat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                             @foreach ($nilai as $n)
                                 <tr data-id="{{ $n->id_nilai_akademik }}" data-uts="{{ $n->nilai_UTS ?? 0 }}"
                                     data-uas="{{ $n->nilai_UAS ?? 0 }}" data-praktik="{{ $n->nilai_praktik ?? 0 }}">
@@ -555,19 +570,45 @@
                                                 <path
                                                     d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
                                             </svg>
+                                            <span>Hapus</span>
                                         </button>
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
+                                </tbody>
+                            </table>
+                        </div>
 
-                        <!-- === UAS SECTION === -->
-                        <tbody id="section-uas" class="periode-section">
-                            <tr>
-                                <th colspan="7" class="bg-light text-success text-start">
-                                    📌 Periode UAS — Nilai akhir rapor: <strong>Rata-rata (UTS + UAS + Praktik)</strong>
-                                </th>
-                            </tr>
+                        <div class="save-btn-wrapper">
+                            <button type="submit" class="save-btn">
+                                <i class="fas fa-save"></i> Simpan Nilai UTS
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- UAS TAB -->
+                <div class="tab-pane fade" id="uasNilai" role="tabpanel">
+                    <form action="{{ route('nilaiakademik.mapel.updateAll', $mapel->id_matapelajaran) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="id_tahunAjaran" value="{{ $mapel->id_tahunAjaran }}">
+                        <input type="hidden" name="periode" value="uas">
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Santri</th>
+                                        <th>Nilai UAS</th>
+                                        <th>Ketidakhadiran</th>
+                                        <th>Nilai Akhir*</th>
+                                        <th>Predikat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                             @foreach ($nilai as $n)
                                 <tr data-id="{{ $n->id_nilai_akademik }}" data-uts="{{ $n->nilai_UTS ?? 0 }}"
                                     data-uas="{{ $n->nilai_UAS ?? 0 }}" data-praktik="{{ $n->nilai_praktik ?? 0 }}">
@@ -575,25 +616,11 @@
                                     <td>{{ $n->santri->nama }}</td>
 
                                     <td>
-                                        <!-- Nilai UAS & Praktik sejajar -->
-                                        <div class="d-flex flex-wrap justify-content-center gap-2">
-                                            <div class="text-center">
-                                                <input type="number"
-                                                    name="nilai[{{ $n->id_nilai_akademik }}][nilai_UAS]"
-                                                    value="{{ old('nilai.' . $n->id_nilai_akademik . '.nilai_UAS', $n->nilai_UAS) }}"
-                                                    class="nilai-input nilai-uas" placeholder="UAS" style="width: 70px;"
-                                                    onchange="updatePreview(this, 'uas')">
-                                                <div class="absensi-label small mt-1">UAS</div>
-                                            </div>
-                                            <div class="text-center">
-                                                <input type="number"
-                                                    name="nilai[{{ $n->id_nilai_akademik }}][nilai_praktik]"
-                                                    value="{{ old('nilai.' . $n->id_nilai_akademik . '.nilai_praktik', $n->nilai_praktik) }}"
-                                                    class="nilai-input nilai-praktik" placeholder="Praktik"
-                                                    style="width: 70px;" onchange="updatePreview(this, 'uas')">
-                                                <div class="absensi-label small mt-1">Praktik</div>
-                                            </div>
-                                        </div>
+                                        <!-- Input Nilai UAS saja -->
+                                        <input type="number"
+                                            name="nilai[{{ $n->id_nilai_akademik }}][nilai_UAS]"
+                                            value="{{ old('nilai.' . $n->id_nilai_akademik . '.nilai_UAS', $n->nilai_UAS) }}"
+                                            class="nilai-input nilai-uas" placeholder="UAS" style="width: 70px;">
                                     </td>
 
                                     <td>
@@ -648,22 +675,88 @@
                                                 <path
                                                     d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
                                             </svg>
+                                            <span>Hapus</span>
                                         </button>
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
 
+                        <div class="save-btn-wrapper">
+                            <button type="submit" class="save-btn">
+                                <i class="fas fa-save"></i> Simpan Nilai UAS
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
-                <div class="save-btn-wrapper">
-                    <button type="submit" class="save-btn">
-                        <i class="fas fa-save"></i> Simpan Data Periode <span id="periodeLabel">UTS</span>
-                    </button>
-                </div>
+                <!-- PRAKTIK TAB -->
+                <div class="tab-pane fade" id="praktikNilai" role="tabpanel">
+                    <form action="{{ route('nilaiakademik.mapel.updateAll', $mapel->id_matapelajaran) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="id_tahunAjaran" value="{{ $mapel->id_tahunAjaran }}">
+                        <input type="hidden" name="periode" value="praktik">
 
-            </form>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Santri</th>
+                                        <th>Nilai Praktik</th>
+                                        <th colspan="2">Nilai Akhir*</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            @foreach ($nilai as $n)
+                                <tr data-id="{{ $n->id_nilai_akademik }}" data-praktik="{{ $n->nilai_praktik ?? 0 }}">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $n->santri->nama }}</td>
+
+                                    <td>
+                                        <input type="number"
+                                            name="nilai[{{ $n->id_nilai_akademik }}][nilai_praktik]"
+                                            value="{{ old('nilai.' . $n->id_nilai_akademik . '.nilai_praktik', $n->nilai_praktik) }}"
+                                            class="nilai-input nilai-praktik" placeholder="Nilai Praktik"
+                                            style="width: 70px;">
+                                    </td>
+
+                                    <td colspan="2">
+                                        <div class="nilai-akhir-box">
+                                            {{ $n->nilai_praktik ?? '-' }}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <button type="button" class="action-btn"
+                                            onclick="deleteNilai('{{ $n->id_nilai_akademik }}')" title="Hapus">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="white" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2">
+                                                <path
+                                                    d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                                            </svg>
+                                            <span>Hapus</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="save-btn-wrapper">
+                            <button type="submit" class="save-btn">
+                                <i class="fas fa-save"></i> Simpan Nilai Praktik
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -674,78 +767,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const periodeSelect = document.getElementById('periodeSelect');
-            const periodeHidden = document.getElementById('periodeHidden');
-            const periodeLabel = document.getElementById('periodeLabel');
-            const sectionUTS = document.getElementById('section-uts');
-            const sectionUAS = document.getElementById('section-uas');
-
-            function toggleSection(periode) {
-                if (periode === 'uts') {
-                    sectionUTS.classList.add('active');
-                    sectionUAS.classList.remove('active');
-                    periodeLabel.textContent = 'UTS';
-                } else {
-                    sectionUTS.classList.remove('active');
-                    sectionUAS.classList.add('active');
-                    periodeLabel.textContent = 'UAS';
-                }
-                periodeHidden.value = periode;
-            }
-
-            periodeSelect.value = '{{ request('periode', 'uts') }}';
-            toggleSection(periodeSelect.value);
-
-            periodeSelect.addEventListener('change', function() {
-                toggleSection(this.value);
-            });
-
-            window.updatePreview = function(input, periode) {
-                const row = input.closest('tr');
-                const id = row.dataset.id;
-
-                // Ambil nilai terbaru dari input + fallback ke data awal
-                const uts = parseFloat(row.querySelector('input[name$="[nilai_UTS]"]')?.value) || parseFloat(row
-                    .dataset.uts) || 0;
-                const uas = parseFloat(row.querySelector('input[name$="[nilai_UAS]"]')?.value) || parseFloat(row
-                    .dataset.uas) || 0;
-                const praktik = parseFloat(row.querySelector('input[name$="[nilai_praktik]"]')?.value) ||
-                    parseFloat(row.dataset.praktik) || 0;
-
-                const nilaiAkhirEl = row.querySelector('.nilai-akhir-box');
-                const predEl = row.querySelector('.predikat');
-
-                if (periode === 'uts') {
-                    // Preview UTS: tampilkan nilai UTS saja
-                    nilaiAkhirEl.textContent = uts > 0 ? uts.toFixed(0) : '-';
-                    const pred = getPredikat(uts);
-                    predEl.textContent = pred;
-                    predEl.className = 'predikat predikat-' + pred;
-
-                } else if (periode === 'uas') {
-                    // Preview UAS: hitung dengan bobot (30% UTS, 40% UAS, 30% Praktik)
-                    const rata = calculateWeightedAverage(uts, uas, praktik);
-                    nilaiAkhirEl.textContent = rata > 0 ? rata.toFixed(2) : '-';
-                    const pred = getPredikat(rata);
-                    predEl.textContent = pred;
-                    predEl.className = 'predikat predikat-' + pred;
-                }
-            };
-
-            function calculateWeightedAverage(uts, uas, praktik) {
-                // Bobot: 30% UTS, 40% UAS, 30% Praktik
-                const weightedAverage = (uts * 0.3) + (uas * 0.4) + (praktik * 0.3);
-                return parseFloat(weightedAverage.toFixed(2));
-            }
-
-            function getPredikat(nilai) {
-                if (nilai >= 90) return 'A';
-                if (nilai >= 80) return 'B';
-                if (nilai >= 70) return 'C';
-                if (nilai >= 60) return 'D';
-                return 'E';
-            }
-
             window.deleteNilai = function(id) {
                 if (confirm('Hapus data nilai ini?')) {
                     const form = document.getElementById('deleteForm');

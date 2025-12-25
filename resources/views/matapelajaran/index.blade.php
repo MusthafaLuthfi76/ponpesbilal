@@ -80,21 +80,22 @@
                                     data-tahun="{{ $mp->tahunAjaran?->tahun ?? '-' }} - Semester {{ ucfirst($mp->tahunAjaran?->semester ?? '-') }}"
                                     data-kkm="{{ $mp->kkm }}" data-uts="{{ $mp->bobot_UTS }}"
                                     data-uas="{{ $mp->bobot_UAS }}" data-praktik="{{ $mp->bobot_praktik }}"
-                                    data-pendidik="{{ $mp->pendidik?->nama ?? '-' }}"><i class="bi bi-eye"></i></button>
+                                    data-pendidik="{{ $mp->pendidik?->nama ?? '-' }}">
+                                    <i class="bi bi-eye"></i> Detail</button>
 
                                 <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal"
                                     data-id="{{ $mp->id_matapelajaran }}" data-nama="{{ $mp->nama_matapelajaran }}"
                                     data-kelas="{{ $mp->kelas }}" data-materi="{{ $mp->materi_pelajaran }}"
                                     data-tahun="{{ $mp->id_tahunAjaran }}" data-kkm="{{ $mp->kkm }}"
                                     data-uts="{{ $mp->bobot_UTS }}" data-uas="{{ $mp->bobot_UAS }}"
-                                    data-praktik="{{ $mp->bobot_praktik }}" data-pendidik="{{ $mp->id_pendidik }}"><i
-                                        class="bi bi-pencil-square"></i></button>
+                                    data-praktik="{{ $mp->bobot_praktik }}" data-pendidik="{{ $mp->id_pendidik }}">
+                                    <i class="bi bi-pencil-square"></i> Edit</button>
 
                                 <form action="{{ route('matapelajaran.destroy', $mp->id_matapelajaran) }}" method="POST"
                                     class="d-inline" onsubmit="return confirm('Hapus {{ $mp->nama_matapelajaran }}?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                    <button class="btn btn-danger"><i class="bi bi-trash-fill"></i> Hapus</button>
                                 </form>
                             </div>
                         </td>
@@ -138,14 +139,14 @@
                             data-kelas="{{ $mp->kelas }}" data-materi="{{ $mp->materi_pelajaran }}"
                             data-tahun="{{ $mp->id_tahunAjaran }}" data-kkm="{{ $mp->kkm }}"
                             data-uts="{{ $mp->bobot_UTS }}" data-uas="{{ $mp->bobot_UAS }}"
-                            data-praktik="{{ $mp->bobot_praktik }}" data-pendidik="{{ $mp->id_pendidik }}"><i
-                                class="bi bi-pencil-square"></i></button>
+                            data-praktik="{{ $mp->bobot_praktik }}" data-pendidik="{{ $mp->id_pendidik }}">
+                            <i class="bi bi-pencil-square"></i> Edit</button>
 
                         <form action="{{ route('matapelajaran.destroy', $mp->id_matapelajaran) }}" method="POST"
                             class="d-inline" onsubmit="return confirm('Hapus {{ $mp->nama_matapelajaran }}?')">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Hapus</button>
                         </form>
                     </div>
                 </div>

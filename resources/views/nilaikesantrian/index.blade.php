@@ -191,7 +191,18 @@
         padding: 4px 8px;
     }
 
-    /* 📱 TAMPILAN SCROLLABLE TABLE MOBILE */
+    /* Desktop table */
+    .table-desktop {
+        display: table;
+        width: 100%;
+    }
+
+    /* Mobile cards */
+    .cards-mobile {
+        display: none;
+    }
+
+    /* 📱 TAMPILAN CARD VIEW MOBILE - seperti Mata Pelajaran */
     @media (max-width: 768px) {
         .container {
             margin: 0; 
@@ -200,45 +211,61 @@
         }
 
         .table-container {
-            padding: 15px 0;
-            overflow-x: auto; 
+            padding: 15px;
         }
         
-        table {
-            min-width: 700px;
-            margin: 0 15px;
-            border-radius: 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        thead {
-            display: table-header-group;
-        }
-        
-        tr {
-            display: table-row;
-            border: none;
-            margin-bottom: 0;
-            padding: 0;
-            box-shadow: none;
-            background: white;
+        /* Hide desktop table */
+        .table-desktop {
+            display: none !important;
         }
 
-        td {
-            display: table-cell;
-            padding: 12px;
-            border-bottom: 1px solid #f0f0f0; 
-            text-align: center;
+        /* Show mobile cards */
+        .cards-mobile {
+            display: block !important;
+        }
+
+        .kesantrian-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .kesantrian-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-color: var(--btn-green);
+        }
+
+        .kesantrian-card h6 {
+            color: var(--green);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .kesantrian-card .info-text {
             font-size: 14px;
-            position: static;
+            color: #666;
+            margin-bottom: 10px;
         }
-        
-        td:nth-child(2) {
-            text-align: left;
+
+        .kesantrian-card .action-btns {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        
-        td::before {
-            content: none;
+
+        .kesantrian-card .btn-sm {
+            flex: 1;
+            min-width: 100px;
         }
     }
 </style>
@@ -269,7 +296,8 @@
 
     {{-- KONTEN DATA TABEL --}}
     <div class="table-container">
-        <table class="text-center" role="table" aria-label="Tabel Data Nilai Kesantrian">
+        <!-- Desktop Table View -->
+        <table class="table-desktop text-center" role="table" aria-label="Tabel Data Nilai Kesantrian">
             <thead>
                 <tr>
                     <th scope="col" style="width: 8%;">NO</th>
@@ -329,6 +357,47 @@
                 @endforelse
             </tbody>
         </table>
+
+        <!-- Mobile Card View -->
+        <div class="cards-mobile">
+            @forelse($nilaiKesantrianList as $item)
+                <div class="kesantrian-card" onclick="window.location.href='{{ route('nilaikesantrian.show', ['id_matapelajaran' => $item->id_matapelajaran, 'id_tahunAjaran' => $item->id_tahunAjaran]) }}'">
+                    <h6>{{ $item->mataPelajaran->nama_matapelajaran ?? '-' }}</h6>
+                    <p class="info-text mb-2">
+                        <strong>Tahun Ajaran:</strong> {{ $item->tahunAjaran->tahun ?? '-' }}
+                        <span class="badge bg-info">Semester {{ strtoupper($item->tahunAjaran->semester ?? '-') }}</span>
+                    </p>
+                    <div class="action-btns" onclick="event.stopPropagation()">
+                        <a href="{{ route('nilaikesantrian.show', ['id_matapelajaran' => $item->id_matapelajaran, 'id_tahunAjaran' => $item->id_tahunAjaran]) }}" 
+                           class="btn btn-sm btn-info">
+                            <i class="bi bi-pencil-fill"></i> Input Nilai
+                        </a>
+                        <button class="btn btn-sm btn-warning" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#editMapelKesantrianModal"
+                                data-id="{{ $item->id_matapelajaran }}"
+                                data-nama="{{ $item->mataPelajaran->nama_matapelajaran }}"
+                                data-kkm="{{ $item->mataPelajaran->kkm }}"
+                                data-bobot-uts="{{ $item->mataPelajaran->bobot_UTS }}"
+                                data-bobot-uas="{{ $item->mataPelajaran->bobot_UAS }}"
+                                data-bobot-praktik="{{ $item->mataPelajaran->bobot_praktik }}"
+                                data-pendidik="{{ $item->mataPelajaran->id_pendidik }}"
+                                title="Edit Mata Pelajaran">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteMapelKesantrianModal"
+                                data-id="{{ $item->id_matapelajaran }}"
+                                data-nama="{{ $item->mataPelajaran->nama_matapelajaran }}">
+                            <i class="bi bi-trash-fill"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="alert alert-info text-center">Belum ada data penilaian kesantrian.</div>
+            @endforelse
+        </div>
     </div>
 </div>
 

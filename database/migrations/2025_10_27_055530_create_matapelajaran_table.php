@@ -16,6 +16,8 @@ return new class extends Migration
             // Primary Key (PK) dan Identitas
             $table->id('id_matapelajaran');
             $table->string('nama_matapelajaran', 100);
+            $table->string('kelas', 50);
+            $table->text('materi_pelajaran')->nullable();
             
             // Kolom Nilai Bobot dan KKM
             $table->decimal('kkm', 5, 2); 

@@ -239,22 +239,23 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 6px;
         border: none;
         color: #fff;
         transition: 0.2s;
-        padding: 0;
-        flex-shrink: 0;
         text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
     }
+    .action-btn-link i, .action-btn-button i { font-size: 14px; }
     .btn-setoran { background: var(--secondary-color); color: var(--text-color);} 
     .btn-delete { background: var(--delete-color); }
 
     .action-btn-link:hover, .action-btn-button:hover {
         opacity: 0.9;
-        transform: scale(1.05);
+        transform: translateY(-1px);
     }
     
     /* 💻 MEDIA QUERY UNTUK DESKTOP (Tidak Ada Perubahan) */
@@ -283,6 +284,15 @@
             width: auto;
         }
     }
+
+    @media (max-width: 768px) {
+
+    /* HILANGKAN TABEL */
+    .table-container {
+        display: none;
+    }
+}
+
 
     /* 📱 MEDIA QUERY UNTUK MOBILE - **DIUBAH MENJADI SCROLLABLE TABLE** */
     @media (max-width: 768px) {
@@ -359,6 +369,104 @@
             padding: 10px 15px;
         }
     }
+
+    /* ===============================
+   MOBILE SANTRI CARD
+================================ */
+.santri-mobile-list {
+    padding: 10px 15px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.santri-mobile-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.santri-mobile-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: 1px solid var(--btn-green);
+}
+
+.santri-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--green);
+}
+
+.santri-nis {
+    font-size: 13px;
+    color: #6c757d;
+    margin-top: 2px;
+}
+
+.santri-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.mobile-action {
+    width: auto;
+    height: auto;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.mobile-action i {
+    font-size: 14px;
+}
+
+.mobile-action span {
+    display: block;
+}
+
+/* ===============================
+   PERBAIKAN TOMBOL TAMBAH - MOBILE
+================================ */
+@media (max-width: 768px) {
+
+    .santri-header {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .header-controls {
+        width: 100%;
+        gap: 12px;
+    }
+
+    .add-santri-wrapper {
+        width: 100%;
+    }
+
+    .add-santri-btn {
+        width: 100%;
+        padding: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+}
+
 </style>
 
 @section('content')
@@ -412,21 +520,61 @@
 
         {{-- Card Daftar Santri --}}
         <div class="santri-card">
-            <header class="santri-header" role="heading">
-                <h5>Daftar Santri Kelompok ({{ $santri->total() }})</h5>
-                <div class="header-controls">
-                    <div class="search-box" role="search">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                        <input type="text" placeholder="Cari Nama/NIS..." id="searchInput" aria-label="Kolom Pencarian Santri">
-                    </div>
-                    <a href="{{ route('halaqah.showAddSantri', $kelompok->id_halaqah) }}" class="add-santri-btn" role="button" aria-label="Tambah Santri ke kelompok ini">
-                        <i class="fas fa-plus" aria-hidden="true"></i> Tambah Santri
-                    </a>
-                </div>
-            </header>
+            <header class="santri-header">
+    <h5>Daftar Santri Kelompok ({{ $santri->total() }})</h5>
 
+    <div class="header-controls">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Cari Nama/NIS..." id="searchInput">
+        </div>
+
+        {{-- Tombol dipisah jelas --}}
+        <div class="add-santri-wrapper">
+            <a href="{{ route('halaqah.showAddSantri', $kelompok->id_halaqah) }}"
+               class="add-santri-btn">
+                <i class="fas fa-plus"></i> Tambah Santri
+            </a>
+        </div>
+    </div>
+</header>
+
+{{-- ================= MOBILE CARD LIST ================= --}}
+<div class="santri-mobile-list d-md-none">
+
+    @forelse ($santri as $s)
+        <div class="santri-mobile-card" onclick="window.location.href='{{ route('setoran.index', $s->nis) }}'">
+            <div>
+                <div class="santri-name">{{ $s->nama }}</div>
+                <div class="santri-nis">NIS: {{ $s->nis }}</div>
+            </div>
+
+            <div class="santri-actions" onclick="event.stopPropagation()">
+                <a href="{{ route('setoran.index', $s->nis) }}" class="mobile-action btn-setoran" title="Lihat Setoran">
+                    <i class="fas fa-book-open"></i>
+                    <span>Setoran</span>
+                </a>
+                <button
+                    class="mobile-action btn-delete"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteSantriModal"
+                    data-id="{{ $s->nis }}"
+                    data-nama="{{ $s->nama }}"
+                    title="Keluarkan dari kelompok">
+                    <i class="fas fa-trash"></i>
+                    <span>Hapus</span>
+                </button>
+            </div>
+        </div>
+    @empty
+        <div class="text-center text-muted py-4">
+            Belum ada santri
+        </div>
+    @endforelse
+</div>
             {{-- **TABLE CONTAINER DENGAN OVERFLOW-X: AUTO** --}}
             <div class="table-container"> 
+
                 <table role="table" aria-label="Daftar Santri dalam Kelompok">
                     <thead>
                         <tr>
@@ -438,17 +586,18 @@
                     </thead>
                     <tbody id="santriTable">
                         @forelse ($santri as $s)
-                            <tr role="row">
+                            <tr role="row" onclick="window.location.href='{{ route('setoran.index', $s->nis) }}'" style="cursor: pointer;">
                                 <td data-label="NO" role="cell">{{ ($santri->currentPage() - 1) * $santri->perPage() + $loop->iteration }}</td>
                                 <td data-label="ID SANTRI" role="cell">{{ $s->nis }}</td>
                                 <td data-label="NAMA SANTRI" role="cell">{{ $s->nama }}</td>
-                                <td data-label="AKSI" role="cell">
+                                <td data-label="AKSI" role="cell" onclick="event.stopPropagation()">
                                     <div class="action-btns">
                                         
                                         {{-- SETORAN (VIEW) --}}
                                         <a href="{{ route('setoran.index', $s->nis) }}" title="Lihat Setoran"
                                             class="action-btn-link btn-setoran" aria-label="Lihat setoran santri {{ $s->nama }}">
                                             <i class="fas fa-book-open" aria-hidden="true"></i>
+                                            <span>Setoran</span>
                                         </a>
 
                                         {{-- DELETE / KELUARKAN SANTRI --}}
@@ -461,6 +610,7 @@
                                             title="Keluarkan dari kelompok"
                                             aria-label="Keluarkan santri {{ $s->nama }} dari kelompok ini">
                                             <i class="fas fa-trash" aria-hidden="true"></i>
+                                            <span>Hapus</span>
                                         </button>
                                     </div>
                                 </td>

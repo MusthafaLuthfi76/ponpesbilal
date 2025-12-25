@@ -228,7 +228,10 @@
     <!-- HEADER -->
     <header class="header-bar">
         <div class="brand">
-            <button class="menu-toggle" id="menuToggle"><i class="bi bi-list"></i></button>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="bi bi-list"></i>
+                <span class="visually-hidden">Toggle Menu</span>
+            </button>
             <img src="/img/logo.png" alt="logo">
             <div>
                 <div class="fw-semibold">PPTQ Bilal bin Rabah Sukoharjo</div>

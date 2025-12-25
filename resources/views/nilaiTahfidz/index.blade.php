@@ -107,7 +107,7 @@
 
         <!-- Data Cards -->
         @forelse ($ujianList as $ujian)
-            <div class="card border-0 shadow-sm mb-3 card-hover">
+            <div class="card border-0 shadow-sm mb-3 card-hover" onclick="window.location.href='{{ route('nilaiTahfidz.show', $ujian->santri->nis) }}'" style="cursor: pointer;">
                 <div class="card-body p-3 p-md-4">
                     
                     <!-- Mobile Layout -->
@@ -173,7 +173,7 @@
                             </div>
                         </div>
 
-                        <div class="d-flex gap-2 flex-wrap">
+                        <div class="d-flex gap-2 flex-wrap" onclick="event.stopPropagation()">
                             <button type="button" class="btn btn-sm btn-warning text-white flex-fill" onclick="editUjian({{ $ujian->id }}, '{{ $ujian->jenis_ujian }}', '{{ $ujian->sekali_duduk }}', '{{ $ujian->nis }}', {{ $ujian->tahun_ajaran_id ?? 'null' }}, {{ $ujian->id_penguji ?? 'null' }})">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="white">
                                     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
@@ -181,7 +181,7 @@
                                 Edit
                             </button>
 
-                            <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete({{ $ujian->id }})">
+                            <button type="button" class="btn btn-sm btn-danger" onclick="event.stopPropagation(); confirmDelete({{ $ujian->id }})">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="white">
                                     <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
                                 </svg>
@@ -277,13 +277,13 @@
                             </div>
 
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-warning btn-sm text-white" onclick="editUjian({{ $ujian->id }}, '{{ $ujian->jenis_ujian }}', '{{ $ujian->sekali_duduk }}', '{{ $ujian->nis }}', {{ $ujian->tahun_ajaran_id ?? 'null' }}, {{ $ujian->id_penguji ?? 'null' }})" title="Edit">
+                                <button type="button" class="btn btn-warning btn-sm text-white" onclick="event.stopPropagation(); editUjian({{ $ujian->id }}, '{{ $ujian->jenis_ujian }}', '{{ $ujian->sekali_duduk }}', '{{ $ujian->nis }}', {{ $ujian->tahun_ajaran_id ?? 'null' }}, {{ $ujian->id_penguji ?? 'null' }})" title="Edit">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
                                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                                     </svg>
                                 </button>
 
-                                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $ujian->id }})" title="Hapus">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="event.stopPropagation(); confirmDelete({{ $ujian->id }})" title="Hapus">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
                                         <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
                                     </svg>

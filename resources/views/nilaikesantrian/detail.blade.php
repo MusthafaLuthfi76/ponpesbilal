@@ -57,7 +57,8 @@
         font-weight: 600;
     }
 
-    .back-btn {
+    .back-btn,
+    .assign-btn {
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -71,9 +72,19 @@
         background: white;
     }
 
-    .back-btn:hover {
+    .back-btn:hover,
+    .assign-btn:hover {
         background-color: var(--primary-color);
         color: white;
+    }
+
+    .assign-btn {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .assign-btn:hover {
+        background-color: #1e7e34;
     }
 
     .mapel-info-card {
@@ -629,10 +640,15 @@
                     <i class="fas fa-edit"></i> Input Nilai Kesantrian
                 </h4>
             </div>
-            <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}"
-                class="back-btn">
-                <i class="fas fa-arrow-left"></i> Kembali
-            </a>
+            <div>
+                <a href="#assignSantri" class="assign-btn" data-bs-toggle="tab" role="tab">
+                    <i class="fas fa-user-plus"></i> Assign Santri
+                </a>
+                <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}"
+                    class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </a>
+            </div>
         </div>
 
         <!-- Mapel Info Card -->
@@ -1163,6 +1179,28 @@
                     tab.show();
                 }
             }
+
+            // Force Assign Santri tab to open when the header button is clicked
+            document.querySelectorAll('.assign-btn[data-bs-toggle="tab"]').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    const assignTabEl = document.getElementById('assign-tab');
+                    if (assignTabEl) {
+                        const assignTab = new bootstrap.Tab(assignTabEl);
+                        assignTab.show();
+                    }
+
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.set('tab', 'assign');
+                    window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+
+                    const assignPane = document.querySelector('#assignSantri');
+                    if (assignPane) {
+                        assignPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
 
             // Update URL when main tab changes
             const tabTriggers = document.querySelectorAll('#nilaiTabs a[data-bs-toggle="tab"]');

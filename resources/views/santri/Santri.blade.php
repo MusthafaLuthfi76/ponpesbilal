@@ -139,90 +139,124 @@
     }
 
     /* Responsif Default */
-    @media (max-width: 900px) {
-        .layout { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+
+    /* Wrapper filter + button jadi kolom */
+    .filter-and-add-group {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
     }
 
-    /* 📱 RESPONSIVE MOBILE - Kunci untuk tampilan seperti Tahun Ajaran */
+    /* Select & tombol full width */
+    .filter-and-add-group select.filter,
+    .filter-and-add-group .btn-add {
+        width: 100%;
+    }
+
+    /* Hilangkan efek shrink */
+    .btn-add {
+        flex-shrink: 0;
+        text-align: center;
+    }
+}
+
+
+    /* Desktop table view */
+    .table-desktop {
+        display: table;
+        width: 100%;
+    }
+
+    /* Mobile card view */
+    .card-mobile {
+        display: none;
+    }
+
+    /* 📱 RESPONSIVE MOBILE - Card View seperti Mata Pelajaran */
     @media (max-width: 768px) {
         /* Tata Letak Header */
         .content-header {
-            flex-direction: column; /* Ubah layout header menjadi kolom */
+            flex-direction: column;
             align-items: flex-start;
         }
 
         .content-header h2 {
-            margin-bottom: 10px; /* Jarak antara judul dan kontrol */
+            margin-bottom: 10px;
         }
 
         /* Tata Letak Search, Filter, dan Tombol Tambah */
         .search-filter {
-            width: 100%; /* Agar kontrol memenuhi lebar */
-            flex-direction: column; /* Tumpuk elemen kontrol secara vertikal */
+            width: 100%;
+            flex-direction: column;
             gap: 8px;
         }
 
         input[type="search"],
         select.filter,
         .btn-add {
-            box-sizing: border-box; /* Agar padding/border tidak menambah lebar total */
+            box-sizing: border-box;
         }
 
-        /* Tabel Responsif (Tampilan Kartu) */
-        table {
-            border-radius: 0; /* Hilangkan border radius pada tabel agar baris menempel */
+        /* Hide desktop table */
+        .table-desktop {
+            display: none !important;
         }
-        tr {
-            border: 1px solid #e0e0e0;
-            margin-bottom: 15px; /* Jarak antar kartu */
-            border-radius: 10px; /* Radius untuk setiap kartu/baris */
-            display: block;
+
+        /* Show mobile cards */
+        .card-mobile {
+            display: block !important;
+        }
+
+        .santri-card {
             background: white;
-            padding: 10px; /* Padding di dalam kartu */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        thead {
-            display: none; /* Sembunyikan header tabel di mobile */
+        .santri-card h6 {
+            color: var(--green);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 16px;
         }
 
-        td {
-            border-bottom: 1px solid #f0f0f0; /* Garis pemisah antar data */
-            position: relative;
-            padding: 8px 10px 8px 50%; /* Sisakan ruang untuk label */
-            text-align: right;
-            display: block;
+        .santri-card .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
             font-size: 14px;
         }
 
-        td:last-child {
-            border-bottom: none; /* Hilangkan garis pemisah pada kolom terakhir */
-            padding-bottom: 0;
-            padding-top: 10px;
+        .santri-card .info-row:last-of-type {
+            border-bottom: none;
         }
 
-        /* Label Kolom (seperti No, Tahun, Semester di tampilan Tahun Ajaran) */
-        td::before {
-            content: attr(data-label); /* Gunakan atribut data-label sebagai label */
-            position: absolute;
-            left: 10px;
-            width: 45%;
+        .santri-card .info-label {
             font-weight: 600;
             color: var(--green);
-            text-align: left;
         }
 
-        /* Penyesuaian Kolom Aksi */
-        .action-btns {
-            justify-content: flex-end; /* Posisikan tombol aksi di kanan (mirip Tahun Ajaran) */
-            padding-top: 5px;
-        }
-        td:nth-child(7) { /* Kolom Action */
+        .santri-card .info-value {
+            color: #333;
             text-align: right;
-            padding-left: 10px;
         }
-        td:nth-child(7)::before {
-            content: ""; /* Sembunyikan label untuk Aksi */
+
+        .santri-card .action-btns {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .santri-card .btn {
+            flex: 1;
+            font-size: 13px;
         }
 
         /* di dalam <style> di layouts/app.blade.php */
@@ -264,7 +298,8 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table>
+    <!-- Desktop Table View -->
+    <table class="table-desktop">
         <thead>
             <tr>
                 <th>No</th>
@@ -302,6 +337,40 @@
             @endforelse
         </tbody>
     </table>
+
+    <!-- Mobile Card View -->
+    <div class="card-mobile">
+        @forelse ($santri as $index => $s)
+            <div class="santri-card">
+                <h6>{{ $s->nama }}</h6>
+                <div class="mb-2">
+                    <span class="badge bg-primary">NIS: {{ $s->nis }}</span>
+                    @if($s->angkatan)
+                        <span class="badge bg-secondary">Angkatan {{ $s->angkatan }}</span>
+                    @endif
+                    <span class="badge bg-success">{{ $s->status }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tahun Ajaran:</span>
+                    <span class="info-value">{{ $s->tahunAjaran->tahun ?? '-' }} - {{ $s->tahunAjaran->semester ?? '' }}</span>
+                </div>
+                <div class="action-btns">
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $s->nis }}">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </button>
+                    <form action="{{ route('santri.destroy', $s->nis) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')" style="flex: 1;">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger w-100">
+                            <i class="bi bi-trash-fill"></i> Hapus
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @empty
+            <div class="alert alert-info">Belum ada data santri</div>
+        @endforelse
+    </div>
 
  @foreach ($santri as $s)
 <div class="modal fade" id="editModal{{ $s->nis }}" tabindex="-1" aria-labelledby="editModalLabel{{ $s->nis }}" aria-hidden="true">
