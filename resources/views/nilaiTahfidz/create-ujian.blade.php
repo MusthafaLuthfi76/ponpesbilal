@@ -17,7 +17,7 @@
     <div class="container-fluid bg-light p-4">
         <div class="card shadow-sm border">
             <div class="card-body">
-                    <form id="formCreateUjian" action="{{ route('nilaiTahfidz.storeUjianBaru') }}" method="POST">
+                <form id="formCreateUjian" action="{{ route('nilaiTahfidz.storeUjianBaru') }}" method="POST">
                     @csrf
 
                     <!-- Tahun Ajaran -->
@@ -33,35 +33,6 @@
                         </select>
                         @error('tahun_ajaran_id')
                             <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Jenis Ujian -->
-                    <div class="mb-3">
-                        <label for="jenis_ujian" class="form-label fw-bold">Jenis Ujian <span class="text-danger">*</span></label>
-                        <select class="form-select @error('jenis_ujian') is-invalid @enderror" id="jenis_ujian" name="jenis_ujian" required>
-                            <option value="">Pilih Jenis Ujian</option>
-                            <option value="UTS" {{ old('jenis_ujian') == 'UTS' ? 'selected' : '' }}>UTS</option>
-                            <option value="UAS" {{ old('jenis_ujian') == 'UAS' ? 'selected' : '' }}>UAS</option>
-                        </select>
-                        @error('jenis_ujian')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Sekali Duduk -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold d-block">Sekali Duduk <span class="text-danger">*</span></label>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input @error('sekali_duduk') is-invalid @enderror" type="radio" name="sekali_duduk" id="sekali_duduk_ya" value="ya" {{ old('sekali_duduk') == 'ya' ? 'checked' : '' }} required>
-                            <label class="form-check-label" for="sekali_duduk_ya">Ya</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input @error('sekali_duduk') is-invalid @enderror" type="radio" name="sekali_duduk" id="sekali_duduk_tidak" value="tidak" {{ old('sekali_duduk') == 'tidak' || old('sekali_duduk') == null ? 'checked' : '' }}>
-                            <label class="form-check-label" for="sekali_duduk_tidak">Tidak</label>
-                        </div>
-                        @error('sekali_duduk')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -132,64 +103,59 @@
                     </div>
                 </div>
 
-                    <script>
-                        (function() {
-                            const form = document.getElementById('formCreateUjian');
-                            if (!form) return;
+                <script>
+                    (function() {
+                        const form = document.getElementById('formCreateUjian');
+                        if (!form) return;
 
-                            form.addEventListener('submit', function(e) {
-                                e.preventDefault();
+                        form.addEventListener('submit', function(e) {
+                            e.preventDefault();
 
-                                const formData = new FormData(form);
-                                const payload = {
-                                    nis: formData.get('nis'),
-                                    tahun_ajaran_id: formData.get('tahun_ajaran_id'),
-                                    jenis_ujian: formData.get('jenis_ujian'),
-                                    sekali_duduk: formData.get('sekali_duduk')
-                                };
+                            const formData = new FormData(form);
+                            const payload = {
+                                nis: formData.get('nis'),
+                                tahun_ajaran_id: formData.get('tahun_ajaran_id')
+                                // jenis_ujian & sekali_duduk removed
+                            };
 
-                                // CSRF token from meta or hidden input
-                                const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : form.querySelector('input[name="_token"]').value;
+                            // CSRF token
+                            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                                        || form.querySelector('input[name="_token"]')?.value;
 
-                                fetch("{{ route('nilaiTahfidz.checkDuplicate') }}", {
-                                    method: 'POST',
-                                    headers: {
-                                        'Accept': 'application/json',
-                                        'X-CSRF-TOKEN': token,
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(payload)
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.exists) {
-                                        // show Bootstrap modal with error message instead of alert
-                                        const msg = 'Ujian untuk santri ini pada tahun ajaran dan semester yang sama sudah ada.';
-                                        const modalEl = document.getElementById('duplicateModal');
-                                        if (modalEl) {
-                                            const bodyEl = modalEl.querySelector('#duplicateModalMessage');
-                                            if (bodyEl) bodyEl.textContent = msg;
-                                            const duplicateModal = new bootstrap.Modal(modalEl);
-                                            duplicateModal.show();
-                                        } else {
-                                            // fallback
-                                            alert(msg);
-                                        }
+                            fetch("{{ route('nilaiTahfidz.checkDuplicate') }}", {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': token,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(payload)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.exists) {
+                                    const msg = 'Ujian untuk santri ini pada tahun ajaran dan semester yang sama sudah ada.';
+                                    const modalEl = document.getElementById('duplicateModal');
+                                    if (modalEl) {
+                                        const bodyEl = modalEl.querySelector('#duplicateModalMessage');
+                                        if (bodyEl) bodyEl.textContent = msg;
+                                        const duplicateModal = new bootstrap.Modal(modalEl);
+                                        duplicateModal.show();
                                     } else {
-                                        // submit normally
-                                        form.submit();
+                                        alert(msg);
                                     }
-                                })
-                                .catch(err => {
-                                    console.error(err);
-                                    // Fallback to normal submit on error
+                                } else {
                                     form.submit();
-                                });
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                form.submit(); // fallback
                             });
-                        })();
-                    </script>
+                        });
+                    })();
+                </script>
             </div>
         </div>
     </div>
 @endsection
-
