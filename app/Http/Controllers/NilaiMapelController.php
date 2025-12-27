@@ -235,7 +235,7 @@ class NilaiMapelController extends Controller
     public function updateAll(Request $request, $id_mapel)
     {
         $request->validate([
-            'periode' => 'required|in:uts,uas',
+            'periode' => 'required|in:uts,uas,praktik',
             'id_tahunAjaran' => 'required|exists:tahunajaran,id_tahunAjaran',
             'nilai' => 'required|array',
         ]);
@@ -274,17 +274,19 @@ class NilaiMapelController extends Controller
                 $updateData['sakit_uts'] = isset($data['sakit_uts']) ? max(0, (int) $data['sakit_uts']) : $nilai->sakit_uts;
                 $updateData['ghaib_uts'] = isset($data['ghaib_uts']) ? max(0, (int) $data['ghaib_uts']) : $nilai->ghaib_uts;
             } elseif ($periode === 'uas') {
-                // Nilai UAS dan Praktik
+                // Nilai UAS
                 if (isset($data['nilai_UAS']) && is_numeric($data['nilai_UAS'])) {
                     $updateData['nilai_UAS'] = max(0, min(100, (float) $data['nilai_UAS']));
-                }
-                if (isset($data['nilai_praktik']) && is_numeric($data['nilai_praktik'])) {
-                    $updateData['nilai_praktik'] = max(0, min(100, (float) $data['nilai_praktik']));
                 }
                 // Absensi UAS
                 $updateData['izin_uas'] = isset($data['izin_uas']) ? max(0, (int) $data['izin_uas']) : $nilai->izin_uas;
                 $updateData['sakit_uas'] = isset($data['sakit_uas']) ? max(0, (int) $data['sakit_uas']) : $nilai->sakit_uas;
                 $updateData['ghaib_uas'] = isset($data['ghaib_uas']) ? max(0, (int) $data['ghaib_uas']) : $nilai->ghaib_uas;
+            } elseif ($periode === 'praktik') {
+                // Nilai Praktik
+                if (isset($data['nilai_praktik']) && is_numeric($data['nilai_praktik'])) {
+                    $updateData['nilai_praktik'] = max(0, min(100, (float) $data['nilai_praktik']));
+                }
             }
 
             // === Hitung ulang nilai akhir ===
