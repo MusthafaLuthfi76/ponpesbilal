@@ -157,6 +157,13 @@ class NilaiMapelController extends Controller
             'izin_uas' => 'required|integer|min:0',
             'sakit_uas' => 'required|integer|min:0',
             'ghaib_uas' => 'required|integer|min:0',
+        ], [
+            'nilai_UTS.min' => 'Nilai tidak boleh kurang dari 0',
+            'nilai_UTS.max' => 'Nilai tidak boleh lebih dari 100',
+            'nilai_UAS.min' => 'Nilai tidak boleh kurang dari 0',
+            'nilai_UAS.max' => 'Nilai tidak boleh lebih dari 100',
+            'nilai_praktik.min' => 'Nilai tidak boleh kurang dari 0',
+            'nilai_praktik.max' => 'Nilai tidak boleh lebih dari 100',
         ]);
 
         $uts = $request->nilai_UTS;
@@ -232,6 +239,20 @@ class NilaiMapelController extends Controller
             'id_tahunAjaran' => 'required|exists:tahunajaran,id_tahunAjaran',
             'nilai' => 'required|array',
         ]);
+
+        // Validasi manual agar memberi pesan jelas jika ada nilai di luar 0-100
+        foreach ($request->input('nilai', []) as $data) {
+            foreach (['nilai_UTS', 'nilai_UAS', 'nilai_praktik'] as $field) {
+                if (isset($data[$field]) && $data[$field] !== '' && is_numeric($data[$field])) {
+                    $value = (float) $data[$field];
+                    if ($value < 0 || $value > 100) {
+                        return back()
+                            ->withErrors(['nilai_range' => 'Nilai harus antara 0 dan 100. Periksa input yang melebihi batas.'])
+                            ->withInput();
+                    }
+                }
+            }
+        }
 
         $periode = $request->periode;
         $updated = 0;

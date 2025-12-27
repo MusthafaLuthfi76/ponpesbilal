@@ -40,7 +40,7 @@ class MataPelajaranController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nama_matapelajaran' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z0-9\s]+$/'],
+            'nama_matapelajaran' => ['required', 'string', 'max:100'],
 
             // kolom baru
             'kelas' => ['required', 'in:1,2,3'],
@@ -70,7 +70,7 @@ class MataPelajaranController extends Controller
         $mataPelajaran = MataPelajaran::findOrFail($id);
 
         $data = $request->validate([
-            'nama_matapelajaran' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z0-9\s]+$/'],
+            'nama_matapelajaran' => ['required', 'string', 'max:100'],
 
             // kolom baru
             'kelas' => ['required', 'in:1,2,3'],

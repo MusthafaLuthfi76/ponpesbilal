@@ -268,6 +268,68 @@
             min-width: 100px;
         }
     }
+
+    .kesantrian-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+@media (min-width: 768px) {
+    .kesantrian-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .kesantrian-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.kesantrian-item {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    background: #fff;
+    transition: 0.2s ease;
+}
+
+.kesantrian-item:hover {
+    border-color: var(--btn-green);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.kesantrian-title {
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 12px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+    font-size: 14px;
+}
+
+.info-label {
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #212529;
+}
+
+.kesantrian-actions {
+    margin-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+}
+
 </style>
 
 @section('content')
