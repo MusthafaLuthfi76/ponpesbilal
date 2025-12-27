@@ -152,7 +152,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/nilaiakademik/mapel/{id_mapel}/assign', [NilaiMapelController::class, 'assignStore'])->name('nilaiakademik.mapel.assign.store');
         Route::put('/nilaiakademik/mapel/{id}/update-all', [NilaiMapelController::class, 'updateAll'])->name('nilaiakademik.mapel.updateAll');
         Route::put('/nilaiakademik/nilai/{id_nilai}', [NilaiMapelController::class, 'update'])->name('nilaiakademik.mapel.update');
-        
+
         Route::delete('/nilaiakademik/nilai/{id_nilai}', [NilaiMapelController::class, 'destroy'])->name('nilaiakademik.mapel.destroy');
 
         // Nilai Kesantrian
@@ -193,12 +193,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/nilaiTahfidz/check-duplicate', [UjianTahfidzController::class, 'checkDuplicateUjian'])->name('nilaiTahfidz.checkDuplicate');
         Route::get('/nilaiTahfidz/ujian-baru', [UjianTahfidzController::class, 'createUjianBaru'])->name('nilaiTahfidz.createUjianBaru');
         Route::post('/nilaiTahfidz/ujian-baru', [UjianTahfidzController::class, 'storeUjianBaru'])->name('nilaiTahfidz.storeUjianBaru');
+        Route::patch('/nilaiTahfidz/ujian/{ujian}', [UjianTahfidzController::class, 'updateUjian'])
+            ->name('nilaiTahfidz.updateUjian');
         Route::get('/nilaiTahfidz/{id}/input-nilai', [UjianTahfidzController::class, 'inputNilai'])->name('nilaiTahfidz.inputNilai');
         Route::post('/nilaiTahfidz/{id}/input-nilai', [UjianTahfidzController::class, 'storeNilai'])->name('nilaiTahfidz.storeNilai');
-        Route::get('/nilaiTahfidz/{id}/detail', [UjianTahfidzController::class, 'show'])->name('nilaiTahfidz.show');
+        Route::get('/nilai-tahfidz/{nis}', [UjianTahfidzController::class, 'show'])
+            ->name('nilaiTahfidz.show');
         Route::post('/nilaiTahfidz', [UjianTahfidzController::class, 'store'])->name('nilaiTahfidz.store');
         Route::put('/nilaiTahfidz/{id}', [UjianTahfidzController::class, 'update'])->name('nilaiTahfidz.update');
-        Route::delete('/nilaiTahfidz/{id}', [UjianTahfidzController::class, 'destroy'])->name('nilaiTahfidz.destroy');
+        Route::delete('/nilaiTahfidz/{id}', [UjianTahfidzController::class, 'destroy'])
+            ->name('nilaiTahfidz.destroy');
+        Route::delete('/ujian/{id}', [UjianTahfidzController::class, 'destroyUjian'])
+            ->name('ujian.destroy'); // atau ->name('nilaiTahfidz.destroyUjian') jika preferensi penamaan
         Route::get('/nilai-tahfidz/{nis}/create', [UjianTahfidzController::class, 'create'])->name('nilaiTahfidz.create');
     });
 });

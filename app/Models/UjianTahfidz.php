@@ -21,6 +21,7 @@ class UjianTahfidz extends Model
         'tahun_ajaran_id',
         'sekali_duduk',
         'id_penguji',
+        'is_header',
     ];
 
     /**
@@ -84,5 +85,25 @@ class UjianTahfidz extends Model
             $itqan = $ujian->itqan ?? 0;
             $ujian->total_kesalahan = $tajwid + $itqan;
         });
+    }
+
+
+    // Scope
+    public function scopeHeader($query)
+    {
+        return $query
+            ->whereIn('jenis_ujian', ['UTS', 'UAS'])
+            ->where('is_header', true);
+    }
+
+    public function scopeDetail($query)
+    {
+        return $query->where('is_header', false)->whereNotNull('juz');
+    }
+
+    // Accessor (opsional tapi membantu)
+    public function getIsSesiAttribute()
+    {
+        return $this->is_header;
     }
 }
