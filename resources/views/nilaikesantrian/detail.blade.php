@@ -642,7 +642,7 @@
             </div>
             <div>
                 <a href="#assignSantri" class="assign-btn" data-bs-toggle="tab" role="tab">
-                    <i class="fas fa-user-plus"></i> Assign Santri
+                    <i class="fas fa-user-plus"></i> Tambah Santri
                 </a>
                 <a href="{{ route('nilaikesantrian.index', ['id_tahunAjaran' => $tahunAjaran->id_tahunAjaran]) }}"
                     class="back-btn">
@@ -702,7 +702,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ $activeTab == 'assign' ? 'active' : '' }}" id="assign-tab" data-bs-toggle="tab"
                     href="#assignSantri" role="tab">
-                    <i class="bi bi-person-plus"></i> Assign Santri
+                    <i class="bi bi-person-plus"></i> Tambah Santri
                     <span class="badge bg-success">{{ $santriBelumAssign->count() }}</span>
                 </a>
             </li>
@@ -714,7 +714,7 @@
             <div class="tab-pane fade {{ $activeTab == 'uts' ? 'show active' : '' }}" id="utsNilai" role="tabpanel">
                 @if ($nilaiSantri->isEmpty())
                     <div class="alert alert-warning m-3">
-                        Belum ada santri yang di-assign untuk penilaian kesantrian ini. Silakan pindah ke tab "Assign Santri".
+                        Belum ada santri yang di tambah untuk penilaian kesantrian ini. Silakan pindah ke tab "Tambah Santri".
                     </div>
                 @else
                     <form action="{{ route('nilaikesantrian.update.massal') }}" method="POST">
@@ -859,7 +859,7 @@
             <div class="tab-pane fade {{ $activeTab == 'uas' ? 'show active' : '' }}" id="uasNilai" role="tabpanel">
                 @if ($nilaiSantri->isEmpty())
                     <div class="alert alert-warning m-3">
-                        Belum ada santri yang di-assign untuk penilaian kesantrian ini. Silakan pindah ke tab "Assign Santri".
+                        Belum ada santri yang di tambah untuk penilaian kesantrian ini. Silakan pindah ke tab "Tambah Santri".
                     </div>
                 @else
                     <form action="{{ route('nilaikesantrian.update.massal') }}" method="POST">
@@ -1004,7 +1004,7 @@
             <div class="tab-pane fade {{ $activeTab == 'assign' ? 'show active' : '' }}" id="assignSantri"
                 role="tabpanel">
                 <div class="assign-section">
-                    <h5 class="mb-3"><i class="bi bi-person-plus"></i> Pilih Santri yang Belum Di-assign</h5>
+                    <h5 class="mb-3"><i class="bi bi-person-plus"></i> Pilih Santri yang Belum Di Tambah</h5>
 
                     {{-- Form Filter --}}
                     <div class="filter-section">
@@ -1081,7 +1081,7 @@
 
                         @if ($santriBelumAssign->isNotEmpty())
                             <button type="submit" class="btn btn-success mt-3 w-100">
-                                <i class="bi bi-plus-circle"></i> Assign Santri Terpilih
+                                <i class="bi bi-plus-circle"></i> Tambah Santri Terpilih
                                 ({{ $santriBelumAssign->count() }})
                             </button>
                         @endif

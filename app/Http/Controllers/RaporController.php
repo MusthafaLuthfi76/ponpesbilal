@@ -748,7 +748,7 @@ class RaporController extends Controller
             'C'   => 'Jayyid',
             'C-'  => 'Jayyid',
             'D'   => 'Maqbul',
-            'E'   => 'Dha\'if',
+            'E'   => 'Rasib',
         ];
 
         return $keteranganMap[$nilai] ?? $nilai;

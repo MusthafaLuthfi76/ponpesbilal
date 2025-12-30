@@ -105,7 +105,7 @@ class NilaiKesantrianController extends Controller
         return redirect()->route('nilaikesantrian.show', [
             'id_tahunAjaran' => $id_tahunAjaran,
             'tab' => 'assign'
-        ])->with('success', 'Santri berhasil di-assign ke penilaian kesantrian tahun ajaran ini.');
+        ])->with('success', 'Santri berhasil di tambah ke penilaian kesantrian tahun ajaran ini.');
     }
 
     public function unassign($id)
@@ -123,7 +123,7 @@ class NilaiKesantrianController extends Controller
 
         return redirect()->route('nilaikesantrian.show', [
             'id_tahunAjaran' => $id_tahunAjaran,
-        ])->with('success', 'Santri berhasil di-unassign dari penilaian kesantrian ini.');
+        ])->with('success', 'Santri berhasil di hapus dari penilaian kesantrian ini.');
     }
 
 
